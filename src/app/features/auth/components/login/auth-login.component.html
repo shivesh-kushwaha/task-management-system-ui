@@ -1,0 +1,68 @@
+<div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light">
+    <div class="card shadow-sm p-4" style="width: 100%; max-width: 420px;">
+
+        <!-- Header -->
+        <div class="text-center mb-4">
+            <h4 class="fw-bold">Task Management</h4>
+            <p class="text-muted small">Sign in to your account</p>
+        </div>
+
+        <!-- Error Alert -->
+        @if (errorMessage) {
+        <div class="alert alert-danger py-2 small">
+            {{ errorMessage }}
+        </div>
+        }
+
+        <!-- Form -->
+        <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+
+            <!-- Email -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Email</label>
+                <input type="email" class="form-control" formControlName="email" placeholder="Enter your email"
+                    [ngClass]="{'is-invalid': loginForm.get('email')?.invalid && loginForm.get('email')?.touched}" />
+                <div class="invalid-feedback">
+                    @if (loginForm.get('email')?.errors?.['required']) {
+                    <span>Email is required.</span>
+                    }
+                    @if (loginForm.get('email')?.errors?.['email']) {
+                    <span>Enter a valid email.</span>
+                    }
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Password</label>
+                <input type="password" class="form-control" formControlName="password" placeholder="Enter your password"
+                    [ngClass]="{'is-invalid': loginForm.get('password')?.invalid && loginForm.get('password')?.touched}" />
+                <div class="invalid-feedback">
+                    @if (loginForm.get('password')?.errors?.['required']) {
+                    <span>Password is required.</span>
+                    }
+                    @if (loginForm.get('password')?.errors?.['minlength']) {
+                    <span>Minimum 6 characters.</span>
+                    }
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+                    @if (isLoading) {
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    }
+                    {{ isLoading ? 'Signing in...' : 'Sign In' }}
+                </button>
+            </div>
+
+            <!-- Register -->
+            <p class="text-center text-muted small mb-0">
+                Don't have an account?
+                <a routerLink="/users/register" class="text-primary fw-semibold text-decoration-none">Register</a>
+            </p>
+
+        </form>
+    </div>
+</div>

@@ -1,0 +1,28 @@
+<div class="d-flex flex-column vh-100 bg-dark text-white" [style.width]="isCollapsed ? '70px' : '240px'"
+    style="transition: width 0.3s ease; overflow: hidden;">
+
+    <!-- Toggle Button -->
+    <div class="d-flex align-items-center justify-content-between p-3 border-bottom border-secondary">
+        @if (!isCollapsed) {
+        <span class="fw-bold fs-6">Task Manager</span>
+        }
+        <button class="btn btn-sm btn-outline-light ms-auto" (click)="toggleSidebar()">
+            <i [class]="isCollapsed ? 'bi bi-chevron-right' : 'bi bi-chevron-left'"></i>
+        </button>
+    </div>
+
+    <!-- Menu Items -->
+    <ul class="nav flex-column mt-2 px-2">
+        @for (item of menuItems; track item.route) {
+        <li class="nav-item mb-1">
+            <a class="nav-link d-flex align-items-center gap-2 rounded text-white" [routerLink]="item.route"
+                routerLinkActive="active bg-primary" [title]="isCollapsed ? item.label : ''">
+                <i [class]="item.icon" style="font-size: 1.1rem;"></i>
+                @if (!isCollapsed) {
+                <span>{{ item.label }}</span>
+                }
+            </a>
+        </li>
+        }
+    </ul>
+</div>
