@@ -1,19 +1,22 @@
-
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { AppConstants } from '../../../../core/constants';
 import { AuthLoginDto } from '../../dtos';
 
 @Component({
   selector: 'app-auth-login',
   templateUrl: './auth-login.component.html',
+  styleUrls: ['./auth-login.component.scss'],
   standalone: false
 })
 export class AuthLoginComponent {
   loginForm: FormGroup;
   isLoading = false;
   errorMessage = '';
+  showPassword = false;
+  appConstants = AppConstants;
 
   constructor(
     private fb: FormBuilder,
@@ -21,9 +24,21 @@ export class AuthLoginComponent {
     private router: Router
   ) {
     this.loginForm = this.fb.group({
-      email: ['', [Validators.required, Validators.email]],
-      password: ['', [Validators.required, Validators.minLength(6)]]
+      email: ['', [
+        Validators.required,
+        Validators.email,
+        Validators.maxLength(AppConstants.emailMaxLength)
+      ]],
+      password: ['', [
+        Validators.required,
+        Validators.minLength(AppConstants.passwordMinLength),
+        Validators.maxLength(AppConstants.passwordMaxLength)
+      ]]
     });
+  }
+
+  togglePassword(): void {
+    this.showPassword = !this.showPassword;
   }
 
   onSubmit(): void {

@@ -1,5 +1,5 @@
-@if (isAuthPage) {
-  <router-outlet></router-outlet>
+@if (isLoggedIn) {
+<app-layout></app-layout>
 } @else {
-  <app-layout></app-layout>
+<router-outlet></router-outlet>
 }

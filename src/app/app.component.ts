@@ -8,13 +8,13 @@ import { filter } from 'rxjs/operators';
   standalone: false
 })
 export class AppComponent {
-  isAuthPage = false;
+  protected isLoggedIn = false;
 
   constructor(private router: Router) {
     this.router.events.pipe(
       filter(event => event instanceof NavigationEnd)
-    ).subscribe((event: any) => {
-      this.isAuthPage = event.url.includes('/auth');
+    ).subscribe(() => {
+      this.isLoggedIn = !!localStorage.getItem('accessToken');
     });
   }
 }
