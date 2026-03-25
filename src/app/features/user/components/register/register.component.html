@@ -1,0 +1,165 @@
+<div class="container-fluid min-vh-100 d-flex align-items-center justify-content-center bg-light">
+    <div class="card shadow-sm p-4" style="width: 100%; max-width: 480px;">
+
+        <!-- Header -->
+        <div class="text-center mb-4">
+            <h4 class="fw-bold">Register</h4>
+        </div>
+
+        <!-- Error Alert -->
+        @if (errorMessage) {
+        <div class="alert alert-danger py-2 small">
+            {{ errorMessage }}
+        </div>
+        }
+
+        <!-- Form -->
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
+
+            <!-- First Name & Last Name -->
+            <div class="row mb-3">
+                <div class="col">
+                    <label class="form-label fw-semibold">First Name</label>
+                    <input type="text" class="form-control" formControlName="firstName" placeholder="First name"
+                        [maxlength]="50"
+                        [ngClass]="{'is-invalid': registerForm.get('firstName')?.invalid && registerForm.get('firstName')?.touched}" />
+                    <div class="text-danger small mt-1">
+                        @if (registerForm.get('firstName')?.errors?.['required'] &&
+                        registerForm.get('firstName')?.touched) {
+                        <span>First name is required.</span>
+                        }
+                        @if (registerForm.get('firstName')?.errors?.['maxlength'] &&
+                        registerForm.get('firstName')?.touched) {
+                        <span>Maximum 50 characters.</span>
+                        }
+                    </div>
+                </div>
+                <div class="col">
+                    <label class="form-label fw-semibold">Last Name</label>
+                    <input type="text" class="form-control" formControlName="lastName" placeholder="Last name"
+                        [maxlength]="50"
+                        [ngClass]="{'is-invalid': registerForm.get('lastName')?.invalid && registerForm.get('lastName')?.touched}" />
+                    <div class="text-danger small mt-1">
+                        @if (registerForm.get('lastName')?.errors?.['required'] &&
+                        registerForm.get('lastName')?.touched) {
+                        <span>Last name is required.</span>
+                        }
+                        @if (registerForm.get('lastName')?.errors?.['maxlength'] &&
+                        registerForm.get('lastName')?.touched) {
+                        <span>Maximum 50 characters.</span>
+                        }
+                    </div>
+                </div>
+            </div>
+
+            <!-- Phone Number -->
+            <div class="mb-4">
+                <label class="form-label fw-semibold">Phone Number</label>
+                <input type="text" class="form-control" formControlName="phoneNumber"
+                    placeholder="Enter 10 digit phone number" [maxlength]="10"
+                    [ngClass]="{'is-invalid': registerForm.get('phoneNumber')?.invalid && registerForm.get('phoneNumber')?.touched}" />
+                <div class="text-danger small mt-1">
+                    @if (registerForm.get('phoneNumber')?.errors?.['required'] &&
+                    registerForm.get('phoneNumber')?.touched) {
+                    <span>Phone number is required.</span>
+                    }
+                    @if (registerForm.get('phoneNumber')?.errors?.['pattern'] &&
+                    registerForm.get('phoneNumber')?.touched) {
+                    <span>Enter a valid 10 digit phone number.</span>
+                    }
+                </div>
+            </div>
+
+            <!-- Email -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Email</label>
+                <input type="email" class="form-control" formControlName="email" placeholder="Enter your email"
+                    [maxlength]="appConstants.emailMaxLength"
+                    [ngClass]="{'is-invalid': registerForm.get('email')?.invalid && registerForm.get('email')?.touched}" />
+                <div class="text-danger small mt-1">
+                    @if (registerForm.get('email')?.errors?.['required'] && registerForm.get('email')?.touched) {
+                    <span>Email is required.</span>
+                    }
+                    @if (registerForm.get('email')?.errors?.['email'] && registerForm.get('email')?.touched) {
+                    <span>Enter a valid email.</span>
+                    }
+                    @if (registerForm.get('email')?.errors?.['maxlength'] && registerForm.get('email')?.touched) {
+                    <span>Maximum {{ appConstants.emailMaxLength }} characters.</span>
+                    }
+                </div>
+            </div>
+
+            <!-- Password -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
+                <div class="position-relative">
+                    <input [type]="showPassword ? 'text' : 'password'" class="form-control" formControlName="password"
+                        placeholder="Enter your password" [maxlength]="appConstants.passwordMaxLength"
+                        [ngClass]="{'is-invalid': registerForm.get('password')?.invalid && registerForm.get('password')?.touched}"
+                        style="padding-right: 2.5rem !important;" />
+                    @if (registerForm.get('password')?.value) {
+                    <span (click)="togglePassword()"
+                        style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); cursor: pointer; z-index: 10;">
+                        <i [class]="showPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+                    </span>
+                    }
+                </div>
+                <div class="text-danger small mt-1">
+                    @if (registerForm.get('password')?.errors?.['required'] && registerForm.get('password')?.touched) {
+                    <span>Password is required.</span>
+                    }
+                    @if (registerForm.get('password')?.errors?.['minlength'] && registerForm.get('password')?.touched) {
+                    <span>Minimum {{ appConstants.passwordMinLength }} characters.</span>
+                    }
+                    @if (registerForm.get('password')?.errors?.['maxlength'] && registerForm.get('password')?.touched) {
+                    <span>Maximum {{ appConstants.passwordMaxLength }} characters.</span>
+                    }
+                </div>
+            </div>
+
+            <!-- Confirm Password -->
+            <div class="mb-3">
+                <label class="form-label fw-semibold">Confirm Password</label>
+                <div class="position-relative">
+                    <input [type]="showConfirmPassword ? 'text' : 'password'" class="form-control"
+                        formControlName="confirmPassword" placeholder="Re-enter your password"
+                        [maxlength]="appConstants.passwordMaxLength"
+                        [ngClass]="{'is-invalid': registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched || registerForm.errors?.['passwordMismatch'] && registerForm.get('confirmPassword')?.touched}"
+                        style="padding-right: 2.5rem !important;" />
+                    @if (registerForm.get('confirmPassword')?.value) {
+                    <span (click)="toggleConfirmPassword()"
+                        style="position: absolute; top: 50%; right: 10px; transform: translateY(-50%); cursor: pointer; z-index: 10;">
+                        <i [class]="showConfirmPassword ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+                    </span>
+                    }
+                </div>
+                <div class="text-danger small mt-1">
+                    @if (registerForm.get('confirmPassword')?.errors?.['required'] &&
+                    registerForm.get('confirmPassword')?.touched) {
+                    <span>Confirm password is required.</span>
+                    }
+                    @if (registerForm.errors?.['passwordMismatch'] && registerForm.get('confirmPassword')?.touched) {
+                    <span>Passwords do not match.</span>
+                    }
+                </div>
+            </div>
+
+            <!-- Submit -->
+            <div class="d-grid mb-3">
+                <button type="submit" class="btn btn-primary" [disabled]="isLoading">
+                    @if (isLoading) {
+                    <span class="spinner-border spinner-border-sm me-2"></span>
+                    }
+                    {{ isLoading ? 'Registering...' : 'Register' }}
+                </button>
+            </div>
+
+            <!-- Login -->
+            <p class="text-center text-muted small mb-0">
+                Already have an account?
+                <a routerLink="/auth/login" class="text-primary fw-semibold text-decoration-none">Sign In</a>
+            </p>
+
+        </form>
+    </div>
+</div>

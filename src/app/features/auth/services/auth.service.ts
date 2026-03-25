@@ -3,14 +3,15 @@ import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuthLoginDto } from '../dtos';
 import { LoginResponseDto } from '../../../shared/dtos';
+import { environment } from '../../../../environments/environment';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private api = 'https://your-api-url/api/auth';
+  private api = `${environment.apiUrl}/auth`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   login(dto: AuthLoginDto): Observable<LoginResponseDto> {
     return this.http.post<LoginResponseDto>(`${this.api}/login`, dto);
