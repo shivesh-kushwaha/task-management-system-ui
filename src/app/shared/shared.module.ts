@@ -4,12 +4,14 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
 import { LayoutComponent, NavbarComponent, SidebarComponent } from './components';
 import { TokenService } from './services';
+import { NotFoundComponent } from './components/not-found/not-found.component';
 
 @NgModule({
     declarations: [
         LayoutComponent,
         SidebarComponent,
-        NavbarComponent
+        NavbarComponent,
+        NotFoundComponent
     ],
     imports: [
         CommonModule,
@@ -24,7 +26,8 @@ import { TokenService } from './services';
         RouterModule,
         LayoutComponent,
         SidebarComponent,
-        NavbarComponent
+        NavbarComponent,
+        NotFoundComponent
     ],
     providers: [
         TokenService
