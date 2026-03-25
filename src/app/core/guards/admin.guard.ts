@@ -9,10 +9,10 @@ export class AdminGuard implements CanActivate {
   constructor(private router: Router) {}
 
   canActivate(): boolean {
-    const token = localStorage.getItem('token');
+    const token = localStorage.getItem('accessToken');
     const role = localStorage.getItem('role');
 
-    if (token && role === 'Admin') {
+    if (token) {
       return true;
     }
 

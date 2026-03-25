@@ -55,7 +55,8 @@ export class AuthLoginComponent {
         localStorage.setItem('refreshToken', response.refreshToken);
         this.router.navigate(['/dashboard']);
       },
-      error: (err) => {
+      error: (err: any) => {
+        console.log(err)
         this.errorMessage = err.error?.message ?? 'Login failed. Please try again.';
         this.isLoading = false;
       }

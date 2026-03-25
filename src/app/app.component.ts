@@ -8,13 +8,5 @@ import { filter } from 'rxjs/operators';
   standalone: false
 })
 export class AppComponent {
-  protected isLoggedIn = false;
-
-  constructor(private router: Router) {
-    this.router.events.pipe(
-      filter(event => event instanceof NavigationEnd)
-    ).subscribe(() => {
-      this.isLoggedIn = !!localStorage.getItem('accessToken');
-    });
-  }
+  
 }

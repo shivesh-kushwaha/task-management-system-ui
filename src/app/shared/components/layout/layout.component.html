@@ -1,11 +1,13 @@
-<div class="d-flex">
-
-  <!-- Sidebar -->
-  <app-sidebar></app-sidebar>
-
-  <!-- Main Content -->
-  <div class="flex-grow-1 bg-light" style="min-height: 100vh; overflow-y: auto;">
-    <router-outlet></router-outlet>
+@if (isLoggedIn) {
+  <div class="d-flex">
+    <app-sidebar></app-sidebar>
+    <div class="flex-grow-1 d-flex flex-column" style="min-height: 100vh;">
+      <app-navbar></app-navbar>
+      <div class="flex-grow-1 bg-light" style="overflow-y: auto;">
+        <router-outlet></router-outlet>
+      </div>
+    </div>
   </div>
-
-</div>
+} @else {
+  <router-outlet></router-outlet>
+} 

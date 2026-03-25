@@ -2,12 +2,14 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { RouterModule } from '@angular/router';
-import { LayoutComponent, SidebarComponent } from './components';
+import { LayoutComponent, NavbarComponent, SidebarComponent } from './components';
+import { TokenService } from './services';
 
 @NgModule({
     declarations: [
         LayoutComponent,
-        SidebarComponent
+        SidebarComponent,
+        NavbarComponent
     ],
     imports: [
         CommonModule,
@@ -21,7 +23,11 @@ import { LayoutComponent, SidebarComponent } from './components';
         FormsModule,
         RouterModule,
         LayoutComponent,
-        SidebarComponent
+        SidebarComponent,
+        NavbarComponent
+    ],
+    providers: [
+        TokenService
     ]
 })
 export class SharedModule { }

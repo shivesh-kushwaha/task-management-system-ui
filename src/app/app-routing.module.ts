@@ -11,6 +11,7 @@ const routes: Routes = [
   },
   {
     path: 'auth',
+    canActivate: [AuthGuard],
     loadChildren: () => import('./features/auth/auth.module').then(m => m.AuthModule)
   },
   {
@@ -21,24 +22,24 @@ const routes: Routes = [
     path: '',
     component: LayoutComponent,
     canActivate: [AuthGuard],
-    // children: [
-    //   {
-    //     path: 'dashboard',
-    //     loadChildren: () => import('./features/dashboard/dashboard.module').then(m => m.DashboardModule)
-    //   },
-    //   {
-    //     path: 'projects',
-    //     loadChildren: () => import('./features/projects/projects.module').then(m => m.ProjectsModule)
-    //   },
-    //   {
-    //     path: 'work-items',
-    //     loadChildren: () => import('./features/work-items/work-items.module').then(m => m.WorkItemsModule)
-    //   },
-    //   {
-    //     path: 'users',
-    //     loadChildren: () => import('./features/users/users.module').then(m => m.UsersModule)
-    //   }
-    // ]
+    children: [
+      {
+        path: 'dashboard',
+        loadChildren: () => import('./features/dashboard/dashboard.module').then(m => m.DashboardModule)
+      },
+      // {
+      //   path: 'projects',
+      //   loadChildren: () => import('./features/projects/projects.module').then(m => m.ProjectsModule)
+      // },
+      // {
+      //   path: 'work-items',
+      //   loadChildren: () => import('./features/work-items/work-items.module').then(m => m.WorkItemsModule)
+      // },
+      // {
+      //   path: 'users',
+      //   loadChildren: () => import('./features/users/users.module').then(m => m.UsersModule)
+      // }
+    ]
   },
   {
     path: '**',
