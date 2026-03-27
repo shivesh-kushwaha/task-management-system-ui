@@ -1,13 +1,15 @@
 @if (isLoggedIn) {
-  <div class="d-flex">
-    <app-sidebar></app-sidebar>
-    <div class="flex-grow-1 d-flex flex-column" style="min-height: 100vh;">
-      <app-navbar></app-navbar>
-      <div class="flex-grow-1 bg-light" style="overflow-y: auto;">
-        <router-outlet></router-outlet>
-      </div>
+<div class="d-flex">
+  <app-sidebar></app-sidebar>
+  <div class="flex-grow-1 d-flex flex-column" style="min-height: 100vh;">
+    <app-navbar></app-navbar>
+    <div class="flex-grow-1 bg-light" style="overflow-y: auto;">
+      <router-outlet></router-outlet> <!-- ✅ Only ONE outlet -->
     </div>
   </div>
+</div>
 } @else {
-  <router-outlet></router-outlet>
-} 
+<!-- ✅ No second <router-outlet> here — Angular only allows one per level -->
+<!-- The redirect to /auth/login is handled by the guard -->
+<router-outlet></router-outlet>
+}

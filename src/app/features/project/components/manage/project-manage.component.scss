@@ -1,0 +1,289 @@
+// ─── Project-specific styles only ────────────────────────────────
+// Everything shared (buttons, modal, toast, badges, dropdown,
+// pagination, avatar, status-chip) lives in styles.global.scss
+// Only styles UNIQUE to this component go here.
+
+// ─── Page shell ───────────────────────────────────────────────────
+.projects-page {
+  font-family: var(--font);
+  background: var(--bg);
+  min-height: 100vh;
+  color: var(--text-primary);
+}
+
+// ─── Table card ───────────────────────────────────────────────────
+.table-card {
+  background: var(--surface);
+  border: 1.5px solid #e0e4eb;
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, .06);
+}
+
+// ─── Toolbar ──────────────────────────────────────────────────────
+.table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border-light);
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.search-wrap {
+  display: flex;
+  align-items: center;
+  background: var(--bg);
+  border: 1.5px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 0 12px;
+  flex: 1 1 200px;
+  max-width: 340px;
+  transition: border-color .15s;
+
+  &:focus-within {
+    border-color: var(--indigo);
+  }
+}
+
+.search-icon {
+  font-size: 13px;
+  color: var(--text-light);
+  margin-right: 8px;
+  flex-shrink: 0;
+}
+
+.search-input {
+  background: none;
+  border: none;
+  outline: none;
+  color: var(--text-primary);
+  font-size: 13px;
+  font-family: var(--font);
+  padding: 8px 0;
+  width: 100%;
+
+  &::placeholder {
+    color: var(--text-light);
+  }
+}
+
+.count-badge {
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--text-muted);
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 3px 12px;
+  white-space: nowrap;
+}
+
+.pagesize-select {
+  font-family: var(--font);
+  font-size: 12px;
+  border-color: var(--border);
+  border-radius: var(--radius-sm);
+  color: var(--text-muted);
+  padding: 4px 8px;
+  min-width: 90px;
+
+  &:focus {
+    border-color: var(--indigo);
+    box-shadow: none;
+  }
+}
+
+// ─── Bootstrap table overrides ────────────────────────────────────
+.app-table {
+  font-family: var(--font);
+  font-size: 13.5px;
+  color: var(--text-primary);
+  margin-bottom: 0;
+
+  thead tr th {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    background: #f4f6f9;
+    border-bottom: 1.5px solid var(--border) !important;
+    border-top: none;
+    padding: 11px 16px;
+    white-space: nowrap;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border-light);
+    transition: background .1s;
+    animation: rowIn .25s ease both;
+
+    &:hover td {
+      background: #fafbfd;
+    }
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    td {
+      padding: 12px 16px;
+      vertical-align: middle;
+      border: none;
+    }
+  }
+}
+
+// ─── Sortable column headers ──────────────────────────────────────
+.sortable-th {
+  cursor: pointer;
+  user-select: none;
+
+  &:hover {
+    background: #edf0f4 !important;
+  }
+}
+
+.th-inner {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.sort-icon {
+  font-size: 11px;
+  color: var(--text-light);
+  transition: color .12s;
+
+  &.sort-active {
+    color: var(--indigo);
+  }
+}
+
+.th-actions {
+  width: 60px;
+  text-align: center;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  padding: 11px 16px;
+  background: #f4f6f9;
+  border-bottom: 1.5px solid var(--border) !important;
+}
+
+// ─── Cell content ─────────────────────────────────────────────────
+.project-name {
+  font-weight: 600;
+  font-size: 14px;
+  color: var(--text-primary);
+  display: flex;
+  align-items: center;
+}
+
+.project-desc {
+  font-size: 11.5px;
+  color: var(--text-light);
+  margin-top: 2px;
+  padding-left: 22px;
+}
+
+.date-text {
+  color: var(--text-muted);
+  font-size: 13px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.creator-name {
+  font-size: 13px;
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+// ─── Type badge (project-specific) ───────────────────────────────
+.type-badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: 20px;
+  font-size: 11.5px;
+  font-weight: 700;
+  white-space: nowrap;
+
+  &.type-internal {
+    background: rgba(99, 102, 241, .09);
+    color: #4f46e5;
+  }
+
+  &.type-external {
+    background: rgba(14, 165, 233, .10);
+    color: #0284c7;
+  }
+
+  &.type-client {
+    background: rgba(16, 185, 129, .10);
+    color: #059669;
+  }
+}
+
+// ─── Action trigger button ────────────────────────────────────────
+.action-trigger {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border-radius: 7px;
+  border: 1.5px solid var(--border);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 15px;
+  transition: all .13s;
+
+  &::after {
+    display: none !important;
+  }
+
+  // hide Bootstrap dropdown caret
+  &:hover {
+    background: var(--bg);
+    border-color: var(--indigo);
+    color: var(--indigo);
+  }
+}
+
+// ─── Pagination bar ───────────────────────────────────────────────
+.pagination-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 18px;
+  border-top: 1px solid var(--border-light);
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.page-info {
+  font-size: 12px;
+  color: var(--text-muted);
+  font-weight: 500;
+}
+
+// ─── Row animation ────────────────────────────────────────────────
+@keyframes rowIn {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

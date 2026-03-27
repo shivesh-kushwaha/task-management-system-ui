@@ -1,7 +1,6 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 import { AuthGuard } from './core/guards/auth.guard';
-import { LayoutComponent } from './shared/components/layout/layout.component';
 
 // const routes: Routes = [
 //   {
@@ -68,11 +67,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     loadChildren: () => import('./features/dashboard/dashboard.module').then(m => m.DashboardModule)
   },
-  // {
-  //   path: 'projects',
-  //   canActivate: [AuthGuard],
-  //   loadChildren: () => import('./features/projects/projects.module').then(m => m.ProjectsModule)
-  // },
+  {
+    path: 'project',
+    canActivate: [AuthGuard],
+    loadChildren: () => import('./features/project/project.module').then(m => m.ProjectModule)
+  },
   // {
   //   path: 'work-items',
   //   canActivate: [AuthGuard],

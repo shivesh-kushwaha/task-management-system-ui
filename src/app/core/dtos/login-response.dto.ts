@@ -1,4 +1,4 @@
-export interface LoginResponseDto {
+export interface ILoginResponseDto {
   accessToken: string;
   refreshToken: string;
 }

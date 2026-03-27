@@ -1,0 +1,236 @@
+<div class="projects-page p-2">
+  <!-- ── Toast ──────────────────────────────────────────────────── -->
+  <div class="toast-container position-fixed bottom-0 end-0 p-3" style="z-index:2000">
+    <div class="toast align-items-center text-white border-0 app-toast" [class.toast-success]="toastType==='success'"
+      [class.toast-error]="toastType==='error'" [class.show]="toastVisible">
+      <div class="d-flex align-items-center gap-2 px-3 py-2">
+        <i [class]="toastType==='success' ? 'bi bi-check-circle-fill' : 'bi bi-trash3-fill'"></i>
+        <span style="font-size:13.5px;font-weight:600">{{ toastMsg }}</span>
+        <button type="button" class="btn-close btn-close-white ms-auto" (click)="toastVisible=false"></button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Page Content ───────────────────────────────────────────── -->
+  <div class="page-inner">
+
+    <!-- Header -->
+    <div class="d-flex align-items-center justify-content-between mb-4 flex-wrap gap-3">
+      <h5 class="page-title mb-0">Projects</h5>
+      <button class="btn btn-primary-app d-flex align-items-center gap-2">
+        <i class="bi bi-plus-lg"></i>New Project
+      </button>
+    </div>
+
+    <!-- Table Card -->
+    <div class="table-card">
+
+      <!-- Toolbar -->
+      <div class="table-toolbar">
+        <div class="search-wrap">
+          <i class="bi bi-search search-icon"></i>
+          <input class="search-input" [(ngModel)]="request.filterKey" (ngModelChange)="onSearch()"
+            placeholder="Search by name or team..." />
+        </div>
+
+        <div class="d-flex align-items-center gap-2">
+          <select class="form-select form-select-sm pagesize-select" [(ngModel)]="request.pageSize"
+            (ngModelChange)="onPageSizeChange()">
+
+            @for (s of pageSizeOptions; track $index) {
+            <option [value]="s">{{ s }} / page</option>
+            }
+
+          </select>
+
+          <span class="count-badge">
+            <i class="bi bi-grid-3x3-gap me-1"></i>
+            {{ totalCount }} project{{ totalCount !== 1 ? 's' : '' }}
+          </span>
+        </div>
+      </div>
+
+      <!-- Table -->
+      <div class="table-responsive">
+        <table class="table app-table mb-0">
+
+          <thead>
+            <tr>
+              <th class="sortable-th" (click)="sort('name')">
+                <span class="th-inner">
+                  Name
+                  <i class="bi sort-icon" [class.sort-active]="isSortActive('name')"
+                    [ngClass]="getSortIconClass('name')"></i>
+                </span>
+              </th>
+
+              <th class="sortable-th" (click)="sort('type')">
+                <span class="th-inner">
+                  Type
+                  <i class="bi sort-icon" [class.sort-active]="isSortActive('type')"
+                    [ngClass]="getSortIconClass('type')"></i>
+                </span>
+              </th>
+
+              <th class="sortable-th" (click)="sort('teamName')">
+                <span class="th-inner">
+                  Team
+                  <i class="bi sort-icon" [class.sort-active]="isSortActive('teamName')"
+                    [ngClass]="getSortIconClass('teamName')"></i>
+                </span>
+              </th>
+
+              <th class="sortable-th" (click)="sort('totalWorkItem')">
+                <span class="th-inner">
+                  Work Items
+                  <i class="bi sort-icon" [class.sort-active]="isSortActive('totalWorkItem')"
+                    [ngClass]="getSortIconClass('totalWorkItem')"></i>
+                </span>
+              </th>
+
+              <th class="sortable-th" (click)="sort('createdByFirstName')">
+                <span class="th-inner">
+                  Created By
+                  <i class="bi sort-icon" [class.sort-active]="isSortActive('createdByFirstName')"
+                    [ngClass]="getSortIconClass('createdByFirstName')"></i>
+                </span>
+              </th>
+
+              <th class="th-actions">Actions</th>
+            </tr>
+          </thead>
+
+          <!-- ✅ FIXED TBODY -->
+          <tbody>
+
+            @if (isLoading) {
+
+            <tr>
+              <td colspan="6" class="text-center py-5">
+                <div class="spinner-border spinner-border-sm text-primary me-2"></div>
+                <span class="text-muted">Loading projects...</span>
+              </td>
+            </tr>
+
+            } @else if (projects.length === 0) {
+
+            <tr>
+              <td colspan="6" class="empty-state">
+                <i class="bi bi-search" style="font-size:2rem;color:#cbd5e1"></i>
+                <p class="mt-2 mb-0">No projects found</p>
+              </td>
+            </tr>
+
+            } @else {
+
+            @for (p of projects; track p.id; let i = $index) {
+
+            <tr class="table-row" [style.animation-delay]="i * 30 + 'ms'">
+
+              <td>
+                <span class="project-name">
+                  <i class="bi bi-folder2 text-muted me-2"></i>
+                  {{ p.name }}
+                </span>
+
+                @if (p.description) {
+                <div class="project-desc text-truncate" style="max-width:220px">
+                  {{ p.description }}
+                </div>
+                }
+              </td>
+
+              <td>
+                @if(p.type === projectTypeEnum.Individual) {
+                <span>Individual</span>
+                } @else {
+                <span>Team</span>
+                }
+              </td>
+
+              <td>{{ p.teamName || '—' }}</td>
+
+              <td>
+                <span class="task-badge" [class.task-badge--empty]="p.totalWorkItem === 0">
+                  <a>{{ p.totalWorkItem }}</a>
+                </span>
+              </td>
+
+              <td>
+                {{ p.createdByFirstName }} {{ p.createdByLastName }}
+              </td>
+
+              <td class="text-center">
+                <div class="dropdown">
+                  <button class="action-trigger" type="button" [id]="'dd' + p.id" data-bs-toggle="dropdown">
+                    <i class="bi bi-three-dots-vertical"></i>
+                  </button>
+
+                  <ul class="dropdown-menu dropdown-menu-end app-dropdown" [attr.aria-labelledby]="'dd' + p.id">
+
+                    <li>
+                      <button class="dropdown-item d-flex align-items-center gap-2">
+                        <i class="bi bi-eye"></i>View Details
+                      </button>
+                    </li>
+
+                    <li>
+                      <button class="dropdown-item d-flex align-items-center gap-2">
+                        <i class="bi bi-pencil"></i>Edit
+                      </button>
+                    </li>
+
+                    <li>
+                      <hr class="dropdown-divider">
+                    </li>
+
+                    <li>
+                      <button class="dropdown-item d-flex align-items-center gap-2 text-danger">
+                        <i class="bi bi-trash3"></i>Delete
+                      </button>
+                    </li>
+
+                  </ul>
+                </div>
+              </td>
+
+            </tr>
+
+            }
+
+            }
+
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Pagination -->
+      @if (!isLoading && totalCount > 0) {
+      <div class="pagination-bar">
+        <span class="page-info">
+          Showing {{ startRecord }}–{{ endRecord }} of {{ totalCount }}
+        </span>
+
+        <ul class="pagination pagination-sm mb-0">
+
+          <li class="page-item" [class.disabled]="request.pageIndex === 0">
+            <button class="page-link" (click)="goToPage(0)">
+              <i class="bi bi-chevron-double-left"></i>
+            </button>
+          </li>
+
+          @for (page of pageNumbers; track $index) {
+          <li class="page-item" [class.active]="page === request.pageIndex">
+            <button class="page-link" (click)="goToPage(page)">
+              {{ page + 1 }}
+            </button>
+          </li>
+          }
+
+        </ul>
+      </div>
+      }
+
+    </div>
+  </div>
+</div>

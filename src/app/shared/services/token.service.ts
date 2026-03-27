@@ -16,14 +16,15 @@ export class TokenService {
     }
 
     getUserName(): string {
-        const token = localStorage.getItem('accessToken');
+        const token = this.getAccessToken();
         if (!token) return 'User';
         const decoded = this.decodeToken(token);
         return decoded?.name;
     }
 
     getRoles(): number[] {
-        const token = localStorage.getItem('accessToken');
+        const token = this.getAccessToken();
+
         if (!token) return [];
 
         const decoded = this.decodeToken(token);
@@ -46,7 +47,40 @@ export class TokenService {
     }
 
     isLoggedIn(): boolean {
-        return !!localStorage.getItem('accessToken');
+        return !!this.getAccessToken();
+    }
+
+    /** True if access token is expired (or absent) */
+    isAccessTokenExpired(): boolean {
+        return this.isTokenExpired(this.getAccessToken());
+    }
+
+    /** True if refresh token is expired (or absent) */
+    isRefreshTokenExpired(): boolean {
+        return this.isTokenExpired(this.getRefreshToken());
+    }
+
+    private isTokenExpired(token: string | null): boolean {
+        if (!token) return true;
+        const payload = this.decodeToken(token);
+        if (!payload?.exp) return true;
+        return payload.exp * 1000 < Date.now();
+    }
+
+    // ── Token accessors ─────────────────────────────────────────
+
+    getAccessToken(): string | null {
+        return localStorage.getItem('accessToken');
+    }
+
+    getRefreshToken(): string | null {
+        return localStorage.getItem('refreshToken');
+    }
+
+    // Add this method — tokens are written only through TokenService
+    setTokens(accessToken: string, refreshToken: string): void {
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('refreshToken', refreshToken);
     }
 
     clearTokens(): void {

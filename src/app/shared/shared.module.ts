@@ -6,6 +6,7 @@ import { LayoutComponent, NavbarComponent, SidebarComponent } from './components
 import { TokenService } from './services';
 import { NotFoundComponent } from './components/not-found/not-found.component';
 
+
 @NgModule({
     declarations: [
         LayoutComponent,
@@ -17,7 +18,7 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
         CommonModule,
         ReactiveFormsModule,
         FormsModule,
-        RouterModule
+        RouterModule,
     ],
     exports: [
         CommonModule,
