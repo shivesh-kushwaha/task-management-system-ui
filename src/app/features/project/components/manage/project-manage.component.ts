@@ -55,9 +55,6 @@ export class ProjectManageComponent implements OnInit {
 
     // ── Data loading ──────────────────────────────────────────────
     loadProjects(): void {
-        this.isLoading = true;
-        this.cdr.detectChanges();
-
         this.projectService.getPagedList(this.request).subscribe({
             next: (response: IPagedListResponseDto<IGetProjectPagedListDto>) => {
                 this.projects = response.items;
@@ -91,14 +88,6 @@ export class ProjectManageComponent implements OnInit {
         this.loadProjects();
     }
 
-    getSortIconClass(col: string): string {
-        if (this.request.sort !== col) return 'bi-arrow-down-up';
-        return this.request.order === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down';
-    }
-
-    isSortActive(col: string): boolean {
-        return this.request.sort === col;
-    }
 
     // ── Pagination ────────────────────────────────────────────────
     get totalPages(): number {

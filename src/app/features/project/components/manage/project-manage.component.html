@@ -59,40 +59,40 @@
               <th class="sortable-th" (click)="sort('name')">
                 <span class="th-inner">
                   Name
-                  <i class="bi sort-icon" [class.sort-active]="isSortActive('name')"
-                    [ngClass]="getSortIconClass('name')"></i>
+                  <i class="bi sort-icon" [class.sort-active]="request.sort === 'name'"
+                    [ngClass]="request.sort !== 'name' ? 'bi-arrow-down-up' : this.request.order === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down'"></i>
                 </span>
               </th>
 
               <th class="sortable-th" (click)="sort('type')">
                 <span class="th-inner">
                   Type
-                  <i class="bi sort-icon" [class.sort-active]="isSortActive('type')"
-                    [ngClass]="getSortIconClass('type')"></i>
+                  <i class="bi sort-icon" [class.sort-active]="request.sort === 'type'"
+                    [ngClass]="request.sort !== 'type' ? 'bi-arrow-down-up' : this.request.order === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down'"></i>
                 </span>
               </th>
 
               <th class="sortable-th" (click)="sort('teamName')">
                 <span class="th-inner">
                   Team
-                  <i class="bi sort-icon" [class.sort-active]="isSortActive('teamName')"
-                    [ngClass]="getSortIconClass('teamName')"></i>
+                  <i class="bi sort-icon" [class.sort-active]="request.sort === 'teamName'"
+                    [ngClass]="request.sort !== 'teamName' ? 'bi-arrow-down-up' : this.request.order === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down'"></i>
                 </span>
               </th>
 
               <th class="sortable-th" (click)="sort('totalWorkItem')">
                 <span class="th-inner">
                   Work Items
-                  <i class="bi sort-icon" [class.sort-active]="isSortActive('totalWorkItem')"
-                    [ngClass]="getSortIconClass('totalWorkItem')"></i>
+                  <i class="bi sort-icon" [class.sort-active]="request.sort === 'totalWorkItem'"
+                    [ngClass]="request.sort !== 'totalWorkItem' ? 'bi-arrow-down-up' : this.request.order === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down'"></i>
                 </span>
               </th>
 
               <th class="sortable-th" (click)="sort('createdByFirstName')">
                 <span class="th-inner">
                   Created By
-                  <i class="bi sort-icon" [class.sort-active]="isSortActive('createdByFirstName')"
-                    [ngClass]="getSortIconClass('createdByFirstName')"></i>
+                  <i class="bi sort-icon" [class.sort-active]="request.sort === 'createdByFirstName'"
+                    [ngClass]="request.sort !== 'createdByFirstName' ? 'bi-arrow-down-up' : this.request.order === 'asc' ? 'bi-arrow-up' : 'bi-arrow-down'"></i>
                 </span>
               </th>
 
