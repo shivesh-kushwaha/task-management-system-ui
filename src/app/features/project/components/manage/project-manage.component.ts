@@ -123,4 +123,8 @@ export class ProjectManageComponent implements OnInit {
         this.request.pageIndex = 0;
         this.loadProjects();
     }
+
+    protected onAddProject(): void {
+
+    }
 }

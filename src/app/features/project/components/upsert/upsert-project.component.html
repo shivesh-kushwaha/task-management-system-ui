@@ -1,0 +1,61 @@
+<div class="card shadow-sm p-4">
+    <h4 class="mb-4">{{ isEditMode ? 'Edit Project' : 'Add Project' }}</h4>
+
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" novalidate>
+
+        <!-- Name -->
+        <div class="mb-3">
+            <label for="name" class="form-label fw-semibold">
+                Name <span class="text-danger">*</span>
+            </label>
+            <input id="name" type="text" class="form-control" formControlName="name"
+                [class.is-invalid]="form.get('name')?.invalid && form.get('name')?.touched"
+                placeholder="Enter project name" />
+            <div class="invalid-feedback">
+                <span *ngIf="form.get('name')?.errors?.['required']">Name is required.</span>
+                <span *ngIf="form.get('name')?.errors?.['maxlength']">Name must be at most 200 characters.</span>
+            </div>
+        </div>
+
+        <!-- Description -->
+        <div class="mb-3">
+            <label for="description" class="form-label fw-semibold">Description</label>
+            <textarea id="description" class="form-control" formControlName="description" rows="3"
+                placeholder="Enter project description (optional)"></textarea>
+        </div>
+
+        <!-- Project Type -->
+        <div class="mb-3">
+            <label for="type" class="form-label fw-semibold">
+                Type <span class="text-danger">*</span>
+            </label>
+            <select id="type" class="form-select" formControlName="type"
+                [class.is-invalid]="form.get('type')?.invalid && form.get('type')?.touched">
+                <option *ngFor="let option of projectTypeOptions" [value]="option.value">
+                    {{ option.label }}
+                </option>
+            </select>
+            <div class="invalid-feedback">
+                Type is required.
+            </div>
+        </div>
+
+        <!-- Team ID -->
+        <div class="mb-4">
+            <label for="teamId" class="form-label fw-semibold">Team ID</label>
+            <input id="teamId" type="number" class="form-control" formControlName="teamId"
+                placeholder="Enter team ID (optional)" />
+        </div>
+
+        <!-- Buttons -->
+        <div class="d-flex gap-2 justify-content-end">
+            <button type="button" class="btn btn-danger" (click)="onCancel()">
+                Cancel
+            </button>
+            <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
+                {{ isEditMode ? 'Update Project' : 'Add Project' }}
+            </button>
+        </div>
+
+    </form>
+</div>
