@@ -3,6 +3,7 @@ import { IGetProjectPagedListDto } from '../../dtos';
 import { ProjectService } from '../../services/project.service';
 import { IPagedListRequestDto, IPagedListResponseDto } from '../../../../shared/dtos';
 import { ProjectTypeEnum } from '../../../../core/enums';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'app-projects',
@@ -42,11 +43,12 @@ export class ProjectManageComponent implements OnInit {
     toastType = '';
     toastVisible = false;
 
-    get projectTypeEnum(): typeof ProjectTypeEnum {
+    protected get projectTypeEnum(): typeof ProjectTypeEnum {
         return ProjectTypeEnum;
     }
 
     constructor(private projectService: ProjectService,
+        private readonly _toastr: ToastrService,
         private readonly cdr: ChangeDetectorRef) { }
 
     ngOnInit(): void {
@@ -62,8 +64,8 @@ export class ProjectManageComponent implements OnInit {
                 this.isLoading = false;
                 this.cdr.detectChanges();
             },
-            error: (error: any) => {
-                console.error(error);
+            error: (err: any) => {
+                this._toastr.error(err.error);
                 this.isLoading = false;
                 this.cdr.detectChanges();
             }

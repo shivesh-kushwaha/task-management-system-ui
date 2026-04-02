@@ -14,8 +14,6 @@
     "importHelpers": true,
     "target": "ES2022",
     "module": "preserve",
-    "baseUrl": "./",
-    "ignoreDeprecations": "6.0",
   },
   "angularCompilerOptions": {
     "enableI18nLegacyMessageIdFormat": false,

@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject, throwError } from 'rxjs';
-import { tap, catchError, filter, take, switchMap, finalize } from 'rxjs/operators';
+import { Observable, throwError } from 'rxjs';
+import { tap, catchError, map } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { ILoginResponseDto } from '../dtos';
 import { TokenService } from '../../shared/services/token.service';
@@ -20,22 +20,13 @@ export class AuthService {
   refreshAccessToken(): Observable<string> {
     const refreshToken = this.tokenService.getRefreshToken();
 
-    if (!refreshToken || this.tokenService.isRefreshTokenExpired()) {
-      this.forceLogout();
-      return throwError(() => new Error('Session expired. Please login again.'));
-    }
-
     return this.http
-      .post<ILoginResponseDto>(`${this.api}?token=${refreshToken}`, {})
+      .post<ILoginResponseDto>(`${this.api}`, { refreshToken })
       .pipe(
         tap(response => {
           this.tokenService.setTokens(response.accessToken, response.refreshToken);
         }),
-        switchMap(response =>
-          new Observable<string>(obs => {
-            obs.complete();
-          })
-        ),
+        map(response => response.accessToken),
         catchError(err => {
           this.forceLogout();
           return throwError(() => err);
