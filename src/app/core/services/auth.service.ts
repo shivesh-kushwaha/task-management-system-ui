@@ -17,30 +17,9 @@ export class AuthService {
     private readonly tokenService: TokenService
   ) { }
 
-  refreshAccessToken(): Observable<string> {
+  refreshAccessToken(): Observable<any> {
     const refreshToken = this.tokenService.getRefreshToken();
-
-    if (!refreshToken || this.tokenService.isRefreshTokenExpired()) {
-      this.forceLogout();
-      return throwError(() => new Error('Session expired. Please login again.'));
-    }
-
-    return this.http
-      .post<ILoginResponseDto>(`${this.api}?token=${refreshToken}`, {})
-      .pipe(
-        tap(response => {
-          this.tokenService.setTokens(response.accessToken, response.refreshToken);
-        }),
-        switchMap(response =>
-          new Observable<string>(obs => {
-            obs.complete();
-          })
-        ),
-        catchError(err => {
-          this.forceLogout();
-          return throwError(() => err);
-        })
-      );
+    return this.http.post<ILoginResponseDto>(`${this.api}?token=${refreshToken}`, {});
   }
 
   logout(): void {
