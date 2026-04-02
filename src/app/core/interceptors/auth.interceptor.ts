@@ -6,6 +6,7 @@ import { Observable, throwError } from 'rxjs';
 import { catchError, switchMap } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 import { TokenService } from '../../shared/services/token.service';
+import { ILoginResponseDto } from '../dtos';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
@@ -27,20 +28,21 @@ export class AuthInterceptor implements HttpInterceptor {
             );
         }
 
-        if (!this.tokenService.isRefreshTokenExpired()) {
+        if (this.tokenService.getRefreshToken()) {
             return this.authService.refreshAccessToken().pipe(
-                switchMap(newAccessToken =>
-                    next.handle(this.attachToken(req, newAccessToken))
-                ),
+                switchMap((response: ILoginResponseDto) => {
+                    this.tokenService.setTokens(response.accessToken, response.refreshToken); // Bug 2 fix
+                    return next.handle(this.attachToken(req, response.accessToken));
+                }),
                 catchError(err => {
-                    this.authService.logout(); // ← missing this
+                    this.authService.logout();
                     return throwError(() => err);
                 })
             );
         }
 
         this.authService.logout();
-        return throwError(() => new Error('Session expired. Please login again.'));
+        return throwError(() => new Error('Session expired.'));
     }
 
     private attachToken(req: HttpRequest<any>, token: string): HttpRequest<any> {
@@ -60,5 +62,4 @@ export class AuthInterceptor implements HttpInterceptor {
     private isRegisterUrl(url: string): boolean {
         return url.includes('/register');
     }
-
 }

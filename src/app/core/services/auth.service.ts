@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, throwError } from 'rxjs';
-import { tap, catchError, map } from 'rxjs/operators';
+import { Observable, BehaviorSubject, throwError } from 'rxjs';
+import { tap, catchError, filter, take, switchMap, finalize } from 'rxjs/operators';
 import { Router } from '@angular/router';
 import { ILoginResponseDto } from '../dtos';
 import { TokenService } from '../../shared/services/token.service';
@@ -17,21 +17,9 @@ export class AuthService {
     private readonly tokenService: TokenService
   ) { }
 
-  refreshAccessToken(): Observable<string> {
+  refreshAccessToken(): Observable<any> {
     const refreshToken = this.tokenService.getRefreshToken();
-
-    return this.http
-      .post<ILoginResponseDto>(`${this.api}`, { refreshToken })
-      .pipe(
-        tap(response => {
-          this.tokenService.setTokens(response.accessToken, response.refreshToken);
-        }),
-        map(response => response.accessToken),
-        catchError(err => {
-          this.forceLogout();
-          return throwError(() => err);
-        })
-      );
+    return this.http.post<ILoginResponseDto>(`${this.api}?token=${refreshToken}`, {});
   }
 
   logout(): void {

@@ -55,11 +55,6 @@ export class TokenService {
         return this.isTokenExpired(this.getAccessToken());
     }
 
-    /** True if refresh token is expired (or absent) */
-    isRefreshTokenExpired(): boolean {
-        return this.isTokenExpired(this.getRefreshToken());
-    }
-
     private isTokenExpired(token: string | null): boolean {
         if (!token) return true;
         const payload = this.decodeToken(token);
