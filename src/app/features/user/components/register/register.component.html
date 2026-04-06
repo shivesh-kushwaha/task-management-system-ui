@@ -3,15 +3,9 @@
 
         <!-- Header -->
         <div class="text-center mb-4">
-            <h4 class="fw-bold">Register</h4>
+            <h4 class="fw-bold">Task Management</h4>
+            <p class="text-muted small">Register to your account</p>
         </div>
-
-        <!-- Error Alert -->
-        @if (errorMessage) {
-        <div class="alert alert-danger py-2 small">
-            {{ errorMessage }}
-        </div>
-        }
 
         <!-- Form -->
         <form [formGroup]="registerForm" (ngSubmit)="onSubmit()">
