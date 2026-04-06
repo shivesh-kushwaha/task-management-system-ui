@@ -69,7 +69,7 @@
         } @else {
         @for (project of projects; track project.id) {
         <tr>
-          <td>{{ AppUtil.isNullOrEmpty(project.name) ? project.name : AppUtil.DefaultValue }}</td>
+          <td>{{ !AppUtil.isNullOrEmpty(project.name) ? project.name : AppUtil.DefaultValue }}</td>
           <td>
             @if (project.type === projectTypeEnum.Team) {
             <span class="badge bg-primary">Team</span>
