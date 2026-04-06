@@ -6,11 +6,13 @@ import { TokenService } from '../../services';
 @Component({
   selector: 'app-layout',
   templateUrl: './layout.component.html',
+  styleUrls: ['./layout.component.scss'],
   standalone: false
 })
 export class LayoutComponent implements OnDestroy {
   protected isLoggedIn = false;
   private readonly sub: Subscription;
+  protected isSidebarCollapsed: boolean = false;
 
   constructor(
     private readonly router: Router,

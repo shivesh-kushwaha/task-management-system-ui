@@ -1,0 +1,20 @@
+<div class="row d-flex">
+    <div class="col-4">
+        <input type="text" [placeholder]="label" class="form-control" [formControl]="searchFormControl"
+            (keydown.enter)="onSearch()" (selectionchange)="onSelectionChange()" />
+    </div>
+
+    <div class="col-8 d-flex align-items-center gap-2">
+        <div class="mr-2">
+            <button class="btn btn-primary mr-2" (click)="onSearch()" type="button">
+                Search
+            </button>
+        </div>
+
+        <div>
+            <button class="btn btn-secondary" (click)="onReset()" type="button">
+                Reset
+            </button>
+        </div>
+    </div>
+</div>

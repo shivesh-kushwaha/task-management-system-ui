@@ -1,9 +1,10 @@
 import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
 import { IGetProjectPagedListDto } from '../../dtos';
 import { ProjectService } from '../../services/project.service';
-import { IPagedListRequestDto, IPagedListResponseDto } from '../../../../shared/dtos';
+import { IPagedListRequestDto, IPagedListResponseDto, ISearchEventDto } from '../../../../shared/dtos';
 import { ProjectTypeEnum } from '../../../../core/enums';
 import { ToastrService } from 'ngx-toastr';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
     selector: 'app-projects',
@@ -64,8 +65,8 @@ export class ProjectManageComponent implements OnInit {
                 this.isLoading = false;
                 this.cdr.detectChanges();
             },
-            error: (err: any) => {
-                this._toastr.error(err.error);
+            error: (err: HttpErrorResponse) => {
+                this._toastr.error(err.error?.message);
                 this.isLoading = false;
                 this.cdr.detectChanges();
             }
@@ -73,8 +74,9 @@ export class ProjectManageComponent implements OnInit {
     }
 
     // ── Search (debounce via input event) ─────────────────────────
-    onSearch(): void {
+    protected onSearchEvent(event: ISearchEventDto): void {
         this.request.pageIndex = 0;
+        this.request.filterKey = event.query;
         this.loadProjects();
     }
 

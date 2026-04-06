@@ -1,0 +1,22 @@
+/* ─── Navbar fills its sticky slot ─────────────────────────────── */
+:host {
+  display: block;
+}
+
+/* ─── Avatar ────────────────────────────────────────────────────── */
+.navbar__avatar {
+  width: 36px;
+  height: 36px;
+}
+
+/* ─── Trigger (clickable user icon area) ────────────────────────── */
+.navbar__trigger {
+  cursor: pointer;
+  user-select: none;
+}
+
+/* ─── Dropdown ──────────────────────────────────────────────────── */
+.navbar__dropdown {
+  min-width: 160px;
+  z-index: 1000;
+}

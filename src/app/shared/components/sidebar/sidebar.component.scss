@@ -1,0 +1,63 @@
+/* ─── Sidebar Container ─────────────────────────────────────────── */
+.sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  z-index: 200;
+  overflow: hidden;
+  transition: width 0.3s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.sidebar--expanded {
+  width: 240px;
+}
+
+.sidebar--collapsed {
+  width: 70px;
+}
+
+/* ─── Header Row ────────────────────────────────────────────────── */
+.sidebar__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem;
+  white-space: nowrap;
+}
+
+.sidebar__title {
+  overflow: hidden;
+  white-space: nowrap;
+}
+
+/* ─── Nav Menu ──────────────────────────────────────────────────── */
+.sidebar__menu {
+  margin-top: 0.5rem;
+  padding-left: 0.5rem;
+  padding-right: 0.5rem;
+}
+
+.sidebar__menu .nav-item {
+  margin-bottom: 0.25rem;
+}
+
+/* ─── Nav Links ─────────────────────────────────────────────────── */
+.sidebar__link {
+  white-space: nowrap;
+  overflow: hidden;
+  padding: 0.5rem 0.6rem;
+  transition: background-color 0.2s ease;
+}
+
+.sidebar__link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* ─── Icon ──────────────────────────────────────────────────────── */
+.sidebar__icon {
+  font-size: 1.1rem;
+  flex-shrink: 0;
+}

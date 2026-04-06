@@ -1,0 +1,37 @@
+/* ─── Layout Shell ─────────────────────────────────────────────── */
+.app-layout {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ─── Main Area (shifts right to make room for fixed sidebar) ───── */
+.app-main {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 100vh;
+  transition: margin-left 0.3s ease;
+}
+
+/* Matches the two sidebar widths defined in sidebar.component.css */
+.app-main.sidebar-expanded {
+  margin-left: 240px;
+}
+
+.app-main.sidebar-collapsed {
+  margin-left: 70px;
+}
+
+/* ─── Sticky Navbar ─────────────────────────────────────────────── */
+.app-navbar {
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+/* ─── Scrollable Content Area ───────────────────────────────────── */
+.app-content {
+  flex: 1;
+  overflow-y: auto;
+  background-color: var(--bs-light);
+}
