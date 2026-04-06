@@ -18,7 +18,6 @@ export class LayoutComponent implements OnDestroy {
     private readonly router: Router,
     private readonly tokenService: TokenService
   ) {
-    // Evaluate immediately on load
     this.isLoggedIn = this.resolveLoginState();
 
     this.sub = this.router.events.pipe(
@@ -28,10 +27,13 @@ export class LayoutComponent implements OnDestroy {
     });
   }
 
+  protected onSidebarChanged(event: boolean): void {
+    this.isSidebarCollapsed = event;
+  }
+
   private resolveLoginState(): boolean {
     const isAuthRoute = this.router.url.startsWith('/auth');
     return !isAuthRoute && this.tokenService.isLoggedIn();
-    //                      ↑ now checks expiry, not just existence
   }
 
   ngOnDestroy(): void {

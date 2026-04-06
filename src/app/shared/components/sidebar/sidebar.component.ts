@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { Router } from '@angular/router';
 
 @Component({
@@ -8,6 +8,7 @@ import { Router } from '@angular/router';
     standalone: false
 })
 export class SidebarComponent {
+    @Output() sidebarEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
     isCollapsed = false;
 
     menuItems = [
@@ -21,5 +22,6 @@ export class SidebarComponent {
 
     toggleSidebar(): void {
         this.isCollapsed = !this.isCollapsed;
+        this.sidebarEvent.emit(this.isCollapsed);
     }
 }

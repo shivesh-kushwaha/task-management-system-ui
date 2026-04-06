@@ -1,6 +1,6 @@
 @if (isLoggedIn) {
 <div class="app-layout">
-  <app-sidebar></app-sidebar>
+  <app-sidebar (sidebarEvent)="onSidebarChanged($event)"></app-sidebar>
   <div class="app-main" [class.sidebar-expanded]="!isSidebarCollapsed" [class.sidebar-collapsed]="isSidebarCollapsed">
     <app-navbar class="app-navbar"></app-navbar>
     <div class="app-content px-3 py-2">
