@@ -4,6 +4,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { ProjectManageComponent } from './components';
 import { ProjectRoutingModule } from './project-routing.module';
 import { ProjectService } from './services/project.service';
+import { FormsModule } from '@angular/forms';
 
 @NgModule({
     declarations: [

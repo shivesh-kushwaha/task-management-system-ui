@@ -1,7 +1,7 @@
 <div class="row d-flex">
     <div class="col-4">
         <input type="text" [placeholder]="label" class="form-control" [formControl]="searchFormControl"
-            (keydown.enter)="onSearch()" (selectionchange)="onSelectionChange()" />
+            (keyup.backspace)="onSearch()" (selectionchange)="onSelectionChange()" />
     </div>
 
     <div class="col-8 d-flex align-items-center gap-2">

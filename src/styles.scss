@@ -32,3 +32,18 @@ body {
 .form-control {
   border: 1px solid;
 }
+
+.sortable-col {
+  cursor: pointer;
+  user-select: none;
+  white-space: nowrap;
+
+  &:hover {
+    background-color: #f0f0f0;
+  }
+
+  .bi {
+    font-size: 0.75rem;
+    opacity: 0.6;
+  }
+}

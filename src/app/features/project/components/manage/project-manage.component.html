@@ -1,12 +1,135 @@
 <section>
-  <div class="d-flex justify-content-between align-items-center">
+  <div class="d-flex justify-content-between align-items-center mb-3">
     <div class="page-title">Projects</div>
     <div>
-      <button type="button" class="btn btn-outline-primary"> Add Project </button>
+      <button type="button" class="btn btn-outline-primary">Add Project</button>
     </div>
   </div>
 
-  <div class="search-bar">
+  <div class="search-bar mb-3">
     <app-search (searchEvent)="onSearchEvent($event)"></app-search>
   </div>
+
+  <!-- Table -->
+  <div class="table-responsive">
+    <table class="table table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th class="sortable-col" (click)="sort('name')">
+            Name
+            <i class="bi ms-1" [class.bi-chevron-up]="request.sort === 'name' && request.order === 'asc'"
+              [class.bi-chevron-down]="request.sort === 'name' && request.order === 'desc'"
+              [class.bi-chevron-expand]="request.sort !== 'name'">
+            </i>
+          </th>
+          <th class="sortable-col" (click)="sort('type')">
+            Type
+            <i class="bi ms-1" [class.bi-chevron-up]="request.sort === 'type' && request.order === 'asc'"
+              [class.bi-chevron-down]="request.sort === 'type' && request.order === 'desc'"
+              [class.bi-chevron-expand]="request.sort !== 'type'">
+            </i>
+          </th>
+          <th class="sortable-col" (click)="sort('totalWorkItem')">
+            Work Items
+            <i class="bi ms-1" [class.bi-chevron-up]="request.sort === 'totalWorkItem' && request.order === 'asc'"
+              [class.bi-chevron-down]="request.sort === 'totalWorkItem' && request.order === 'desc'"
+              [class.bi-chevron-expand]="request.sort !== 'totalWorkItem'">
+            </i>
+          </th>
+          <th class="sortable-col" (click)="sort('createdAt')">
+            Created At
+            <i class="bi ms-1" [class.bi-chevron-up]="request.sort === 'createdAt' && request.order === 'asc'"
+              [class.bi-chevron-down]="request.sort === 'createdAt' && request.order === 'desc'"
+              [class.bi-chevron-expand]="request.sort !== 'createdAt'">
+            </i>
+          </th>
+          <th class="sortable-col" (click)="sort('createdByFullName')">
+            Created By
+            <i class="bi ms-1" [class.bi-chevron-up]="request.sort === 'createdByFullName' && request.order === 'asc'"
+              [class.bi-chevron-down]="request.sort === 'createdByFullName' && request.order === 'desc'"
+              [class.bi-chevron-expand]="request.sort !== 'createdByFullName'">
+            </i>
+          </th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        @if (isLoading) {
+        <tr>
+          <td colspan="6" class="text-center py-4 text-muted">
+            <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+            Loading...
+          </td>
+        </tr>
+        } @else if (projects.length === 0) {
+        <tr>
+          <td colspan="6" class="text-center py-4 text-muted">No projects found.</td>
+        </tr>
+        } @else {
+        @for (project of projects; track project.id) {
+        <tr>
+          <td>{{ AppUtil.isNullOrEmpty(project.name) ? project.name : AppUtil.DefaultValue }}</td>
+          <td>
+            @if (project.type === projectTypeEnum.Team) {
+            <span class="badge bg-primary">Team</span>
+            } @else if (project.type === projectTypeEnum.Individual){
+            <span class="badge bg-secondary">Individual</span>
+            } @else {
+            <span>{{AppUtil.DefaultValue}}</span>
+            }
+          </td>
+          <td>{{ project.totalWorkItem > 0 ? project.totalWorkItem : AppUtil.DefaultValue }}</td>
+          <td>{{ project.createdAt | date: 'MM/dd/yyyy' }}</td>
+          <td>{{ project.createdByFullName || AppUtil.DefaultValue }}</td>
+          <td>
+            <button class="btn btn-sm btn-outline-secondary me-1" (click)="onViewProject(project)">
+              <i class="bi bi-eye"></i>
+            </button>
+            <button class="btn btn-sm btn-outline-danger" (click)="onDeleteProject(project)">
+              <i class="bi bi-trash"></i>
+            </button>
+          </td>
+        </tr>
+        }
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Pagination -->
+  @if (totalCount > 0) {
+  <div class="d-flex justify-content-between align-items-center flex-wrap gap-2 mt-2">
+
+    <div class="d-flex align-items-center gap-2 text-muted small">
+      <span>Showing {{ startRecord }}–{{ endRecord }} of {{ totalCount }}</span>
+      <select class="form-select form-select-sm w-auto" [(ngModel)]="request.pageSize" (change)="onPageSizeChange()">
+        @for (size of pageSizeOptions; track size) {
+        <option [value]="size">{{ size }} / page</option>
+        }
+      </select>
+    </div>
+
+    <nav>
+      <ul class="pagination pagination-sm mb-0">
+        <li class="page-item" [class.disabled]="request.pageIndex === 0">
+          <button class="page-link" (click)="goToPage(request.pageIndex - 1)">
+            <i class="bi bi-chevron-left"></i>
+          </button>
+        </li>
+        @for (page of pageNumbers; track page) {
+        <li class="page-item" [class.active]="page === request.pageIndex">
+          <button class="page-link" (click)="goToPage(page)">{{ page + 1 }}</button>
+        </li>
+        }
+        <li class="page-item" [class.disabled]="request.pageIndex >= totalPages - 1">
+          <button class="page-link" (click)="goToPage(request.pageIndex + 1)">
+            <i class="bi bi-chevron-right"></i>
+          </button>
+        </li>
+      </ul>
+    </nav>
+
+  </div>
+  }
 </section>

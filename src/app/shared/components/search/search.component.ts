@@ -19,6 +19,7 @@ export class SearchComponent {
     protected searchFormControl = new FormControl(AppUtil.EmptyString);
 
     protected onSelectionChange(): void {
+        console.log(this.searchFormControl.value)
         const searchValue = this.searchFormControl.value ?? AppUtil.EmptyString;
         if (AppUtil.isNullOrEmpty(searchValue)) {
             this.onSearch();

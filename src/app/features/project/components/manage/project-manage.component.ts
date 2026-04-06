@@ -1,10 +1,11 @@
-import { ChangeDetectorRef, Component, NgZone, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
 import { IGetProjectPagedListDto } from '../../dtos';
 import { ProjectService } from '../../services/project.service';
 import { IPagedListRequestDto, IPagedListResponseDto, ISearchEventDto } from '../../../../shared/dtos';
 import { ProjectTypeEnum } from '../../../../core/enums';
 import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
+import { AppUtil } from '../../../../core/utils/app.util';
 
 @Component({
     selector: 'app-projects',
@@ -15,49 +16,48 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class ProjectManageComponent implements OnInit {
 
     // ── Table state ───────────────────────────────────────────────
-    projects: IGetProjectPagedListDto[] = [];
-    totalCount = 0;
-    isLoading = false;
+    protected projects: IGetProjectPagedListDto[] = [];
+    protected totalCount = 0;
+    protected isLoading = false;
 
-    request: IPagedListRequestDto = {
-        filterKey: '',
+    protected readonly pageSizeOptions = [5, 10, 25, 50];
+
+    protected request: IPagedListRequestDto = {
+        filterKey: AppUtil.EmptyString,
         sort: 'name',
-        order: 'asc',
-        pageIndex: 0,
-        pageSize: 10,
+        order: AppUtil.DefaultSortOrder,
+        pageIndex: AppUtil.DefaultPageIndex,
+        pageSize: AppUtil.DefaultPageSize,
     };
 
-    readonly pageSizeOptions = [5, 10, 25, 50];
-
     // ── Modal state ───────────────────────────────────────────────
-    showDetailModal = false;
-    detailProject: IGetProjectPagedListDto | null = null;
+    protected showDetailModal = false;
+    protected detailProject: IGetProjectPagedListDto | null = null;
 
-    editingProject: IGetProjectPagedListDto | null = null;
-    editName = '';
+    protected editingProject: IGetProjectPagedListDto | null = null;
+    protected editName = '';
 
-    showDeleteConfirm = false;
-    deletingProject: IGetProjectPagedListDto | null = null;
+    protected showDeleteConfirm = false;
+    protected deletingProject: IGetProjectPagedListDto | null = null;
 
-    // ── Toast state ───────────────────────────────────────────────
-    toastMsg = '';
-    toastType = '';
-    toastVisible = false;
+    protected readonly AppUtil = AppUtil;
 
     protected get projectTypeEnum(): typeof ProjectTypeEnum {
         return ProjectTypeEnum;
     }
 
-    constructor(private projectService: ProjectService,
+    constructor(
+        private readonly projectService: ProjectService,
         private readonly _toastr: ToastrService,
-        private readonly cdr: ChangeDetectorRef) { }
+        private readonly cdr: ChangeDetectorRef
+    ) { }
 
-    ngOnInit(): void {
-        this.loadProjects();
+    public ngOnInit(): void {
+        this.__loadProjects();
     }
 
     // ── Data loading ──────────────────────────────────────────────
-    loadProjects(): void {
+    private __loadProjects(): void {
         this.projectService.getPagedList(this.request).subscribe({
             next: (response: IPagedListResponseDto<IGetProjectPagedListDto>) => {
                 this.projects = response.items;
@@ -73,32 +73,44 @@ export class ProjectManageComponent implements OnInit {
         });
     }
 
-    // ── Search (debounce via input event) ─────────────────────────
+    // ── Search ────────────────────────────────────────────────────
     protected onSearchEvent(event: ISearchEventDto): void {
         this.request.pageIndex = 0;
         this.request.filterKey = event.query;
-        this.loadProjects();
+        this.__loadProjects();
     }
 
     // ── Sorting ───────────────────────────────────────────────────
-    sort(col: string): void {
+    protected sort(col: string): void {
         if (this.request.sort === col) {
-            this.request.order = this.request.order === 'asc' ? 'desc' : 'asc';
+            this.request.order = this.request.order === AppUtil.AscendingOrder
+                ? AppUtil.DescendingOrder
+                : AppUtil.AscendingOrder;
         } else {
             this.request.sort = col;
-            this.request.order = 'asc';
+            this.request.order = AppUtil.AscendingOrder;
         }
         this.request.pageIndex = 0;
-        this.loadProjects();
+        this.__loadProjects();
     }
 
+    // ── Action handlers ───────────────────────────────────────────
+    protected onViewProject(project: IGetProjectPagedListDto): void {
+        this.detailProject = project;
+        this.showDetailModal = true;
+    }
+
+    protected onDeleteProject(project: IGetProjectPagedListDto): void {
+        this.deletingProject = project;
+        this.showDeleteConfirm = true;
+    }
 
     // ── Pagination ────────────────────────────────────────────────
-    get totalPages(): number {
+    protected get totalPages(): number {
         return Math.ceil(this.totalCount / this.request.pageSize);
     }
 
-    get pageNumbers(): number[] {
+    protected get pageNumbers(): number[] {
         const total = this.totalPages;
         const current = this.request.pageIndex;
         const pages: number[] = [];
@@ -109,22 +121,22 @@ export class ProjectManageComponent implements OnInit {
         return pages;
     }
 
-    get startRecord(): number {
+    protected get startRecord(): number {
         return this.totalCount === 0 ? 0 : this.request.pageIndex * this.request.pageSize + 1;
     }
 
-    get endRecord(): number {
+    protected get endRecord(): number {
         return Math.min((this.request.pageIndex + 1) * this.request.pageSize, this.totalCount);
     }
 
-    goToPage(page: number): void {
+    protected goToPage(page: number): void {
         if (page < 0 || page >= this.totalPages) return;
         this.request.pageIndex = page;
-        this.loadProjects();
+        this.__loadProjects();
     }
 
-    onPageSizeChange(): void {
+    protected onPageSizeChange(): void {
         this.request.pageIndex = 0;
-        this.loadProjects();
+        this.__loadProjects();
     }
 }

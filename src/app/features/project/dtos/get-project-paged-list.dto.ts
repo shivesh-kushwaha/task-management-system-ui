@@ -5,8 +5,10 @@ export interface IGetProjectPagedListDto {
   name: string;
   description?: string;
   type: ProjectTypeEnum;
+  createdAt: string;
   createdByFirstName: string;
   createdByLastName: string;
+  createdByFullName: string;
 
   // Team
   teamId?: number;
