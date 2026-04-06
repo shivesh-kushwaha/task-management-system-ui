@@ -7,13 +7,6 @@
             <p class="text-muted small">Sign in to your account</p>
         </div>
 
-        <!-- Error Alert -->
-        @if (errorMessage) {
-        <div class="alert alert-danger py-2 small">
-            {{ errorMessage }}
-        </div>
-        }
-
         <!-- Form -->
         <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
 
