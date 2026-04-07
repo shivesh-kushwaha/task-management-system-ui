@@ -55,11 +55,11 @@ export class ProjectManageComponent implements OnInit {
     ) { }
 
     public ngOnInit(): void {
-        this.__loadProjects();
+        this._loadProjects();
     }
 
     // ── Data loading ──────────────────────────────────────────────
-    private __loadProjects(): void {
+    private _loadProjects(): void {
         this.projectService.getPagedList(this.request).subscribe({
             next: (response: IPagedListResponseDto<IGetProjectPagedListDto>) => {
                 this.projects = response.items;
@@ -79,7 +79,7 @@ export class ProjectManageComponent implements OnInit {
     protected onSearchEvent(event: ISearchEventDto): void {
         this.request.pageIndex = 0;
         this.request.filterKey = event.query;
-        this.__loadProjects();
+        this._loadProjects();
     }
 
     // ── Sorting ───────────────────────────────────────────────────
@@ -93,7 +93,7 @@ export class ProjectManageComponent implements OnInit {
             this.request.order = AppUtil.AscendingOrder;
         }
         this.request.pageIndex = 0;
-        this.__loadProjects();
+        this._loadProjects();
     }
 
     // ── Action handlers ───────────────────────────────────────────
@@ -134,19 +134,21 @@ export class ProjectManageComponent implements OnInit {
     protected goToPage(page: number): void {
         if (page < 0 || page >= this.totalPages) return;
         this.request.pageIndex = page;
-        this.__loadProjects();
+        this._loadProjects();
     }
 
     protected onPageSizeChange(): void {
         this.request.pageIndex = 0;
-        this.__loadProjects();
+        this._loadProjects();
     }
 
     protected onAddProject(): void {
         this.addProjectDialogComponent.open();
     }
 
-    protected onProjectSaved(event: any): void {
-
+    protected onProjectSaved(event: boolean): void {
+        if (event) {
+            this._loadProjects();
+        }
     }
 }

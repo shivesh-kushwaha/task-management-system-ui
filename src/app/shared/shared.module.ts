@@ -5,16 +5,19 @@ import { RouterModule } from '@angular/router';
 import { } from '@angular/material/dialog';
 
 import { ToastrModule } from 'ngx-toastr';
-import {MatFormFieldModule} from '@angular/material/form-field';
-import {MatInputModule} from '@angular/material/input';
-import {MatSelectModule} from '@angular/material/select';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 
 import { TokenService } from './services';
-import { LayoutComponent, NavbarComponent, SidebarComponent,
+import {
+    LayoutComponent,
+    NavbarComponent,
+    SidebarComponent,
     SearchComponent,
- } from './components';
-import { NotFoundComponent } from './components/not-found/not-found.component';
-
+    DialogHeaderComponent,
+    NotFoundComponent
+} from './components';
 
 @NgModule({
     declarations: [
@@ -22,7 +25,8 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
         SidebarComponent,
         NavbarComponent,
         NotFoundComponent,
-        SearchComponent
+        SearchComponent,
+        DialogHeaderComponent
     ],
     imports: [
         CommonModule,
@@ -48,6 +52,7 @@ import { NotFoundComponent } from './components/not-found/not-found.component';
         NavbarComponent,
         NotFoundComponent,
         SearchComponent,
+        DialogHeaderComponent
     ],
     providers: [
         TokenService

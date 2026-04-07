@@ -1,16 +1,18 @@
 <!-- Modal -->
-<div class="modal fade" id="simpleModal" tabindex="-1" aria-hidden="true">
+<div class="modal fade" #addProjectDialog>
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Simple Dialog</h5>
-                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-            </div>
+
+            <app-dialog-header [heading]="headerMessage" (closeEvent)="onClose()"></app-dialog-header>
+
             <div class="modal-body">
                 <p>Hello! This is a simple dialog.</p>
             </div>
+
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <!-- Remove data-bs-dismiss, use (click) instead -->
+                <button type="button" class="btn btn-primary mr-2" (click)="onClose()">Close</button>
+                <button type="button" class="btn btn-danger" (click)="onClose()">Close</button>
             </div>
         </div>
     </div>
