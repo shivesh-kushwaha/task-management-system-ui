@@ -1,18 +1,87 @@
-<!-- Modal -->
 <div class="modal fade" #addProjectDialog>
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
 
-            <app-dialog-header [heading]="headerMessage" (closeEvent)="onClose()"></app-dialog-header>
+            <app-dialog-header [heading]="'Add Project'" (closeEvent)="onClose()"></app-dialog-header>
 
             <div class="modal-body">
-                <p>Hello! This is a simple dialog.</p>
+                <form [formGroup]="form">
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            Project Name <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control" formControlName="name" placeholder="Enter project name"
+                            [ngClass]="{'is-invalid': f['name']?.invalid && f['name']?.touched}">
+                        @if (f['name']?.invalid && f['name']?.touched) {
+                        <div class="invalid-feedback">
+                            @if (f['name']?.errors?.['required']) {
+                            <span>Project name is required.</span>
+                            }
+                            @if (f['name']?.errors?.['maxlength']) {
+                            <span>Maximum 100 characters.</span>
+                            }
+                        </div>
+                        }
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            Project Type <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select" formControlName="type" (ngModelChange)="onTypeChanged()"
+                            [ngClass]="{'is-invalid': f['type']?.invalid && f['type']?.touched}">
+                            @for (type of projectTypes; track type.value) {
+                            <option [ngValue]="type.key">{{ type.value }}</option>
+                            }
+                        </select>
+                        @if (f['type']?.invalid && f['type']?.touched) {
+                        <div class="text-danger small mt-1">
+                            Please select a project type.
+                        </div>
+                        }
+                    </div>
+
+                    @if (f['type']?.value === ProjectTypeEnum.Team) {
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            Select Team <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select" formControlName="teamId"
+                            [ngClass]="{'is-invalid': f['teamId']?.invalid && f['teamId']?.touched}">
+                            @for (team of teams; track team.value) {
+                            <option [ngValue]="team.key">{{ team.value }}</option>
+                            }
+                        </select>
+                        @if (f['teamId']?.invalid && f['teamId']?.touched) {
+                        <div class="text-danger small mt-1">
+                            Please select a team.
+                        </div>
+                        }
+                    </div>
+                    }
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Description</label>
+                        <textarea class="form-control" formControlName="description" rows="3"
+                            placeholder="Enter project description (optional)"
+                            [ngClass]="{'is-invalid': f['description']?.errors?.['maxlength'] && f['description']?.touched}">
+                        </textarea>
+                        @if (f['description']?.errors?.['maxlength'] && f['description']?.touched) {
+                        <div class="invalid-feedback">
+                            Maximum 500 characters.
+                        </div>
+                        }
+                    </div>
+                </form>
             </div>
 
             <div class="modal-footer">
-                <!-- Remove data-bs-dismiss, use (click) instead -->
-                <button type="button" class="btn btn-primary mr-2" (click)="onClose()">Close</button>
-                <button type="button" class="btn btn-danger" (click)="onClose()">Close</button>
+                <button type="button" class="btn btn-danger" (click)="onClose()">
+                    Cancel
+                </button>
+                <button type="button" class="btn btn-primary" (click)="onSubmit()"
+                    [disabled]="form.invalid || isLoading"> Submit
+                </button>
             </div>
         </div>
     </div>
