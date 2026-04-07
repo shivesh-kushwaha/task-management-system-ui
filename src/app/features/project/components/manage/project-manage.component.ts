@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
 import { IGetProjectPagedListDto } from '../../dtos';
 import { ProjectService } from '../../services/project.service';
 import { IPagedListRequestDto, IPagedListResponseDto, ISearchEventDto } from '../../../../shared/dtos';
@@ -6,6 +6,7 @@ import { ProjectTypeEnum } from '../../../../core/enums';
 import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AppUtil } from '../../../../core/utils/app.util';
+import { AddProjectDialogComponent } from '../dialogs/add/add-project-dialog.component';
 
 @Component({
     selector: 'app-projects',
@@ -14,6 +15,7 @@ import { AppUtil } from '../../../../core/utils/app.util';
     standalone: false,
 })
 export class ProjectManageComponent implements OnInit {
+    @ViewChild(AddProjectDialogComponent) addProjectDialogComponent!: AddProjectDialogComponent
 
     // ── Table state ───────────────────────────────────────────────
     protected projects: IGetProjectPagedListDto[] = [];
@@ -138,5 +140,13 @@ export class ProjectManageComponent implements OnInit {
     protected onPageSizeChange(): void {
         this.request.pageIndex = 0;
         this.__loadProjects();
+    }
+
+    protected onAddProject(): void {
+        this.addProjectDialogComponent.open();
+    }
+
+    protected onProjectSaved(event: any): void {
+
     }
 }

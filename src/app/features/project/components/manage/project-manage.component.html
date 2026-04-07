@@ -2,7 +2,7 @@
   <div class="d-flex justify-content-between align-items-center mb-3">
     <div class="page-title">Projects</div>
     <div>
-      <button type="button" class="btn btn-outline-primary">Add Project</button>
+      <button type="button" class="btn btn-outline-primary" (click)="onAddProject()">Add Project</button>
     </div>
   </div>
 
@@ -132,4 +132,8 @@
 
   </div>
   }
+</section>
+
+<section>
+  <app-add-project-dialog></app-add-project-dialog>
 </section>
