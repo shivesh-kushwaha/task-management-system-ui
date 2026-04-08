@@ -1,4 +1,4 @@
-import { ChangeDetectorRef, Component, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { IGetProjectPagedListDto } from '../../dtos';
 import { ProjectService } from '../../services/project.service';
 import { IPagedListRequestDto, IPagedListResponseDto, ISearchEventDto } from '../../../../shared/dtos';
@@ -7,6 +7,8 @@ import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AppUtil } from '../../../../core/utils/app.util';
 import { AddProjectDialogComponent } from '../dialogs/add/add-project-dialog.component';
+import { Subject, takeUntil } from 'rxjs';
+import { ProjectStatesService } from '../../services/project-states.service';
 
 @Component({
     selector: 'app-projects',
@@ -22,16 +24,9 @@ export class ProjectManageComponent implements OnInit {
     protected totalCount = 0;
     protected isLoading = false;
 
-    protected readonly pageSizeOptions = [5, 10, 25, 50];
-
-    protected request: IPagedListRequestDto = {
-        filterKey: AppUtil.EmptyString,
-        sort: 'name',
-        order: AppUtil.DefaultSortOrder,
-        pageIndex: AppUtil.DefaultPageIndex,
-        pageSize: AppUtil.DefaultPageSize,
-    };
-
+    
+    protected request: IPagedListRequestDto;
+    
     // ── Modal state ───────────────────────────────────────────────
     protected showDetailModal = false;
     protected detailProject: IGetProjectPagedListDto | null = null;
@@ -41,48 +36,54 @@ export class ProjectManageComponent implements OnInit {
 
     protected showDeleteConfirm = false;
     protected deletingProject: IGetProjectPagedListDto | null = null;
-
+    
     protected readonly AppUtil = AppUtil;
+    protected readonly ProjectTypeEnum = ProjectTypeEnum;
+    protected readonly pageSizeOptions = [5, 10, 25, 50];
 
-    protected get projectTypeEnum(): typeof ProjectTypeEnum {
-        return ProjectTypeEnum;
-    }
+    private _destroy$ = new Subject<void>();
 
     constructor(
-        private readonly projectService: ProjectService,
+        private readonly _projectService: ProjectService,
+        private readonly _projectStatesService: ProjectStatesService,
         private readonly _toastr: ToastrService,
-        private readonly cdr: ChangeDetectorRef
-    ) { }
+        private readonly _cdr: ChangeDetectorRef
+    ) {
+        this.request = this._initializeRequest();
+     }
 
     public ngOnInit(): void {
         this._loadProjects();
+
+        this._projectStatesService.projectAdded$
+            .pipe(takeUntil(this._destroy$))
+            .subscribe(() => {
+                this._loadProjects();
+            });
     }
 
-    // ── Data loading ──────────────────────────────────────────────
     private _loadProjects(): void {
-        this.projectService.getPagedList(this.request).subscribe({
+        this._projectService.getPagedList(this.request).subscribe({
             next: (response: IPagedListResponseDto<IGetProjectPagedListDto>) => {
                 this.projects = response.items;
                 this.totalCount = response.totalCount;
                 this.isLoading = false;
-                this.cdr.detectChanges();
+                this._cdr.detectChanges();
             },
             error: (err: HttpErrorResponse) => {
                 this._toastr.error(err.error?.message);
                 this.isLoading = false;
-                this.cdr.detectChanges();
+                this._cdr.detectChanges();
             }
         });
     }
 
-    // ── Search ────────────────────────────────────────────────────
     protected onSearchEvent(event: ISearchEventDto): void {
         this.request.pageIndex = 0;
         this.request.filterKey = event.query;
         this._loadProjects();
     }
 
-    // ── Sorting ───────────────────────────────────────────────────
     protected sort(col: string): void {
         if (this.request.sort === col) {
             this.request.order = this.request.order === AppUtil.AscendingOrder
@@ -96,7 +97,6 @@ export class ProjectManageComponent implements OnInit {
         this._loadProjects();
     }
 
-    // ── Action handlers ───────────────────────────────────────────
     protected onViewProject(project: IGetProjectPagedListDto): void {
         this.detailProject = project;
         this.showDetailModal = true;
@@ -107,7 +107,6 @@ export class ProjectManageComponent implements OnInit {
         this.showDeleteConfirm = true;
     }
 
-    // ── Pagination ────────────────────────────────────────────────
     protected get totalPages(): number {
         return Math.ceil(this.totalCount / this.request.pageSize);
     }
@@ -150,5 +149,15 @@ export class ProjectManageComponent implements OnInit {
         if (event) {
             this._loadProjects();
         }
+    }
+
+    private _initializeRequest(): IPagedListRequestDto {
+        return {
+            filterKey: AppUtil.EmptyString,
+            sort: 'name',
+            order: AppUtil.DefaultSortOrder,
+            pageIndex: AppUtil.DefaultPageIndex,
+            pageSize: AppUtil.DefaultPageSize,
+        };
     }
 }

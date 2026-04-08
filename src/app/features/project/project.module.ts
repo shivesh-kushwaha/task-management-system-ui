@@ -5,6 +5,7 @@ import { SharedModule } from '../../shared/shared.module';
 import { AddProjectDialogComponent, ProjectManageComponent } from './components';
 import { ProjectRoutingModule } from './project-routing.module';
 import { ProjectService } from './services/project.service';
+import { ProjectStatesService } from './services/project-states.service';
 
 @NgModule({
     declarations: [
@@ -17,7 +18,8 @@ import { ProjectService } from './services/project.service';
         ProjectRoutingModule,
     ],
     providers: [
-        ProjectService
+        ProjectService,
+        ProjectStatesService
     ]
 })
 export class ProjectModule { }

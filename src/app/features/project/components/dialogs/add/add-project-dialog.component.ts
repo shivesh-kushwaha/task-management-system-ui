@@ -1,4 +1,4 @@
-import { AfterViewInit, Component, ElementRef, EventEmitter, Output, ViewChild } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
 import { Modal } from 'bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { getProjectTypes, ProjectTypeEnum } from '../../../../../core/enums';
@@ -6,8 +6,8 @@ import { ISelectListItemDto } from '../../../../../shared/dtos';
 import { IAddProjectDto } from '../../../dtos';
 import { AppUtil } from '../../../../../core/utils/app.util';
 import { ProjectService } from '../../../services/project.service';
-import { map, tap } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
+import { ProjectStatesService } from '../../../services/project-states.service';
 
 @Component({
     selector: 'app-add-project-dialog',
@@ -16,19 +16,20 @@ import { ToastrService } from 'ngx-toastr';
 })
 export class AddProjectDialogComponent implements AfterViewInit {
     @ViewChild('addProjectDialog') elementRef!: ElementRef;
-    @Output() projectAddedEvent: EventEmitter<boolean> = new EventEmitter<boolean>();
 
     protected form: FormGroup;
     protected projectTypes: ISelectListItemDto[];
     protected teams: ISelectListItemDto[];
-    protected readonly ProjectTypeEnum = ProjectTypeEnum;
     protected isLoading = false;
+    
+    protected readonly ProjectTypeEnum = ProjectTypeEnum;
 
     private _modal?: Modal | null;
 
     constructor(private readonly _fb: FormBuilder,
         private readonly _toastr: ToastrService,
-        private readonly _projectService: ProjectService) {
+        private readonly _projectService: ProjectService,
+        private readonly _projectStatesService: ProjectStatesService) {
         this.projectTypes = getProjectTypes();
         this.teams = [];
         this.form = this._initializeForm();
@@ -49,8 +50,7 @@ export class AddProjectDialogComponent implements AfterViewInit {
     }
 
     protected onClose(): void {
-        this._modal?.hide();
-        this._resetForm();
+        this._close();
     }
 
     protected onTypeChanged(): void {
@@ -80,15 +80,20 @@ export class AddProjectDialogComponent implements AfterViewInit {
         this._projectService.addProject(payload).subscribe({
             next: () => {
                 this._toastr.success('Project added successfully.');
-                this.projectAddedEvent.emit(true);
                 this.isLoading = false;
-                this.onClose();
+                this._close();
+                this._projectStatesService.projectAddedNotify();
             },
             error: (err: any) => {
                 this._toastr.error(err.error?.message);
                 this.isLoading = false;
             }
         });
+    }
+
+    private _close(): void {
+        this._modal?.hide();
+        this._resetForm();
     }
 
     private _loadTeams(): void {
