@@ -19,14 +19,12 @@ import { ProjectStatesService } from '../../services/project-states.service';
 export class ProjectManageComponent implements OnInit {
     @ViewChild(AddProjectDialogComponent) addProjectDialogComponent!: AddProjectDialogComponent
 
-    // ── Table state ───────────────────────────────────────────────
     protected projects: IGetProjectPagedListDto[] = [];
     protected totalCount = 0;
     protected isLoading = false;
 
     protected request: IPagedListRequestDto;
 
-    // ── Modal state ───────────────────────────────────────────────
     protected showDetailModal = false;
     protected detailProject: IGetProjectPagedListDto | null = null;
 
@@ -38,7 +36,6 @@ export class ProjectManageComponent implements OnInit {
 
     protected readonly AppUtil = AppUtil;
     protected readonly ProjectTypeEnum = ProjectTypeEnum;
-    protected readonly pageSizeOptions = [5, 10, 25, 50];
 
     projectColumnName = {
         Name: 'name',

@@ -99,7 +99,7 @@
     <div class="d-flex align-items-center gap-2 text-muted small">
       <span>Showing {{ startRecord }}–{{ endRecord }} of {{ totalCount }}</span>
       <select class="form-select form-select-sm w-auto" [(ngModel)]="request.pageSize" (change)="onPageSizeChange()">
-        @for (size of pageSizeOptions; track size) {
+        @for (size of AppUtil.DefaultPageSizeOptions; track size) {
         <option [value]="size">{{ size }} / page</option>
         }
       </select>
