@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@ang
 import { IGetProjectPagedListDto } from '../../dtos';
 import { ProjectService } from '../../services/project.service';
 import { IPagedListRequestDto, IPagedListResponseDto, ISearchEventDto } from '../../../../shared/dtos';
-import { ProjectTypeEnum } from '../../../../core/enums';
+import { ProjectTypeEnum, SearchTypeEnum } from '../../../../core/enums';
 import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AppUtil } from '../../../../core/utils/app.util';
@@ -24,9 +24,8 @@ export class ProjectManageComponent implements OnInit {
     protected totalCount = 0;
     protected isLoading = false;
 
-    
     protected request: IPagedListRequestDto;
-    
+
     // ── Modal state ───────────────────────────────────────────────
     protected showDetailModal = false;
     protected detailProject: IGetProjectPagedListDto | null = null;
@@ -36,10 +35,19 @@ export class ProjectManageComponent implements OnInit {
 
     protected showDeleteConfirm = false;
     protected deletingProject: IGetProjectPagedListDto | null = null;
-    
+
     protected readonly AppUtil = AppUtil;
     protected readonly ProjectTypeEnum = ProjectTypeEnum;
     protected readonly pageSizeOptions = [5, 10, 25, 50];
+
+    projectColumnName = {
+        Name: 'name',
+        Type: 'type',
+        WorkItems: 'totalWorkItem',
+        CreatedAt: 'createdAt',
+        CreatedBy: 'createdByFullName',
+        Actions: 'actions'
+    };
 
     private _destroy$ = new Subject<void>();
 
@@ -49,8 +57,8 @@ export class ProjectManageComponent implements OnInit {
         private readonly _toastr: ToastrService,
         private readonly _cdr: ChangeDetectorRef
     ) {
-        this.request = this._initializeRequest();
-     }
+        this.request = AppUtil.initializePagedListRequest(this.projectColumnName.Name);
+    }
 
     public ngOnInit(): void {
         this._loadProjects();
@@ -62,25 +70,12 @@ export class ProjectManageComponent implements OnInit {
             });
     }
 
-    private _loadProjects(): void {
-        this._projectService.getPagedList(this.request).subscribe({
-            next: (response: IPagedListResponseDto<IGetProjectPagedListDto>) => {
-                this.projects = response.items;
-                this.totalCount = response.totalCount;
-                this.isLoading = false;
-                this._cdr.detectChanges();
-            },
-            error: (err: HttpErrorResponse) => {
-                this._toastr.error(err.error?.message);
-                this.isLoading = false;
-                this._cdr.detectChanges();
-            }
-        });
-    }
-
     protected onSearchEvent(event: ISearchEventDto): void {
-        this.request.pageIndex = 0;
+        this.request.pageIndex = this.AppUtil.DefaultPageIndex;
         this.request.filterKey = event.query;
+        if (event.type == SearchTypeEnum.Reset) {
+            this.request = this.AppUtil.initializePagedListRequest(this.projectColumnName.Name);
+        }
         this._loadProjects();
     }
 
@@ -151,13 +146,19 @@ export class ProjectManageComponent implements OnInit {
         }
     }
 
-    private _initializeRequest(): IPagedListRequestDto {
-        return {
-            filterKey: AppUtil.EmptyString,
-            sort: 'name',
-            order: AppUtil.DefaultSortOrder,
-            pageIndex: AppUtil.DefaultPageIndex,
-            pageSize: AppUtil.DefaultPageSize,
-        };
+    private _loadProjects(): void {
+        this._projectService.getPagedList(this.request).subscribe({
+            next: (response: IPagedListResponseDto<IGetProjectPagedListDto>) => {
+                this.projects = response.items;
+                this.totalCount = response.totalCount;
+                this.isLoading = false;
+                this._cdr.detectChanges();
+            },
+            error: (err: HttpErrorResponse) => {
+                this._toastr.error(err.error?.message);
+                this.isLoading = false;
+                this._cdr.detectChanges();
+            }
+        });
     }
 }

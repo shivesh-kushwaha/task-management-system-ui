@@ -15,40 +15,35 @@
     <table class="table table-hover align-middle">
       <thead class="table-light">
         <tr>
-          <th class="sortable-col" (click)="sort('name')">
+          <th class="sortable-col" (click)="sort(projectColumnName.Name)">
             Name
-            <i class="bi ms-1" [class.bi-chevron-up]="request.sort === 'name' && request.order === 'asc'"
-              [class.bi-chevron-down]="request.sort === 'name' && request.order === 'desc'"
-              [class.bi-chevron-expand]="request.sort !== 'name'">
-            </i>
+            <app-table-sort-header [currentSort]="request.sort" [currentOrder]="request.order"
+              [columnName]="projectColumnName.Name">
+            </app-table-sort-header>
           </th>
-          <th class="sortable-col" (click)="sort('type')">
+          <th class="sortable-col" (click)="sort(projectColumnName.Type)">
             Type
-            <i class="bi ms-1" [class.bi-chevron-up]="request.sort === 'type' && request.order === 'asc'"
-              [class.bi-chevron-down]="request.sort === 'type' && request.order === 'desc'"
-              [class.bi-chevron-expand]="request.sort !== 'type'">
-            </i>
+            <app-table-sort-header [currentSort]="request.sort" [currentOrder]="request.order"
+              [columnName]="projectColumnName.Type">
+            </app-table-sort-header>
           </th>
-          <th class="sortable-col" (click)="sort('totalWorkItem')">
+          <th class="sortable-col" (click)="sort(projectColumnName.WorkItems)">
             Work Items
-            <i class="bi ms-1" [class.bi-chevron-up]="request.sort === 'totalWorkItem' && request.order === 'asc'"
-              [class.bi-chevron-down]="request.sort === 'totalWorkItem' && request.order === 'desc'"
-              [class.bi-chevron-expand]="request.sort !== 'totalWorkItem'">
-            </i>
+            <app-table-sort-header [currentSort]="request.sort" [currentOrder]="request.order"
+              [columnName]="projectColumnName.WorkItems">
+            </app-table-sort-header>
           </th>
-          <th class="sortable-col" (click)="sort('createdAt')">
+          <th class="sortable-col" (click)="sort(projectColumnName.CreatedAt)">
             Created At
-            <i class="bi ms-1" [class.bi-chevron-up]="request.sort === 'createdAt' && request.order === 'asc'"
-              [class.bi-chevron-down]="request.sort === 'createdAt' && request.order === 'desc'"
-              [class.bi-chevron-expand]="request.sort !== 'createdAt'">
-            </i>
+            <app-table-sort-header [currentSort]="request.sort" [currentOrder]="request.order"
+              [columnName]="projectColumnName.CreatedAt">
+            </app-table-sort-header>
           </th>
-          <th class="sortable-col" (click)="sort('createdByFullName')">
+          <th class="sortable-col" (click)="sort(projectColumnName.CreatedBy)">
             Created By
-            <i class="bi ms-1" [class.bi-chevron-up]="request.sort === 'createdByFullName' && request.order === 'asc'"
-              [class.bi-chevron-down]="request.sort === 'createdByFullName' && request.order === 'desc'"
-              [class.bi-chevron-expand]="request.sort !== 'createdByFullName'">
-            </i>
+            <app-table-sort-header [currentSort]="request.sort" [currentOrder]="request.order"
+              [columnName]="projectColumnName.CreatedBy">
+            </app-table-sort-header>
           </th>
           <th>Actions</th>
         </tr>

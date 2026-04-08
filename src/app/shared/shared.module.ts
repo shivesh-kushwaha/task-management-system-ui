@@ -18,6 +18,7 @@ import {
     DialogHeaderComponent,
     NotFoundComponent
 } from './components';
+import { TableSortHeaderComponent } from './components/table-sort-header/table-sort-header.component';
 
 @NgModule({
     declarations: [
@@ -26,7 +27,8 @@ import {
         NavbarComponent,
         NotFoundComponent,
         SearchComponent,
-        DialogHeaderComponent
+        DialogHeaderComponent,
+        TableSortHeaderComponent
     ],
     imports: [
         CommonModule,
@@ -52,7 +54,8 @@ import {
         NavbarComponent,
         NotFoundComponent,
         SearchComponent,
-        DialogHeaderComponent
+        DialogHeaderComponent,
+        TableSortHeaderComponent
     ],
     providers: [
         TokenService

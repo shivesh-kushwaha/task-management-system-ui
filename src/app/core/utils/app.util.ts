@@ -1,3 +1,5 @@
+import { IPagedListRequestDto } from "../../shared/dtos";
+
 export class AppUtil {
     public static EmptyString = '';
     public static DefaultSearch = 'Search...';
@@ -10,5 +12,15 @@ export class AppUtil {
 
     public static isNullOrEmpty(value: string): boolean {
         return value === undefined || value === null || value === '';
+    }
+
+    public static initializePagedListRequest(sort: string): IPagedListRequestDto {
+        return {
+            filterKey: AppUtil.EmptyString,
+            sort: sort,
+            order: AppUtil.DefaultSortOrder,
+            pageIndex: AppUtil.DefaultPageIndex,
+            pageSize: AppUtil.DefaultPageSize,
+        };
     }
 }
