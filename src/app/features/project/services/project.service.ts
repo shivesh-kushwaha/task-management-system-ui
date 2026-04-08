@@ -4,15 +4,19 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { IPagedListRequestDto, toQueryString } from '../../../shared/dtos/paged-list-request.dto';
 import { IPagedListResponseDto } from '../../../shared/dtos';
-import { IGetProjectPagedListDto } from '../dtos';
+import { IAddProjectDto, IGetProjectPagedListDto } from '../dtos';
 
 @Injectable({
     providedIn: 'root'
 })
 export class ProjectService {
-    private api = `${environment.apiUrl}/project`;
+    private readonly api = `${environment.apiUrl}/project`;
 
     constructor(private readonly http: HttpClient) { }
+
+    public addProject(request: IAddProjectDto): Observable<any> {
+        return this.http.post(`${this.api}`, request);
+    }
 
     public getPagedList(request: IPagedListRequestDto): Observable<IPagedListResponseDto<IGetProjectPagedListDto>> {
         const params = toQueryString(request);

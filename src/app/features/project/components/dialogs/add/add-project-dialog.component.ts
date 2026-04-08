@@ -5,6 +5,9 @@ import { getProjectTypes, ProjectTypeEnum } from '../../../../../core/enums';
 import { ISelectListItemDto } from '../../../../../shared/dtos';
 import { IAddProjectDto } from '../../../dtos';
 import { AppUtil } from '../../../../../core/utils/app.util';
+import { ProjectService } from '../../../services/project.service';
+import { map, tap } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
     selector: 'app-add-project-dialog',
@@ -23,7 +26,9 @@ export class AddProjectDialogComponent implements AfterViewInit {
 
     private _modal?: Modal | null;
 
-    constructor(private readonly _fb: FormBuilder) {
+    constructor(private readonly _fb: FormBuilder,
+        private readonly _toastr: ToastrService,
+        private readonly _projectService: ProjectService) {
         this.projectTypes = getProjectTypes();
         this.teams = [];
         this.form = this._initializeForm();
@@ -70,7 +75,20 @@ export class AddProjectDialogComponent implements AfterViewInit {
         }
 
         const payload = this._createPayload();
-        console.log(payload);
+
+        this.isLoading = true;
+        this._projectService.addProject(payload).subscribe({
+            next: () => {
+                this._toastr.success('Project added successfully.');
+                this.projectAddedEvent.emit(true);
+                this.isLoading = false;
+                this.onClose();
+            },
+            error: (err: any) => {
+                this._toastr.error(err.error?.message);
+                this.isLoading = false;
+            }
+        });
     }
 
     private _loadTeams(): void {
