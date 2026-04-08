@@ -1,0 +1,21 @@
+<div class="modal fade" #dialogConfirm>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <app-dialog-header [heading]="heading" (closeEvent)="onClose()"></app-dialog-header>
+
+            <div class="modal-body">
+                {{message}}
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" (click)="onClose()">
+                    No
+                </button>
+                <button type="button" class="btn btn-primary" (click)="onSubmit()">
+                    Yes
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

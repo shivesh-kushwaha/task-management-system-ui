@@ -11,6 +11,11 @@ export class AppUtil {
     public static DefaultValue = 'N/A';
     public static DefaultPageSizeOptions = [5, 10, 25, 50];
 
+    // Dialog
+    public static DefaultDeletDialogeHeading = 'Delete';
+    public static DefaultConfirmDialogHeading = 'Confirm';
+    public static DefaultDeleteDialogMessage = 'Are you sure you want to delete the selected';
+
     public static isNullOrEmpty(value: string): boolean {
         return value === undefined || value === null || value === '';
     }
@@ -23,5 +28,9 @@ export class AppUtil {
             pageIndex: AppUtil.DefaultPageIndex,
             pageSize: AppUtil.DefaultPageSize,
         };
+    }
+
+    public static getDefaultDeleteDialogMessage(title: string): string {
+        return `${this.DefaultDeleteDialogMessage} ${title}`;
     }
 }

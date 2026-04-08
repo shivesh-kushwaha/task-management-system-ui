@@ -76,10 +76,10 @@
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-danger" (click)="onSubmit()">
+                <button type="button" class="btn btn-danger" (click)="onClose()">
                     Cancel
                 </button>
-                <button type="button" class="btn btn-primary" (click)="onClose()"
+                <button type="button" class="btn btn-primary" (click)="onSubmit()"
                     [disabled]="form.invalid || isLoading"> Submit
                 </button>
             </div>

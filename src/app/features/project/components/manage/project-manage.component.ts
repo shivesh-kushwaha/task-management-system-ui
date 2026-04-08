@@ -1,14 +1,16 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { IGetProjectPagedListDto } from '../../dtos';
 import { ProjectService } from '../../services/project.service';
-import { IPagedListRequestDto, IPagedListResponseDto, ISearchEventDto } from '../../../../shared/dtos';
-import { ProjectTypeEnum, SearchTypeEnum } from '../../../../core/enums';
+import { IDialogConfirmDto, IPagedListRequestDto, IPagedListResponseDto, ISearchEventDto } from '../../../../shared/dtos';
+import { ModuleTitleEnum, ProjectTypeEnum, SearchTypeEnum } from '../../../../core/enums';
 import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AppUtil } from '../../../../core/utils/app.util';
 import { AddProjectDialogComponent } from '../dialogs/add/add-project-dialog.component';
 import { Subject, takeUntil } from 'rxjs';
 import { ProjectStatesService } from '../../services/project-states.service';
+import { DialogConfirmComponent } from '../../../../shared/components';
+import { DialogStatesService } from '../../../../shared/services';
 
 @Component({
     selector: 'app-projects',
@@ -18,6 +20,7 @@ import { ProjectStatesService } from '../../services/project-states.service';
 })
 export class ProjectManageComponent implements OnInit {
     @ViewChild(AddProjectDialogComponent) addProjectDialogComponent!: AddProjectDialogComponent
+    @ViewChild(DialogConfirmComponent) dialogConfirmComponent!: DialogConfirmComponent;
 
     protected projects: IGetProjectPagedListDto[] = [];
     protected totalCount = 0;
@@ -25,17 +28,9 @@ export class ProjectManageComponent implements OnInit {
 
     protected request: IPagedListRequestDto;
 
-    protected showDetailModal = false;
-    protected detailProject: IGetProjectPagedListDto | null = null;
-
-    protected editingProject: IGetProjectPagedListDto | null = null;
-    protected editName = '';
-
-    protected showDeleteConfirm = false;
-    protected deletingProject: IGetProjectPagedListDto | null = null;
-
     protected readonly AppUtil = AppUtil;
     protected readonly ProjectTypeEnum = ProjectTypeEnum;
+    protected readonly ModuleTitleEnum = ModuleTitleEnum;
 
     projectColumnName = {
         Name: 'name',
@@ -46,11 +41,14 @@ export class ProjectManageComponent implements OnInit {
         Actions: 'actions'
     };
 
+    private projectIdToDelete: number = 0;
+
     private _destroy$ = new Subject<void>();
 
     constructor(
         private readonly _projectService: ProjectService,
         private readonly _projectStatesService: ProjectStatesService,
+        private readonly _dialogStatesService: DialogStatesService,
         private readonly _toastr: ToastrService,
         private readonly _cdr: ChangeDetectorRef
     ) {
@@ -64,6 +62,14 @@ export class ProjectManageComponent implements OnInit {
             .pipe(takeUntil(this._destroy$))
             .subscribe(() => {
                 this._loadProjects();
+            });
+
+        this._dialogStatesService.dialogConfirmOpened$
+            .pipe(takeUntil(this._destroy$))
+            .subscribe((load: boolean = false) => {
+                if (load)
+                    this._deleteProject(this.projectIdToDelete);
+                this.projectIdToDelete = 0;
             });
     }
 
@@ -89,14 +95,21 @@ export class ProjectManageComponent implements OnInit {
         this._loadProjects();
     }
 
+    protected onAddProject(): void {
+        this.addProjectDialogComponent.open();
+    }
+
     protected onViewProject(project: IGetProjectPagedListDto): void {
-        this.detailProject = project;
-        this.showDetailModal = true;
+
     }
 
     protected onDeleteProject(project: IGetProjectPagedListDto): void {
-        this.deletingProject = project;
-        this.showDeleteConfirm = true;
+        this.projectIdToDelete = project.id;
+        const dialogConfirmDto: IDialogConfirmDto = {
+            heading: AppUtil.DefaultDeletDialogeHeading,
+            message: AppUtil.getDefaultDeleteDialogMessage(this.ModuleTitleEnum.Project)
+        }
+        this.dialogConfirmComponent.open(dialogConfirmDto);
     }
 
     protected get totalPages(): number {
@@ -133,16 +146,6 @@ export class ProjectManageComponent implements OnInit {
         this._loadProjects();
     }
 
-    protected onAddProject(): void {
-        this.addProjectDialogComponent.open();
-    }
-
-    protected onProjectSaved(event: boolean): void {
-        if (event) {
-            this._loadProjects();
-        }
-    }
-
     private _loadProjects(): void {
         this._projectService.getPagedList(this.request).subscribe({
             next: (response: IPagedListResponseDto<IGetProjectPagedListDto>) => {
@@ -157,5 +160,9 @@ export class ProjectManageComponent implements OnInit {
                 this._cdr.detectChanges();
             }
         });
+    }
+
+    private _deleteProject(id: number): void {
+
     }
 }
