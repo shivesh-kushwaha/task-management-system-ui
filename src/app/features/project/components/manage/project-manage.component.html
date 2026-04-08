@@ -71,9 +71,9 @@
         <tr>
           <td>{{ !AppUtil.isNullOrEmpty(project.name) ? project.name : AppUtil.DefaultValue }}</td>
           <td>
-            @if (project.type === projectTypeEnum.Team) {
+            @if (project.type === ProjectTypeEnum.Team) {
             <span class="badge bg-primary">Team</span>
-            } @else if (project.type === projectTypeEnum.Individual){
+            } @else if (project.type === ProjectTypeEnum.Individual){
             <span class="badge bg-secondary">Individual</span>
             } @else {
             <span>{{AppUtil.DefaultValue}}</span>
@@ -135,5 +135,5 @@
 </section>
 
 <section>
-  <app-add-project-dialog (projectAddedEvent)="onProjectSaved($event)"></app-add-project-dialog>
+  <app-add-project-dialog></app-add-project-dialog>
 </section>
