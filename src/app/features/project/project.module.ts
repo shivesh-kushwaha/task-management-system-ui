@@ -10,11 +10,13 @@ import {
 } from './services';
 import { 
     AddProjectDialogComponent, 
+    ProjectDetailComponent, 
     ProjectManageComponent } from './components';
 
 @NgModule({
     declarations: [
         ProjectManageComponent,
+        ProjectDetailComponent,
         AddProjectDialogComponent,
     ],
     imports: [

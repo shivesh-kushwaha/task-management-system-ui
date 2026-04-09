@@ -1,0 +1,152 @@
+<div class="row">
+    <div class="col-6 page-title">
+        Project Details
+    </div>
+
+    <!-- Loading State -->
+    @if (isLoading) {
+    <div class="loading-container">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+        <p class="mt-3 text-muted">Loading project details...</p>
+    </div>
+    }
+
+    <!-- Error State -->
+    @else if (!project) {
+    <div class="error-container">
+        <div class="alert alert-warning text-center">
+            <i class="bi bi-exclamation-triangle fs-1 d-block mb-3"></i>
+            <h5>Project Not Found</h5>
+            <p>The project you're looking for doesn't exist or has been removed.</p>
+            <button class="btn btn-primary mt-2" (click)="onBack()">
+                <i class="bi bi-arrow-left me-2"></i>Return to Projects
+            </button>
+        </div>
+    </div>
+    }
+
+    <!-- Project Details Content -->
+    @else {
+    <div class="container-fluid">
+        <!-- Project Status Banner -->
+        <div class="status-banner mb-4" [class.status-active]="project.status === RecordStatusEnum.Active"
+            [class.status-inactive]="project.status !== RecordStatusEnum.Active">
+            <div class="d-flex align-items-center justify-content-between">
+                <div>
+                    <i class="bi" [class.bi-check-circle-fill]="project.status === RecordStatusEnum.Active"
+                        [class.bi-exclamation-circle-fill]="project.status !== RecordStatusEnum.Active">
+                    </i>
+                    <span class="ms-2 fw-semibold">
+                        Status: {{ project.status === RecordStatusEnum.Active ? 'Active' : 'Inactive' }}
+                    </span>
+                </div>
+                <span class="badge" [class.bg-success]="project.type === ProjectTypeEnum.Team"
+                    [class.bg-info]="project.type === ProjectTypeEnum.Individual">
+                    {{ project.type === ProjectTypeEnum.Team ? 'Team Project' : 'Individual Project' }}
+                </span>
+            </div>
+        </div>
+
+        <!-- Main Content Card -->
+        <div class="card shadow-sm">
+            <div class="card-body">
+                <div class="row">
+                    <!-- Left Column -->
+                    <div class="col-md-8">
+                        <div class="detail-section">
+                            <h5 class="section-title">
+                                <i class="bi bi-info-circle me-2"></i>Basic Information
+                            </h5>
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <label class="text-muted">Project Name</label>
+                                    <p class="fw-semibold mb-0">{{ project.name }}</p>
+                                </div>
+                                <div class="detail-item">
+                                    <label class="text-muted">Total Work Items</label>
+                                    <p class="fw-semibold mb-0">
+                                        <span class="badge bg-primary rounded-pill">{{ project.totalWorkItems }}</span>
+                                    </p>
+                                </div>
+                                <div class="detail-item full-width">
+                                    <label class="text-muted">Description</label>
+                                    <p class="mb-0">
+                                        {{ project.description || 'No description provided' }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (project.teamName) {
+                        <div class="detail-section mt-4">
+                            <h5 class="section-title">
+                                <i class="bi bi-people me-2"></i>Team Information
+                            </h5>
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <label class="text-muted">Team Name</label>
+                                    <p class="fw-semibold mb-0">{{ project.teamName }}</p>
+                                </div>
+                            </div>
+                        </div>
+                        }
+                    </div>
+
+                    <!-- Right Column -->
+                    <div class="col-md-4">
+                        <div class="detail-section">
+                            <h5 class="section-title">
+                                <i class="bi bi-calendar me-2"></i>Timeline
+                            </h5>
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <label class="text-muted">Created At</label>
+                                    <p class="mb-0">{{ project.createdAt | date:'medium' }}</p>
+                                </div>
+                                @if (project.updatedAt) {
+                                <div class="detail-item">
+                                    <label class="text-muted">Last Updated</label>
+                                    <p class="mb-0">{{ project.updatedAt | date:'medium' }}</p>
+                                </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="detail-section mt-4">
+                            <h5 class="section-title">
+                                <i class="bi bi-person me-2"></i>Created By
+                            </h5>
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <label class="text-muted">Name</label>
+                                    <p class="mb-0">
+                                        {{ project.createdByFirstName }} {{ project.createdByLastName || '' }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        @if (project.updatedById) {
+                        <div class="detail-section mt-4">
+                            <h5 class="section-title">
+                                <i class="bi bi-pencil-square me-2"></i>Last Updated By
+                            </h5>
+                            <div class="detail-grid">
+                                <div class="detail-item">
+                                    <label class="text-muted">Name</label>
+                                    <p class="mb-0">
+                                        {{ project.updatedByFirstName }} {{ project.updatedByLastName || '' }}
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        }
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    }
+</div>

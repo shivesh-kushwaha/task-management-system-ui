@@ -11,6 +11,7 @@ import { Subject, takeUntil } from 'rxjs';
 import { ProjectStatesService } from '../../services/project-states.service';
 import { DialogConfirmComponent } from '../../../../shared/components';
 import { DialogStatesService } from '../../../../shared/services';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-projects',
@@ -49,6 +50,7 @@ export class ProjectManageComponent implements OnInit {
         private readonly _projectService: ProjectService,
         private readonly _projectStatesService: ProjectStatesService,
         private readonly _dialogStatesService: DialogStatesService,
+        private readonly _router: Router,
         private readonly _toastr: ToastrService,
         private readonly _cdr: ChangeDetectorRef
     ) {
@@ -100,7 +102,7 @@ export class ProjectManageComponent implements OnInit {
     }
 
     protected onViewProject(project: IGetProjectPagedListDto): void {
-
+        this._router.navigate(['/project', project.id]);
     }
 
     protected onDeleteProject(project: IGetProjectPagedListDto): void {
@@ -163,6 +165,14 @@ export class ProjectManageComponent implements OnInit {
     }
 
     private _deleteProject(id: number): void {
-
+        this._projectService.deleteProject(id).subscribe({
+            next: () => {
+                this._toastr.success('Project deleted successfully.');
+                this._loadProjects();
+            },
+            error: (err: any) => {
+                this._toastr.error('err.error?.message');
+            }
+        })
     }
 }
