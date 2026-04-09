@@ -2,10 +2,15 @@ import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
 import { SharedModule } from '../../shared/shared.module';
-import { AddProjectDialogComponent, ProjectManageComponent } from './components';
 import { ProjectRoutingModule } from './project-routing.module';
-import { ProjectService } from './services/project.service';
-import { ProjectStatesService } from './services/project-states.service';
+import {
+    TeamService,
+    ProjectService,
+    ProjectStatesService
+} from './services';
+import { 
+    AddProjectDialogComponent, 
+    ProjectManageComponent } from './components';
 
 @NgModule({
     declarations: [
@@ -19,7 +24,8 @@ import { ProjectStatesService } from './services/project-states.service';
     ],
     providers: [
         ProjectService,
-        ProjectStatesService
+        ProjectStatesService,
+        TeamService
     ]
 })
 export class ProjectModule { }

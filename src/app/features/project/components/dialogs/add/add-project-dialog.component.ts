@@ -8,6 +8,7 @@ import { AppUtil } from '../../../../../core/utils/app.util';
 import { ProjectService } from '../../../services/project.service';
 import { ToastrService } from 'ngx-toastr';
 import { ProjectStatesService } from '../../../services/project-states.service';
+import { TeamService } from '../../../services';
 
 @Component({
     selector: 'app-add-project-dialog',
@@ -21,15 +22,16 @@ export class AddProjectDialogComponent implements AfterViewInit {
     protected projectTypes: ISelectListItemDto[];
     protected teams: ISelectListItemDto[];
     protected isLoading = false;
-    
+
     protected readonly ProjectTypeEnum = ProjectTypeEnum;
 
     private _modal?: Modal | null;
 
     constructor(private readonly _fb: FormBuilder,
         private readonly _toastr: ToastrService,
+        private readonly _projectStatesService: ProjectStatesService,
         private readonly _projectService: ProjectService,
-        private readonly _projectStatesService: ProjectStatesService) {
+        private readonly _teamService: TeamService) {
         this.projectTypes = getProjectTypes();
         this.teams = [];
         this.form = this._initializeForm();
@@ -97,6 +99,14 @@ export class AddProjectDialogComponent implements AfterViewInit {
     }
 
     private _loadTeams(): void {
+        this._teamService.getListItem().subscribe({
+            next: (response: ISelectListItemDto[]) => {
+                this.teams = response;
+            },
+            error: (err: any) => {
+                this._toastr.error('err.error?.message');
+            }
+        })
         this.teams = [
             { key: 1, value: 'Development Team' },
             { key: 2, value: 'Design Team' },

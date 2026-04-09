@@ -1,6 +1,6 @@
-import { SearchType } from "../../core/enums";
+import { SearchTypeEnum } from "../../core/enums";
 
 export interface ISearchEventDto {
     query: string;
-    type: SearchType
+    type: SearchTypeEnum
 }

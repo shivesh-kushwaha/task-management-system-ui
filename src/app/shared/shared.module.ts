@@ -9,15 +9,17 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 
-import { TokenService } from './services';
+import { DialogStatesService, TokenService } from './services';
 import {
     LayoutComponent,
     NavbarComponent,
     SidebarComponent,
     SearchComponent,
     DialogHeaderComponent,
-    NotFoundComponent
+    NotFoundComponent,
+    DialogConfirmComponent
 } from './components';
+import { TableSortHeaderComponent } from './components/table-sort-header/table-sort-header.component';
 
 @NgModule({
     declarations: [
@@ -26,7 +28,9 @@ import {
         NavbarComponent,
         NotFoundComponent,
         SearchComponent,
-        DialogHeaderComponent
+        DialogHeaderComponent,
+        TableSortHeaderComponent,
+        DialogConfirmComponent
     ],
     imports: [
         CommonModule,
@@ -52,10 +56,13 @@ import {
         NavbarComponent,
         NotFoundComponent,
         SearchComponent,
-        DialogHeaderComponent
+        DialogHeaderComponent,
+        TableSortHeaderComponent,
+        DialogConfirmComponent
     ],
     providers: [
-        TokenService
+        TokenService,
+        DialogStatesService
     ]
 })
 export class SharedModule { }

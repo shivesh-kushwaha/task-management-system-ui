@@ -1,14 +1,16 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { IGetProjectPagedListDto } from '../../dtos';
 import { ProjectService } from '../../services/project.service';
-import { IPagedListRequestDto, IPagedListResponseDto, ISearchEventDto } from '../../../../shared/dtos';
-import { ProjectTypeEnum } from '../../../../core/enums';
+import { IDialogConfirmDto, IPagedListRequestDto, IPagedListResponseDto, ISearchEventDto } from '../../../../shared/dtos';
+import { ModuleTitleEnum, ProjectTypeEnum, SearchTypeEnum } from '../../../../core/enums';
 import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AppUtil } from '../../../../core/utils/app.util';
 import { AddProjectDialogComponent } from '../dialogs/add/add-project-dialog.component';
 import { Subject, takeUntil } from 'rxjs';
 import { ProjectStatesService } from '../../services/project-states.service';
+import { DialogConfirmComponent } from '../../../../shared/components';
+import { DialogStatesService } from '../../../../shared/services';
 
 @Component({
     selector: 'app-projects',
@@ -18,39 +20,40 @@ import { ProjectStatesService } from '../../services/project-states.service';
 })
 export class ProjectManageComponent implements OnInit {
     @ViewChild(AddProjectDialogComponent) addProjectDialogComponent!: AddProjectDialogComponent
+    @ViewChild(DialogConfirmComponent) dialogConfirmComponent!: DialogConfirmComponent;
 
-    // ── Table state ───────────────────────────────────────────────
     protected projects: IGetProjectPagedListDto[] = [];
     protected totalCount = 0;
     protected isLoading = false;
 
-    
     protected request: IPagedListRequestDto;
-    
-    // ── Modal state ───────────────────────────────────────────────
-    protected showDetailModal = false;
-    protected detailProject: IGetProjectPagedListDto | null = null;
 
-    protected editingProject: IGetProjectPagedListDto | null = null;
-    protected editName = '';
-
-    protected showDeleteConfirm = false;
-    protected deletingProject: IGetProjectPagedListDto | null = null;
-    
     protected readonly AppUtil = AppUtil;
     protected readonly ProjectTypeEnum = ProjectTypeEnum;
-    protected readonly pageSizeOptions = [5, 10, 25, 50];
+    protected readonly ModuleTitleEnum = ModuleTitleEnum;
+
+    projectColumnName = {
+        Name: 'name',
+        Type: 'type',
+        WorkItems: 'totalWorkItem',
+        CreatedAt: 'createdAt',
+        CreatedBy: 'createdByFullName',
+        Actions: 'actions'
+    };
+
+    private projectIdToDelete: number = 0;
 
     private _destroy$ = new Subject<void>();
 
     constructor(
         private readonly _projectService: ProjectService,
         private readonly _projectStatesService: ProjectStatesService,
+        private readonly _dialogStatesService: DialogStatesService,
         private readonly _toastr: ToastrService,
         private readonly _cdr: ChangeDetectorRef
     ) {
-        this.request = this._initializeRequest();
-     }
+        this.request = AppUtil.initializePagedListRequest(this.projectColumnName.Name);
+    }
 
     public ngOnInit(): void {
         this._loadProjects();
@@ -60,27 +63,22 @@ export class ProjectManageComponent implements OnInit {
             .subscribe(() => {
                 this._loadProjects();
             });
-    }
 
-    private _loadProjects(): void {
-        this._projectService.getPagedList(this.request).subscribe({
-            next: (response: IPagedListResponseDto<IGetProjectPagedListDto>) => {
-                this.projects = response.items;
-                this.totalCount = response.totalCount;
-                this.isLoading = false;
-                this._cdr.detectChanges();
-            },
-            error: (err: HttpErrorResponse) => {
-                this._toastr.error(err.error?.message);
-                this.isLoading = false;
-                this._cdr.detectChanges();
-            }
-        });
+        this._dialogStatesService.dialogConfirmOpened$
+            .pipe(takeUntil(this._destroy$))
+            .subscribe((load: boolean = false) => {
+                if (load)
+                    this._deleteProject(this.projectIdToDelete);
+                this.projectIdToDelete = 0;
+            });
     }
 
     protected onSearchEvent(event: ISearchEventDto): void {
-        this.request.pageIndex = 0;
+        this.request.pageIndex = this.AppUtil.DefaultPageIndex;
         this.request.filterKey = event.query;
+        if (event.type == SearchTypeEnum.Reset) {
+            this.request = this.AppUtil.initializePagedListRequest(this.projectColumnName.Name);
+        }
         this._loadProjects();
     }
 
@@ -97,14 +95,21 @@ export class ProjectManageComponent implements OnInit {
         this._loadProjects();
     }
 
+    protected onAddProject(): void {
+        this.addProjectDialogComponent.open();
+    }
+
     protected onViewProject(project: IGetProjectPagedListDto): void {
-        this.detailProject = project;
-        this.showDetailModal = true;
+
     }
 
     protected onDeleteProject(project: IGetProjectPagedListDto): void {
-        this.deletingProject = project;
-        this.showDeleteConfirm = true;
+        this.projectIdToDelete = project.id;
+        const dialogConfirmDto: IDialogConfirmDto = {
+            heading: AppUtil.DefaultDeletDialogeHeading,
+            message: AppUtil.getDefaultDeleteDialogMessage(this.ModuleTitleEnum.Project)
+        }
+        this.dialogConfirmComponent.open(dialogConfirmDto);
     }
 
     protected get totalPages(): number {
@@ -141,23 +146,23 @@ export class ProjectManageComponent implements OnInit {
         this._loadProjects();
     }
 
-    protected onAddProject(): void {
-        this.addProjectDialogComponent.open();
+    private _loadProjects(): void {
+        this._projectService.getPagedList(this.request).subscribe({
+            next: (response: IPagedListResponseDto<IGetProjectPagedListDto>) => {
+                this.projects = response.items;
+                this.totalCount = response.totalCount;
+                this.isLoading = false;
+                this._cdr.detectChanges();
+            },
+            error: (err: HttpErrorResponse) => {
+                this._toastr.error(err.error?.message);
+                this.isLoading = false;
+                this._cdr.detectChanges();
+            }
+        });
     }
 
-    protected onProjectSaved(event: boolean): void {
-        if (event) {
-            this._loadProjects();
-        }
-    }
+    private _deleteProject(id: number): void {
 
-    private _initializeRequest(): IPagedListRequestDto {
-        return {
-            filterKey: AppUtil.EmptyString,
-            sort: 'name',
-            order: AppUtil.DefaultSortOrder,
-            pageIndex: AppUtil.DefaultPageIndex,
-            pageSize: AppUtil.DefaultPageSize,
-        };
     }
 }
