@@ -16,7 +16,7 @@ export class AppUtil {
     public static DefaultConfirmDialogHeading = 'Confirm';
     public static DefaultDeleteDialogMessage = 'Are you sure you want to delete the selected';
 
-    public static isNullOrEmpty(value: string): boolean {
+    public static isNullOrEmpty(value: string | null | undefined): boolean {
         return value === undefined || value === null || value === '';
     }
 

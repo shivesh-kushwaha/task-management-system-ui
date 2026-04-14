@@ -4,6 +4,7 @@ import { ToastrService } from "ngx-toastr";
 import { ProjectTypeEnum, RecordStatusEnum, TeamTypeEnum } from "../../../../core/enums";
 import { ProjectService } from "../../services";
 import { IGetProjectByIdDto } from "../../dtos";
+import { AppUtil } from "../../../../core/utils/app.util";
 
 @Component({
     selector: 'app-project-detail',
@@ -19,6 +20,7 @@ export class ProjectDetailComponent implements OnInit {
     protected readonly ProjectTypeEnum = ProjectTypeEnum;
     protected readonly TeamTypeEnum = TeamTypeEnum;
     protected readonly RecordStatusEnum = RecordStatusEnum;
+    protected readonly AppUtil = AppUtil;
 
     constructor(private readonly _projectService: ProjectService,
         private readonly _route: ActivatedRoute,
@@ -31,8 +33,8 @@ export class ProjectDetailComponent implements OnInit {
         this._loadProject();
     }
 
-    protected onBack(): void {
-        this._router.navigate(['/projects/manage']);
+    protected onGoBack(): void {
+        this._router.navigate(['/project/manage']);
     }
 
     private _loadProject(): void {

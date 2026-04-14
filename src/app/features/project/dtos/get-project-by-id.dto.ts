@@ -6,11 +6,7 @@ export interface IGetProjectByIdDto extends IGetProjectInformationDto {
     name: string;
     type: ProjectTypeEnum;
     description?: string | null;
-    createdAt: string;
-    updatedAt?: string | null;
     status: RecordStatusEnum;
     teamName?: string | null;
     totalWorkItems: number;
-    createdById?: number | null;
-    updatedById?: number | null;
 }

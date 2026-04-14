@@ -75,7 +75,7 @@
             }
           </td>
           <td>{{ project.totalWorkItem > 0 ? project.totalWorkItem : AppUtil.DefaultValue }}</td>
-          <td>{{ project.createdAt | date: 'MM/dd/yyyy' }}</td>
+          <td>{{ project.createdAt | date: 'MM/dd/yyyy hh:mm:ss a' }}</td>
           <td>{{ project.createdByFullName || AppUtil.DefaultValue }}</td>
           <td>
             <button class="btn btn-sm btn-outline-secondary me-1" (click)="onViewProject(project)">

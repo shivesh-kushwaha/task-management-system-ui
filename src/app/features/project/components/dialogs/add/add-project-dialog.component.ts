@@ -58,7 +58,7 @@ export class AddProjectDialogComponent implements AfterViewInit {
     protected onTypeChanged(): void {
         this.form.get('type')?.valueChanges.subscribe((type: ProjectTypeEnum) => {
             const teamIdControl = this.form.get('teamId');
-
+            console.log(type);
             if (type === ProjectTypeEnum.Team) {
                 teamIdControl?.setValidators([Validators.required]);
                 this._loadTeams();
