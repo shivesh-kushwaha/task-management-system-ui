@@ -48,10 +48,10 @@ export class UpsertProjectDialogComponent implements AfterViewInit {
     }
 
     public open(project: IGetProjectPagedListDto | null): void {
+        this._loadTeams();
         if (project === null) {
             this._initializeForm();
         } else {
-            this._loadTeams();
             this._assignForm(project);
         }
         this._modal?.show();
@@ -59,22 +59,6 @@ export class UpsertProjectDialogComponent implements AfterViewInit {
 
     protected onClose(): void {
         this._close();
-    }
-
-    protected onTypeChanged(): void {
-        this.form.get('type')?.valueChanges.pipe(take(1)).subscribe((type: ProjectTypeEnum) => {
-            const teamIdControl = this.form.get('teamId');
-            console.log(type);
-            if (type === ProjectTypeEnum.Team) {
-                teamIdControl?.setValidators([Validators.required]);
-                this._loadTeams();
-            } else {
-                teamIdControl?.clearValidators();
-                teamIdControl?.setValue(null);
-                this.teams = [];
-            }
-            teamIdControl?.updateValueAndValidity();
-        });
     }
 
     protected onSubmit(): void {
