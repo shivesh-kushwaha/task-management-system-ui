@@ -8,14 +8,16 @@ import {
     ProjectService,
     ProjectStatesService
 } from './services';
-import { 
-    AddProjectDialogComponent, 
-    ProjectManageComponent } from './components';
+import {
+    ProjectDetailComponent, 
+    ProjectManageComponent, 
+    UpsertProjectDialogComponent} from './components';
 
 @NgModule({
     declarations: [
         ProjectManageComponent,
-        AddProjectDialogComponent,
+        ProjectDetailComponent,
+        UpsertProjectDialogComponent
     ],
     imports: [
         CommonModule,

@@ -1,0 +1,106 @@
+<section>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="page-title">Projects</div>
+        <div>
+            <button type="button" class="btn btn-link" (click)="onGoBack()">Back</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-6">
+            <div class="col-12 fw-bold">Name</div>
+            <div class="col-12">{{project?.name ?? AppUtil.DefaultValue}}</div>
+        </div>
+        <div class="col-6">
+            <div class="col-12 fw-bold">Status</div>
+            <div class="col-12">
+                @if(project?.status === RecordStatusEnum.Active) {
+                <span>Active</span>
+                } @else if(project?.status === RecordStatusEnum.Inactive) {
+                <span>Inactive</span>
+                } @else if(project?.status === RecordStatusEnum.Suspended) {
+                <span>Suspended</span>
+                } @else {
+                <span>{{AppUtil.DefaultValue}}</span>
+                }
+            </div>
+        </div>
+        <div class="col-6 mt-3">
+            <div class="col-12 fw-bold">Type</div>
+            <div class="col-12">
+                @if(project?.type === ProjectTypeEnum.Individual) {
+                <span>Individual</span>
+                } @else if(project?.type == ProjectTypeEnum.Team){
+                <span>Team</span>
+                } @else{
+                <span>{{AppUtil.DefaultValue}}</span>
+                }
+            </div>
+        </div>
+
+        @if (project?.type === ProjectTypeEnum.Team) {
+        <div class="col-6 mt-3">
+            <div class="col-12 fw-bold">Team Name</div>
+            <div class="col-12">
+                <span>{{project?.teamName}}</span>
+            </div>
+        </div>
+        }
+
+        @if (project?.type === ProjectTypeEnum.Individual) {
+        <div class="col-6 mt-3">
+            <div class="col-12 fw-bold">Total Work Items</div>
+            <div class="col-12">
+                <span>{{project?.totalWorkItems}}</span>
+            </div>
+        </div>
+        }
+
+        <div class="col-6 mt-3">
+            <div class="col-12 fw-bold">Created At</div>
+            <div class="col-12">
+                @if (project?.createdAt) {
+                <span>{{ project?.createdAt | date: 'MM/dd/yyyy hh:mm:ss a' }}</span>
+                } @else {
+                <span>{{AppUtil.DefaultValue}}</span>
+                }
+            </div>
+        </div>
+
+        <div class="col-6 mt-3">
+            <div class="col-12 fw-bold">Created By</div>
+            <div class="col-12">
+                @if (!AppUtil.isNullOrEmpty(project?.createdByFirstName)) {
+                <span>{{ project?.createdByFirstName }} {{project?.createdByLastName}}</span>
+                } @else {
+                <span>{{AppUtil.DefaultValue}}</span>
+                }
+            </div>
+        </div>
+
+        @if(!AppUtil.isNullOrEmpty(project?.updatedAt)) {
+        <div class="col-6 mt-3">
+            <div class="col-12 fw-bold">Updated At</div>
+            <div class="col-12">
+                <span>{{ project?.updatedAt | date: 'MM/dd/yyyy hh:mm:ss a' }}</span>
+            </div>
+        </div>
+        }
+
+        @if (!AppUtil.isNullOrEmpty(project?.updatedByFirstName)) {
+        <div class="col-6 mt-3">
+            <div class="col-12 fw-bold">Updated By</div>
+            <div class="col-12">
+                <span>{{ project?.updatedByFirstName }} {{project?.updatedByLastName}}</span>
+            </div>
+        </div>
+        }
+
+        <div class="col-12 mt-3">
+            <div class="col-12 fw-bold">Description</div>
+            <div class="col-12">
+                <span>{{ project?.description ?? AppUtil.DefaultValue }} </span>
+            </div>
+        </div>
+    </div>
+</section>

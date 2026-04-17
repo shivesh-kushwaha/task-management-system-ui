@@ -6,11 +6,12 @@ import { ModuleTitleEnum, ProjectTypeEnum, SearchTypeEnum } from '../../../../co
 import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AppUtil } from '../../../../core/utils/app.util';
-import { AddProjectDialogComponent } from '../dialogs/add/add-project-dialog.component';
 import { Subject, takeUntil } from 'rxjs';
 import { ProjectStatesService } from '../../services/project-states.service';
 import { DialogConfirmComponent } from '../../../../shared/components';
 import { DialogStatesService } from '../../../../shared/services';
+import { Router } from '@angular/router';
+import { UpsertProjectDialogComponent } from '../dialogs/upsert/upsert-project-dialog.component';
 
 @Component({
     selector: 'app-projects',
@@ -19,7 +20,7 @@ import { DialogStatesService } from '../../../../shared/services';
     standalone: false,
 })
 export class ProjectManageComponent implements OnInit {
-    @ViewChild(AddProjectDialogComponent) addProjectDialogComponent!: AddProjectDialogComponent
+    @ViewChild(UpsertProjectDialogComponent) upsertProjectDialogComponent!: UpsertProjectDialogComponent
     @ViewChild(DialogConfirmComponent) dialogConfirmComponent!: DialogConfirmComponent;
 
     protected projects: IGetProjectPagedListDto[] = [];
@@ -49,6 +50,7 @@ export class ProjectManageComponent implements OnInit {
         private readonly _projectService: ProjectService,
         private readonly _projectStatesService: ProjectStatesService,
         private readonly _dialogStatesService: DialogStatesService,
+        private readonly _router: Router,
         private readonly _toastr: ToastrService,
         private readonly _cdr: ChangeDetectorRef
     ) {
@@ -96,11 +98,15 @@ export class ProjectManageComponent implements OnInit {
     }
 
     protected onAddProject(): void {
-        this.addProjectDialogComponent.open();
+        this.upsertProjectDialogComponent.open(null);
+    }
+
+    protected onEditProject(project: IGetProjectPagedListDto): void {
+        this.upsertProjectDialogComponent.open(project);
     }
 
     protected onViewProject(project: IGetProjectPagedListDto): void {
-
+        this._router.navigate(['/project', project.id]);
     }
 
     protected onDeleteProject(project: IGetProjectPagedListDto): void {
@@ -163,6 +169,14 @@ export class ProjectManageComponent implements OnInit {
     }
 
     private _deleteProject(id: number): void {
-
+        this._projectService.deleteProject(id).subscribe({
+            next: () => {
+                this._toastr.success('Project deleted successfully.');
+                this._loadProjects();
+            },
+            error: (err: any) => {
+                this._toastr.error('err.error?.message');
+            }
+        })
     }
 }
