@@ -3,19 +3,20 @@ import { Modal } from 'bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { getProjectTypes, ProjectTypeEnum } from '../../../../../core/enums';
 import { ISelectListItemDto } from '../../../../../shared/dtos';
-import { IAddProjectDto } from '../../../dtos';
+import { IAddProjectDto, IGetProjectPagedListDto } from '../../../dtos';
 import { AppUtil } from '../../../../../core/utils/app.util';
 import { ProjectService } from '../../../services/project.service';
 import { ToastrService } from 'ngx-toastr';
 import { ProjectStatesService } from '../../../services/project-states.service';
 import { TeamService } from '../../../services';
+import { take } from 'rxjs';
 
 @Component({
-    selector: 'app-add-project-dialog',
-    templateUrl: './add-project-dialog.component.html',
+    selector: 'app-upsert-project-dialog',
+    templateUrl: './upsert-project-dialog.component.html',
     standalone: false
 })
-export class AddProjectDialogComponent implements AfterViewInit {
+export class UpsertProjectDialogComponent implements AfterViewInit {
     @ViewChild('addProjectDialog') elementRef!: ElementRef;
 
     protected form: FormGroup;
@@ -46,8 +47,13 @@ export class AddProjectDialogComponent implements AfterViewInit {
         }
     }
 
-    public open(): void {
-        this._initializeForm();
+    public open(project: IGetProjectPagedListDto | null): void {
+        if (project === null) {
+            this._initializeForm();
+        } else {
+            this._loadTeams();
+            this._assignForm(project);
+        }
         this._modal?.show();
     }
 
@@ -56,7 +62,7 @@ export class AddProjectDialogComponent implements AfterViewInit {
     }
 
     protected onTypeChanged(): void {
-        this.form.get('type')?.valueChanges.subscribe((type: ProjectTypeEnum) => {
+        this.form.get('type')?.valueChanges.pipe(take(1)).subscribe((type: ProjectTypeEnum) => {
             const teamIdControl = this.form.get('teamId');
             console.log(type);
             if (type === ProjectTypeEnum.Team) {
@@ -79,7 +85,7 @@ export class AddProjectDialogComponent implements AfterViewInit {
         const payload = this._createPayload();
 
         this.isLoading = true;
-        this._projectService.addProject(payload).subscribe({
+        this._projectService.addProject(payload).pipe(take(1)).subscribe({
             next: () => {
                 this._toastr.success('Project added successfully.');
                 this.isLoading = false;
@@ -99,20 +105,14 @@ export class AddProjectDialogComponent implements AfterViewInit {
     }
 
     private _loadTeams(): void {
-        this._teamService.getListItem().subscribe({
+        this._teamService.getListItem().pipe(take(1)).subscribe({
             next: (response: ISelectListItemDto[]) => {
                 this.teams = response;
             },
             error: (err: any) => {
                 this._toastr.error('err.error?.message');
             }
-        })
-        this.teams = [
-            { key: 1, value: 'Development Team' },
-            { key: 2, value: 'Design Team' },
-            { key: 3, value: 'QA Team' },
-            { key: 4, value: 'Management Team' }
-        ];
+        });
     }
 
     private _isFormValid(): boolean {
@@ -132,6 +132,15 @@ export class AddProjectDialogComponent implements AfterViewInit {
             description: [AppUtil.EmptyString, [Validators.maxLength(500)]],
             type: [null, [Validators.required]],
             teamId: [null]
+        });
+    }
+
+    private _assignForm(project: IGetProjectPagedListDto): void {
+        this.form.patchValue({
+            name: project.name,
+            description: project.description || AppUtil.EmptyString,
+            type: project.type,
+            teamId: project.teamId || null
         });
     }
 

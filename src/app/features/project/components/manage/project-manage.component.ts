@@ -6,12 +6,12 @@ import { ModuleTitleEnum, ProjectTypeEnum, SearchTypeEnum } from '../../../../co
 import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AppUtil } from '../../../../core/utils/app.util';
-import { AddProjectDialogComponent } from '../dialogs/add/add-project-dialog.component';
 import { Subject, takeUntil } from 'rxjs';
 import { ProjectStatesService } from '../../services/project-states.service';
 import { DialogConfirmComponent } from '../../../../shared/components';
 import { DialogStatesService } from '../../../../shared/services';
 import { Router } from '@angular/router';
+import { UpsertProjectDialogComponent } from '../dialogs/upsert/upsert-project-dialog.component';
 
 @Component({
     selector: 'app-projects',
@@ -20,7 +20,7 @@ import { Router } from '@angular/router';
     standalone: false,
 })
 export class ProjectManageComponent implements OnInit {
-    @ViewChild(AddProjectDialogComponent) addProjectDialogComponent!: AddProjectDialogComponent
+    @ViewChild(UpsertProjectDialogComponent) upsertProjectDialogComponent!: UpsertProjectDialogComponent
     @ViewChild(DialogConfirmComponent) dialogConfirmComponent!: DialogConfirmComponent;
 
     protected projects: IGetProjectPagedListDto[] = [];
@@ -98,7 +98,11 @@ export class ProjectManageComponent implements OnInit {
     }
 
     protected onAddProject(): void {
-        this.addProjectDialogComponent.open();
+        this.upsertProjectDialogComponent.open(null);
+    }
+
+    protected onEditProject(project: IGetProjectPagedListDto): void {
+        this.upsertProjectDialogComponent.open(project);
     }
 
     protected onViewProject(project: IGetProjectPagedListDto): void {

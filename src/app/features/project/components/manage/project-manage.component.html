@@ -78,6 +78,10 @@
           <td>{{ project.createdAt | date: 'MM/dd/yyyy hh:mm:ss a' }}</td>
           <td>{{ project.createdByFullName || AppUtil.DefaultValue }}</td>
           <td>
+            <button class="btn btn-sm btn-outline-primary me-1" (click)="onEditProject(project)"
+              data-bs-toggle="tooltip" data-bs-title="Edit Project">
+              <i class="bi bi-pencil"></i>
+            </button>
             <button class="btn btn-sm btn-outline-secondary me-1" (click)="onViewProject(project)">
               <i class="bi bi-eye"></i>
             </button>
@@ -130,6 +134,6 @@
 </section>
 
 <section>
-  <app-add-project-dialog></app-add-project-dialog>
+  <app-upsert-project-dialog></app-upsert-project-dialog>
   <app-dialog-confirm></app-dialog-confirm>
 </section>
