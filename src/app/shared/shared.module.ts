@@ -17,7 +17,8 @@ import {
     SearchComponent,
     DialogHeaderComponent,
     NotFoundComponent,
-    DialogConfirmComponent
+    DialogConfirmComponent,
+    PaginationComponent
 } from './components';
 import { TableSortHeaderComponent } from './components/table-sort-header/table-sort-header.component';
 
@@ -28,8 +29,10 @@ import { TableSortHeaderComponent } from './components/table-sort-header/table-s
         NavbarComponent,
         NotFoundComponent,
         SearchComponent,
-        DialogHeaderComponent,
         TableSortHeaderComponent,
+        PaginationComponent,
+
+        DialogHeaderComponent,
         DialogConfirmComponent
     ],
     imports: [
@@ -56,8 +59,10 @@ import { TableSortHeaderComponent } from './components/table-sort-header/table-s
         NavbarComponent,
         NotFoundComponent,
         SearchComponent,
-        DialogHeaderComponent,
         TableSortHeaderComponent,
+        PaginationComponent,
+        
+        DialogHeaderComponent,
         DialogConfirmComponent
     ],
     providers: [
