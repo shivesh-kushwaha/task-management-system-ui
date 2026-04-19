@@ -20,7 +20,6 @@ import {
         UpsertProjectDialogComponent
     ],
     imports: [
-        CommonModule,
         SharedModule,
         ProjectRoutingModule,
     ],

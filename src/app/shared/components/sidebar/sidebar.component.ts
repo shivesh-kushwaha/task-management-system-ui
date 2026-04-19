@@ -14,8 +14,8 @@ export class SidebarComponent {
     menuItems = [
         { label: 'Dashboard', icon: 'bi bi-speedometer2', route: '/dashboard' },
         { label: 'Projects', icon: 'bi bi-folder', route: '/project/manage' },
-        { label: 'Tasks', icon: 'bi bi-list-task', route: '/task' },
-        { label: 'Users', icon: 'bi bi-people', route: '/user' },
+        { label: 'Tasks', icon: 'bi bi-list-task', route: '/task/manage' },
+        { label: 'Users', icon: 'bi bi-people', route: '/user/manage' },
     ];
 
     constructor(public router: Router) { }
