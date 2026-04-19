@@ -54,7 +54,7 @@ export class ProjectManageComponent implements OnInit, OnDestroy {
         private readonly _toastr: ToastrService,
         private readonly _cdr: ChangeDetectorRef
     ) {
-        this.request = AppUtil.initializePagedListRequest(this.projectColumnName.Name);
+        this.request = AppUtil.initializePagedListRequest(this.projectColumnName.CreatedAt);
     }
 
     public ngOnInit(): void {
@@ -123,6 +123,18 @@ export class ProjectManageComponent implements OnInit, OnDestroy {
         this.dialogConfirmComponent.open(dialogConfirmDto);
     }
 
+    protected goToPage(page: number): void {
+        if (page < 0 || page >= this.totalPages) return;
+        this.request.pageIndex = page;
+        this._loadProjects();
+    }
+
+    protected onPageSizeChange(newSize: number): void {
+        this.request.pageSize = newSize;
+        this.request.pageIndex = 0;
+        this._loadProjects();
+    }
+
     protected get totalPages(): number {
         return Math.ceil(this.totalCount / this.request.pageSize);
     }
@@ -144,17 +156,6 @@ export class ProjectManageComponent implements OnInit, OnDestroy {
 
     protected get endRecord(): number {
         return Math.min((this.request.pageIndex + 1) * this.request.pageSize, this.totalCount);
-    }
-
-    protected goToPage(page: number): void {
-        if (page < 0 || page >= this.totalPages) return;
-        this.request.pageIndex = page;
-        this._loadProjects();
-    }
-
-    protected onPageSizeChange(): void {
-        this.request.pageIndex = 0;
-        this._loadProjects();
     }
 
     private _loadProjects(): void {
