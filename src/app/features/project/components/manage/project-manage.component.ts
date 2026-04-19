@@ -6,7 +6,7 @@ import { ModuleTitleEnum, ProjectTypeEnum, SearchTypeEnum } from '../../../../co
 import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AppUtil } from '../../../../core/utils/app.util';
-import { Subject, takeUntil } from 'rxjs';
+import { Subject, take, takeUntil } from 'rxjs';
 import { ProjectStatesService } from '../../services/project-states.service';
 import { DialogConfirmComponent } from '../../../../shared/components';
 import { DialogStatesService } from '../../../../shared/services';
@@ -19,7 +19,7 @@ import { UpsertProjectDialogComponent } from '../dialogs/upsert/upsert-project-d
     styleUrls: ['./project-manage.component.scss'],
     standalone: false,
 })
-export class ProjectManageComponent implements OnInit {
+export class ProjectManageComponent implements OnInit, OnDestroy {
     @ViewChild(UpsertProjectDialogComponent) upsertProjectDialogComponent!: UpsertProjectDialogComponent
     @ViewChild(DialogConfirmComponent) dialogConfirmComponent!: DialogConfirmComponent;
 
@@ -60,7 +60,7 @@ export class ProjectManageComponent implements OnInit {
     public ngOnInit(): void {
         this._loadProjects();
 
-        this._projectStatesService.projectAdded$
+        this._projectStatesService.refreshProjects$
             .pipe(takeUntil(this._destroy$))
             .subscribe(() => {
                 this._loadProjects();
@@ -73,6 +73,11 @@ export class ProjectManageComponent implements OnInit {
                     this._deleteProject(this.projectIdToDelete);
                 this.projectIdToDelete = 0;
             });
+    }
+
+    public ngOnDestroy(): void {
+        this._destroy$.next();
+        this._destroy$.complete();
     }
 
     protected onSearchEvent(event: ISearchEventDto): void {
@@ -113,7 +118,7 @@ export class ProjectManageComponent implements OnInit {
         this.projectIdToDelete = project.id;
         const dialogConfirmDto: IDialogConfirmDto = {
             heading: AppUtil.DefaultDeletDialogeHeading,
-            message: AppUtil.getDefaultDeleteDialogMessage(this.ModuleTitleEnum.Project)
+            message: AppUtil.getDefaultDeleteDialogMessage(this.ModuleTitleEnum.Project) + '?'
         }
         this.dialogConfirmComponent.open(dialogConfirmDto);
     }
@@ -153,7 +158,7 @@ export class ProjectManageComponent implements OnInit {
     }
 
     private _loadProjects(): void {
-        this._projectService.getPagedList(this.request).subscribe({
+        this._projectService.getPagedList(this.request).pipe(take(1)).subscribe({
             next: (response: IPagedListResponseDto<IGetProjectPagedListDto>) => {
                 this.projects = response.items;
                 this.totalCount = response.totalCount;
@@ -175,7 +180,7 @@ export class ProjectManageComponent implements OnInit {
                 this._loadProjects();
             },
             error: (err: any) => {
-                this._toastr.error('err.error?.message');
+                this._toastr.error(err.error?.message);
             }
         })
     }

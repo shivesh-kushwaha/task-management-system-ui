@@ -45,7 +45,7 @@
               [columnName]="projectColumnName.CreatedBy">
             </app-table-sort-header>
           </th>
-          <th>Actions</th>
+          <th class="text-center">Actions</th>
         </tr>
       </thead>
 
@@ -77,7 +77,7 @@
           <td>{{ project.totalWorkItem > 0 ? project.totalWorkItem : AppUtil.DefaultValue }}</td>
           <td>{{ project.createdAt | date: 'MM/dd/yyyy hh:mm:ss a' }}</td>
           <td>{{ project.createdByFullName || AppUtil.DefaultValue }}</td>
-          <td>
+          <td class="text-center">
             <button class="btn btn-sm btn-outline-primary me-1" (click)="onEditProject(project)"
               data-bs-toggle="tooltip" data-bs-title="Edit Project">
               <i class="bi bi-pencil"></i>

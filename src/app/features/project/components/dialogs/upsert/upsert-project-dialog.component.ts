@@ -1,15 +1,15 @@
 import { AfterViewInit, Component, ElementRef, ViewChild } from '@angular/core';
-import { Modal } from 'bootstrap';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { Modal } from 'bootstrap';
+import { take } from 'rxjs';
+import { ToastrService } from 'ngx-toastr';
 import { getProjectTypes, ProjectTypeEnum } from '../../../../../core/enums';
 import { ISelectListItemDto } from '../../../../../shared/dtos';
-import { IAddProjectDto, IGetProjectPagedListDto } from '../../../dtos';
+import { IAddProjectDto, IGetProjectPagedListDto, IUpdateProjectDto } from '../../../dtos';
 import { AppUtil } from '../../../../../core/utils/app.util';
 import { ProjectService } from '../../../services/project.service';
-import { ToastrService } from 'ngx-toastr';
 import { ProjectStatesService } from '../../../services/project-states.service';
 import { TeamService } from '../../../services';
-import { take } from 'rxjs';
 
 @Component({
     selector: 'app-upsert-project-dialog',
@@ -23,6 +23,7 @@ export class UpsertProjectDialogComponent implements AfterViewInit {
     protected projectTypes: ISelectListItemDto[];
     protected teams: ISelectListItemDto[];
     protected isLoading = false;
+    protected id: number = 0;
 
     protected readonly ProjectTypeEnum = ProjectTypeEnum;
 
@@ -52,6 +53,7 @@ export class UpsertProjectDialogComponent implements AfterViewInit {
         if (project === null) {
             this._initializeForm();
         } else {
+            this.id = project.id;
             this._assignForm(project);
         }
         this._modal?.show();
@@ -66,7 +68,14 @@ export class UpsertProjectDialogComponent implements AfterViewInit {
             return;
         }
 
-        const payload = this._createPayload();
+        if (this.id) 
+            this._update();
+        else
+            this._add();
+    }
+
+    private _add(): void {
+        const payload = this._createPayloadToAdd();
 
         this.isLoading = true;
         this._projectService.addProject(payload).pipe(take(1)).subscribe({
@@ -74,7 +83,25 @@ export class UpsertProjectDialogComponent implements AfterViewInit {
                 this._toastr.success('Project added successfully.');
                 this.isLoading = false;
                 this._close();
-                this._projectStatesService.projectAddedNotify();
+                this._projectStatesService.notifyProjectChanged();
+            },
+            error: (err: any) => {
+                this._toastr.error(err.error?.message);
+                this.isLoading = false;
+            }
+        });
+    }
+
+    private _update(): void {
+        const payload = this._createPayloadToUpdate();
+
+        this.isLoading = true;
+        this._projectService.updateProject(payload).pipe(take(1)).subscribe({
+            next: () => {
+                this._toastr.success('Project updated successfully.');
+                this.isLoading = false;
+                this._close();
+                this._projectStatesService.notifyProjectChanged();
             },
             error: (err: any) => {
                 this._toastr.error(err.error?.message);
@@ -128,7 +155,7 @@ export class UpsertProjectDialogComponent implements AfterViewInit {
         });
     }
 
-    private _createPayload(): IAddProjectDto {
+    private _createPayloadToAdd(): IAddProjectDto {
         const formValue = this.form.value;
 
         const projectData: IAddProjectDto = {
@@ -137,6 +164,20 @@ export class UpsertProjectDialogComponent implements AfterViewInit {
             type: formValue.type,
             teamId: formValue.type === ProjectTypeEnum.Team ? formValue.teamId : null
         };
+
+        return projectData;
+    }
+
+    private _createPayloadToUpdate(): IUpdateProjectDto {
+        const formValue = this.form.value;
+
+        const projectData: IUpdateProjectDto = {
+            id: this.id,
+            name: formValue.name,
+            description: formValue.description,
+            type: formValue.type,
+            teamId: formValue.type === ProjectTypeEnum.Team ? formValue.teamId: null
+        }
 
         return projectData;
     }

@@ -3,10 +3,10 @@ import { Subject } from "rxjs";
 
 @Injectable()
 export class ProjectStatesService {
-    private _projectAdded = new Subject<void>();
-    public projectAdded$ = this._projectAdded.asObservable();
+    private _refreshProjects = new Subject<void>();
+    public refreshProjects$ = this._refreshProjects.asObservable();
 
-    public projectAddedNotify(): void {
-        this._projectAdded.next();
+    public notifyProjectChanged(): void {
+        this._refreshProjects.next();
     }
 }
