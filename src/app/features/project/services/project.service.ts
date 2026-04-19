@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import { IPagedListRequestDto, toQueryString } from '../../../shared/dtos/paged-list-request.dto';
 import { IPagedListResponseDto } from '../../../shared/dtos';
-import { IAddProjectDto, IGetProjectByIdDto, IGetProjectPagedListDto } from '../dtos';
+import { IAddProjectDto, IGetProjectByIdDto, IGetProjectPagedListDto, IUpdateProjectDto } from '../dtos';
 
 @Injectable({
     providedIn: 'root'
@@ -25,6 +25,10 @@ export class ProjectService {
     public getPagedList(request: IPagedListRequestDto): Observable<IPagedListResponseDto<IGetProjectPagedListDto>> {
         const params = toQueryString(request);
         return this.http.get<IPagedListResponseDto<IGetProjectPagedListDto>>(`${this.api}/paged-list?${params}`);
+    }
+
+    public updateProject(request: IUpdateProjectDto): Observable<any> {
+        return this.http.put(`${this.api}`, request);
     }
 
     public deleteProject(id: number): Observable<any> {
