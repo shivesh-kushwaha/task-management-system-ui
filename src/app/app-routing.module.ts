@@ -72,11 +72,11 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     loadChildren: () => import('./features/project/project.module').then(m => m.ProjectModule)
   },
-  // {
-  //   path: 'work-items',
-  //   canActivate: [AuthGuard],
-  //   loadChildren: () => import('./features/work-items/work-items.module').then(m => m.WorkItemsModule)
-  // },
+  {
+    path: 'task',
+    canActivate: [AuthGuard],
+    loadChildren: () => import('./features/task/task.module').then(m => m.TaskModuleModule)
+  },
   {
     path: '**',
     canActivate: [AuthGuard],
