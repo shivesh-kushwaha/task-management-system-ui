@@ -3,7 +3,7 @@ import { IPagedListRequestDto } from "../../shared/dtos";
 export class AppUtil {
     public static EmptyString = '';
     public static DefaultSearch = 'Search...';
-    public static DefaultPageSize = 25;
+    public static DefaultPageSize = 10;
     public static DefaultPageIndex = 0;
     public static DefaultSortOrder = 'asc';
     public static AscendingOrder = 'asc';
