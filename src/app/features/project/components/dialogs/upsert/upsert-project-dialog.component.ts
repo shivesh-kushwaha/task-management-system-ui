@@ -23,11 +23,11 @@ export class UpsertProjectDialogComponent implements AfterViewInit {
     protected projectTypes: ISelectListItemDto[];
     protected teams: ISelectListItemDto[];
     protected isLoading = false;
+    protected id: number = 0;
 
     protected readonly ProjectTypeEnum = ProjectTypeEnum;
 
     private _modal?: Modal | null;
-    private id: number = 0;
 
     constructor(private readonly _fb: FormBuilder,
         private readonly _toastr: ToastrService,

@@ -2,7 +2,7 @@
     <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
 
-            <app-dialog-header [heading]="'Add Project'" (closeEvent)="onClose()"></app-dialog-header>
+            <app-dialog-header [heading]="id ? 'Update PRoject' : 'Add Project'" (closeEvent)="onClose()"></app-dialog-header>
 
             <div class="modal-body">
                 <form [formGroup]="form">
