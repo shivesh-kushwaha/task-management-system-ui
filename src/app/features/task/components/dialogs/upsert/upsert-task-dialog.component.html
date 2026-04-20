@@ -1,0 +1,117 @@
+<div class="modal fade" #taskDialog>
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <app-dialog-header [heading]="id ? 'Update Task' : 'Add Task'" (closeEvent)="onClose()">
+            </app-dialog-header>
+
+            <div class="modal-body">
+                <form [formGroup]="form">
+                    <!-- PROJECT SECTION – always visible, optional -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Project (optional)</label>
+                        <select class="form-select" formControlName="projectId"
+                            [ngClass]="{'is-invalid': f['projectId']?.invalid && f['projectId']?.touched}">
+                            <option [ngValue]="null">Select project (optional)</option>
+                            @for (proj of projects; track proj.key) {
+                            <option [ngValue]="proj.key">{{ proj.value }}</option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- PARENT TASK SECTION – shown only in add mode with route id, or in edit mode -->
+                    @if (showParentSection) {
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            Parent Task
+                            @if (form.get('parentId')?.value) {
+                            <span class="text-danger">*</span>
+                            }
+                        </label>
+                        <select class="form-select" formControlName="parentId"
+                            [ngClass]="{'is-invalid': f['parentId']?.invalid && f['parentId']?.touched}">
+                            <option [ngValue]="null">None</option>
+                            @for (task of parentTasks; track task.key) {
+                            <option [ngValue]="task.key">{{ task.value }}</option>
+                            }
+                        </select>
+                        @if (f['parentId']?.invalid && f['parentId']?.touched) {
+                        <div class="invalid-feedback">Parent task is required.</div>
+                        }
+                    </div>
+                    }
+
+                    <!-- Title -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Title <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" formControlName="title" placeholder="Task title"
+                            [ngClass]="{'is-invalid': f['title']?.invalid && f['title']?.touched}">
+                        @if (f['title']?.invalid && f['title']?.touched) {
+                        <div class="invalid-feedback">
+                            @if (f['title']?.errors?.['required']) { <span>Title is required.</span> }
+                            @if (f['title']?.errors?.['maxlength']) { <span>Maximum 200 characters.</span> }
+                        </div>
+                        }
+                    </div>
+
+                    <!-- Type (dropdown + optional custom) -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Type <span class="text-danger">*</span></label>
+                        <select class="form-select" formControlName="typeId" (change)="onTypeChange()"
+                            [ngClass]="{'is-invalid': f['typeId']?.invalid && f['typeId']?.touched}">
+                            <option [ngValue]="null">Select type</option>
+                            @for (opt of workItemTypes; track opt.key) {
+                            <option [ngValue]="opt.key">{{ opt.value }}</option>
+                            }
+                        </select>
+                        @if (showCustomTypeInput) {
+                        <input type="text" class="form-control mt-2" formControlName="customType"
+                            placeholder="Enter custom type"
+                            [ngClass]="{'is-invalid': f['customType']?.invalid && f['customType']?.touched}">
+                        @if (f['customType']?.invalid && f['customType']?.touched) {
+                        <div class="invalid-feedback">Custom type is required.</div>
+                        }
+                        }
+                        @if (f['typeId']?.invalid && f['typeId']?.touched) {
+                        <div class="text-danger small mt-1">Please select a type.</div>
+                        }
+                    </div>
+
+                    <!-- Assigned To -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Assigned To</label>
+                        <select class="form-select" formControlName="assignedToId">
+                            <option [ngValue]="null">Unassigned</option>
+                            @for (user of users; track user.key) {
+                            <option [ngValue]="user.key">{{ user.value }}</option>
+                            }
+                        </select>
+                    </div>
+
+                    <!-- Due Date -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Due Date <span class="text-danger">*</span></label>
+                        <input type="date" class="form-control" formControlName="dueDate"
+                            [ngClass]="{'is-invalid': f['dueDate']?.invalid && f['dueDate']?.touched}">
+                        <div class="invalid-feedback">Due date is required.</div>
+                    </div>
+
+                    <!-- Description -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Description</label>
+                        <textarea class="form-control" formControlName="description" rows="3"
+                            placeholder="Optional description"></textarea>
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" (click)="onClose()">Cancel</button>
+                <button type="button" class="btn btn-primary" (click)="onSubmit()"
+                    [disabled]="form.invalid || isLoading">
+                    @if (isLoading) { <span class="spinner-border spinner-border-sm me-2"></span> }
+                    {{ id ? 'Update' : 'Create' }}
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

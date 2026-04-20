@@ -9,7 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 
-import { DialogStatesService, TokenService } from './services';
+import { DialogStatesService, ProjectService, TokenService, UserService, WorkItemService, WorkItemTypeService } from './services';
 import {
     LayoutComponent,
     NavbarComponent,
@@ -61,13 +61,18 @@ import { TableSortHeaderComponent } from './components/table-sort-header/table-s
         SearchComponent,
         TableSortHeaderComponent,
         PaginationComponent,
-        
+
         DialogHeaderComponent,
         DialogConfirmComponent
     ],
     providers: [
         TokenService,
-        DialogStatesService
+        DialogStatesService,
+
+        ProjectService,
+        WorkItemTypeService,
+        WorkItemService,
+        UserService
     ]
 })
 export class SharedModule { }
