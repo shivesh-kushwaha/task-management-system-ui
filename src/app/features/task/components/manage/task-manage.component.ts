@@ -1,16 +1,18 @@
-// work-item-manage.component.ts
 import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { Subject, takeUntil } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ToastrService } from 'ngx-toastr';
 
 import { AppUtil } from '../../../../core/utils/app.util';
-import { SearchTypeEnum } from '../../../../core/enums';
-import { IPagedListRequestDto, IPagedListResponseDto, ISearchEventDto } from '../../../../shared/dtos';
+import { ModuleTitleEnum, SearchTypeEnum } from '../../../../core/enums';
+import { IDialogConfirmDto, IPagedListRequestDto, IPagedListResponseDto, ISearchEventDto } from '../../../../shared/dtos';
 import { IGetWorkItemPagedListDto } from '../../dtos';
 import { RecordStatusEnum, WorkItemPriorityEnum } from '../../../../core/enums'; // adjust path
 import { WorkItemService, WorkItemStatesService } from '../../services';
 import { UpsertTaskDialogComponent } from '../dialogs/upsert/upsert-task-dialog.component';
+import { DialogConfirmComponent } from '../../../../shared/components';
+import { DialogStatesService } from '../../../../shared/services';
+import { Router } from '@angular/router';
 
 @Component({
     selector: 'app-task',
@@ -19,18 +21,21 @@ import { UpsertTaskDialogComponent } from '../dialogs/upsert/upsert-task-dialog.
 })
 export class TaskManageComponent implements OnInit, OnDestroy {
     @ViewChild(UpsertTaskDialogComponent) upsertTaskDialogComponent!: UpsertTaskDialogComponent;
+    @ViewChild(DialogConfirmComponent) dialogConfirmComponent!: DialogConfirmComponent;
+
 
     protected items: IGetWorkItemPagedListDto[] = [];
     protected totalCount = 0;
     protected isLoading = false;
 
     protected request: IPagedListRequestDto;
-
     protected readonly AppUtil = AppUtil;
     protected readonly RecordStatusEnum = RecordStatusEnum;
     protected readonly WorkItemPriorityEnum = WorkItemPriorityEnum;
+    protected readonly ModuleTitleEnum = ModuleTitleEnum;
 
     private _destroy$ = new Subject<void>();
+    private _workItemIdToDelete: number = 0;
 
     columnNames = {
         Title: 'title',
@@ -46,6 +51,8 @@ export class TaskManageComponent implements OnInit, OnDestroy {
     constructor(
         private readonly _workItemService: WorkItemService,
         private readonly _workItemStatesService: WorkItemStatesService,
+        private readonly _dialogStatesService: DialogStatesService,
+        private readonly _router: Router,
         private readonly _toastr: ToastrService,
         private readonly _cdr: ChangeDetectorRef,
     ) {
@@ -59,6 +66,14 @@ export class TaskManageComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this._destroy$))
             .subscribe(() => {
                 this._loadWorkItems();
+            });
+
+        this._dialogStatesService.dialogConfirmOpened$
+            .pipe(takeUntil(this._destroy$))
+            .subscribe((load: boolean = false) => {
+                if (load)
+                    this._deleteWorkItem(this._workItemIdToDelete);
+                this._workItemIdToDelete = 0;
             });
     }
 
@@ -124,6 +139,31 @@ export class TaskManageComponent implements OnInit, OnDestroy {
         return Math.min((this.request.pageIndex + 1) * this.request.pageSize, this.totalCount);
     }
 
+    protected getPriorityLabel(priority: WorkItemPriorityEnum): string {
+        return WorkItemPriorityEnum[priority] || 'Unknown';
+    }
+
+    protected onAddWorkItem(): void {
+        this.upsertTaskDialogComponent.open(null);
+    }
+
+    protected onEditWorkItem(workItem: IGetWorkItemPagedListDto): void {
+        this.upsertTaskDialogComponent.open(workItem);
+    }
+
+    protected onViewWorkItem(workItem: IGetWorkItemPagedListDto): void {
+        this._router.navigate(['/task', workItem.id]);
+    }
+
+    protected onDeleteWorkItem(workItem: IGetWorkItemPagedListDto): void {
+        this._workItemIdToDelete = workItem.id;
+        const dialogConfirmDto: IDialogConfirmDto = {
+            heading: AppUtil.DefaultDeletDialogeHeading,
+            message: AppUtil.getDefaultDeleteDialogMessage(this.ModuleTitleEnum.Task) + '?'
+        }
+        this.dialogConfirmComponent.open(dialogConfirmDto);
+    }
+
     private _loadWorkItems(): void {
         this._workItemService.getPagedList(this.request).subscribe({
             next: (response: IPagedListResponseDto<IGetWorkItemPagedListDto>) => {
@@ -140,33 +180,15 @@ export class TaskManageComponent implements OnInit, OnDestroy {
         });
     }
 
-    protected getPriorityBadgeClass(priority: WorkItemPriorityEnum): string {
-        switch (priority) {
-            case WorkItemPriorityEnum.Low: return 'bg-info';
-            case WorkItemPriorityEnum.Medium: return 'bg-primary';
-            case WorkItemPriorityEnum.High: return 'bg-warning';
-            case WorkItemPriorityEnum.Critical: return 'bg-danger';
-            default: return 'bg-secondary';
-        }
-    }
-
-    protected getPriorityLabel(priority: WorkItemPriorityEnum): string {
-        return WorkItemPriorityEnum[priority] || 'Unknown';
-    }
-
-    protected onAddWorkItem(): void {
-        this.upsertTaskDialogComponent.open(null);
-    }
-
-    protected onEditWorkItem(workItem: IGetWorkItemPagedListDto): void {
-
-    }
-
-    protected onViewWorkItem(workItem: IGetWorkItemPagedListDto): void {
-
-    }
-
-    protected onDeleteWorkItem(workItem: IGetWorkItemPagedListDto): void {
-
+    private _deleteWorkItem(id: number): void {
+        this._workItemService.deleteWorkItem(id).subscribe({
+            next: () => {
+                this._toastr.success('Task deleted successfully.');
+                this._loadWorkItems();
+            },
+            error: (err: any) => {
+                this._toastr.error(err.error?.message);
+            }
+        })
     }
 }

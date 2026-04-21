@@ -6,6 +6,8 @@ import { IPagedListRequestDto, toQueryString } from '../../../shared/dtos/paged-
 import { IPagedListResponseDto, ISelectListItemDto } from '../../../shared/dtos';
 import { IGetWorkItemPagedListDto } from '../dtos/get-work-item-paged-list.dto';
 import { IAddWorkItemDto } from '../dtos';
+import { IUpdateWorkItemDto } from '../dtos/update-work-item.dto';
+import { IGetWorkItemByIdDto } from '../dtos/get-work-item-by-id.dto';
 
 @Injectable({
     providedIn: 'root'
@@ -15,7 +17,7 @@ export class WorkItemService {
 
     constructor(private readonly _http: HttpClient) { }
 
-    addTask(payload: IAddWorkItemDto): Observable<any> {
+    public addTask(payload: IAddWorkItemDto): Observable<any> {
         return this._http.post(`${this._api}`, payload);
     }
 
@@ -26,5 +28,17 @@ export class WorkItemService {
 
     public getListItem(): Observable<Array<ISelectListItemDto>> {
         return this._http.get<Array<ISelectListItemDto>>(`${this._api}/select-list-item`);
+    }
+
+    public getById(id: number): Observable<IGetWorkItemByIdDto> {
+        return this._http.get<IGetWorkItemByIdDto>(`${this._api}/${id}`);
+    }
+
+    public updateTask(payload: IUpdateWorkItemDto): Observable<any> {
+        return this._http.put(`${this._api}`, payload);
+    }
+
+    public deleteWorkItem(id: number): Observable<any> {
+        return this._http.delete(`${this._api}/${id}`);
     }
 }

@@ -1,0 +1,107 @@
+<section>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="page-title">Task
+            @if (!AppUtil.isNullOrEmpty(workItem?.parentName)) {
+            ({{workItem?.parentName}})
+            }
+        </div>
+        <div>
+            <button type="button" class="btn btn-link" (click)="onGoBack()">Back</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-6">
+            <div class="col-12 fw-bold">Name</div>
+            <div class="col-12">{{workItem?.title ?? AppUtil.DefaultValue}}</div>
+        </div>
+        <div class="col-6">
+            <div class="col-12 fw-bold">Status</div>
+            <div class="col-12">
+                @if(workItem?.status === RecordStatusEnum.Active) {
+                <span>Active</span>
+                } @else if(workItem?.status === RecordStatusEnum.Inactive) {
+                <span>Inactive</span>
+                } @else if(workItem?.status === RecordStatusEnum.Suspended) {
+                <span>Suspended</span>
+                } @else {
+                <span>{{AppUtil.DefaultValue}}</span>
+                }
+            </div>
+        </div>
+
+        <div class="col-6 mt-3">
+            <div class="col-12 fw-bold">Type</div>
+            <div class="col-12"> {{workItem?.type}} </div>
+        </div>
+
+        <div class="col-6 mt-3">
+            <div class="col-12 fw-bold">Priority</div>
+            <div class="col-12"> {{workItem?.priority}} </div>
+        </div>
+
+        <div class="col-6 mt-3">
+            <div class="col-12 fw-bold">Assigned To</div>
+            <div class="col-12"> {{!AppUtil.isNullOrEmpty(workItem?.assignedToName) ? workItem?.assignedToName :
+                AppUtil.DefaultValue}} </div>
+        </div>
+
+        <div class="col-6 mt-3">
+            <div class="col-12 fw-bold">Due Date</div>
+            <div class="col-12">
+                @if (!AppUtil.isNullOrEmpty(workItem?.dueDate)) {
+                <span>{{ workItem?.dueDate | date: 'MM/dd/yyyy' }}</span>
+                } @else {
+                <span>{{AppUtil.DefaultValue}}</span>
+                }
+            </div>
+        </div>
+
+        <div class="col-6 mt-3">
+            <div class="col-12 fw-bold">Created At</div>
+            <div class="col-12">
+                @if (!AppUtil.isNullOrEmpty(workItem?.createdAt)) {
+                <span>{{ workItem?.createdAt | date: 'MM/dd/yyyy hh:mm:ss a' }}</span>
+                } @else {
+                <span>{{AppUtil.DefaultValue}}</span>
+                }
+            </div>
+        </div>
+
+        <div class="col-6 mt-3">
+            <div class="col-12 fw-bold">Created By</div>
+            <div class="col-12">
+                @if (!AppUtil.isNullOrEmpty(workItem?.createdByFirstName)) {
+                <span>{{ workItem?.createdByFirstName }} {{workItem?.createdByLastName}}</span>
+                } @else {
+                <span>{{AppUtil.DefaultValue}}</span>
+                }
+            </div>
+        </div>
+
+        @if(!AppUtil.isNullOrEmpty(workItem?.updatedAt)) {
+        <div class="col-6 mt-3">
+            <div class="col-12 fw-bold">Updated At</div>
+            <div class="col-12">
+                <span>{{ workItem?.updatedAt | date: 'MM/dd/yyyy hh:mm:ss a' }}</span>
+            </div>
+        </div>
+        }
+
+        @if (!AppUtil.isNullOrEmpty(workItem?.updatedByFirstName)) {
+        <div class="col-6 mt-3">
+            <div class="col-12 fw-bold">Updated By</div>
+            <div class="col-12">
+                <span>{{ workItem?.updatedByFirstName }} {{workItem?.updatedByLastName}}</span>
+            </div>
+        </div>
+        }
+
+        <div class="col-12 mt-3">
+            <div class="col-12 fw-bold">Description</div>
+            <div class="col-12">
+                <span>{{ workItem?.description ?? AppUtil.DefaultValue }} </span>
+            </div>
+        </div>
+    </div>
+</section>

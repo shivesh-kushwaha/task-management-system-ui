@@ -56,21 +56,13 @@
                     <!-- Type (dropdown + optional custom) -->
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Type <span class="text-danger">*</span></label>
-                        <select class="form-select" formControlName="typeId" (change)="onTypeChange()"
+                        <select class="form-select" formControlName="typeId"
                             [ngClass]="{'is-invalid': f['typeId']?.invalid && f['typeId']?.touched}">
                             <option [ngValue]="null">Select type</option>
                             @for (opt of workItemTypes; track opt.key) {
                             <option [ngValue]="opt.key">{{ opt.value }}</option>
                             }
                         </select>
-                        @if (showCustomTypeInput) {
-                        <input type="text" class="form-control mt-2" formControlName="customType"
-                            placeholder="Enter custom type"
-                            [ngClass]="{'is-invalid': f['customType']?.invalid && f['customType']?.touched}">
-                        @if (f['customType']?.invalid && f['customType']?.touched) {
-                        <div class="invalid-feedback">Custom type is required.</div>
-                        }
-                        }
                         @if (f['typeId']?.invalid && f['typeId']?.touched) {
                         <div class="text-danger small mt-1">Please select a type.</div>
                         }
