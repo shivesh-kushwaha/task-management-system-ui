@@ -42,7 +42,7 @@ export class ProjectManageComponent implements OnInit, OnDestroy {
         Actions: 'actions'
     };
 
-    private projectIdToDelete: number = 0;
+    private _projectIdToDelete: number = 0;
 
     private _destroy$ = new Subject<void>();
 
@@ -70,8 +70,8 @@ export class ProjectManageComponent implements OnInit, OnDestroy {
             .pipe(takeUntil(this._destroy$))
             .subscribe((load: boolean = false) => {
                 if (load)
-                    this._deleteProject(this.projectIdToDelete);
-                this.projectIdToDelete = 0;
+                    this._deleteProject(this._projectIdToDelete);
+                this._projectIdToDelete = 0;
             });
     }
 
@@ -115,7 +115,7 @@ export class ProjectManageComponent implements OnInit, OnDestroy {
     }
 
     protected onDeleteProject(project: IGetProjectPagedListDto): void {
-        this.projectIdToDelete = project.id;
+        this._projectIdToDelete = project.id;
         const dialogConfirmDto: IDialogConfirmDto = {
             heading: AppUtil.DefaultDeletDialogeHeading,
             message: AppUtil.getDefaultDeleteDialogMessage(this.ModuleTitleEnum.Project) + '?'

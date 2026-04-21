@@ -3,8 +3,7 @@ export interface IAddWorkItemDto {
     parentId?: number | null;
     title: string;
     description?: string | null;
-    typeId?: number | null;
-    type?: string | null;
+    typeId: number;
     assignedToId?: number | null;
     dueDate: string | string;
 }

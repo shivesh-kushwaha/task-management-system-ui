@@ -1,5 +1,7 @@
 export enum ModuleTitleEnum {
     Project = 'project',
-    Team = 'Team',
-    User = 'User'
+    Task = 'task',
+    SubTask = 'sub task',
+    Team = 'team',
+    User = 'user'
 }

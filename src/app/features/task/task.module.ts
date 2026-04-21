@@ -3,7 +3,8 @@ import { SharedModule } from '../../shared/shared.module';
 import { TaskRoutingModule } from './task-routing.module';
 import {
     TaskManageComponent,
-    UpsertTaskDialogComponent
+    UpsertTaskDialogComponent,
+    WorkItemDetailComponent
 } from './components';
 import {
     WorkItemService,
@@ -13,7 +14,8 @@ import {
 @NgModule({
     declarations: [
         TaskManageComponent,
-        UpsertTaskDialogComponent
+        UpsertTaskDialogComponent,
+        WorkItemDetailComponent
     ],
     imports: [
         SharedModule,

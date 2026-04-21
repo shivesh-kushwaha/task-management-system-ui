@@ -27,7 +27,6 @@ export class UpsertTaskDialogComponent implements AfterViewInit {
     protected parentTasks: ISelectListItemDto[];
     protected users: ISelectListItemDto[];
     protected workItemTypes: ISelectListItemDto[];
-    protected showCustomTypeInput = false;
 
     private _modal?: Modal | null;
 
@@ -68,8 +67,6 @@ export class UpsertTaskDialogComponent implements AfterViewInit {
         if (task === null) {
             this.id = 0;
             this._resetForm();
-            this.showCustomTypeInput = false;
-
             this.form.get('projectId')?.clearValidators();
             this.form.get('projectId')?.updateValueAndValidity();
 
@@ -92,23 +89,16 @@ export class UpsertTaskDialogComponent implements AfterViewInit {
                 this.form.get('parentId')?.setValue(null);
             }
         } else {
+            console.log(task);
             this.id = task.id;
             this._assignForm(task);
             this.showParentSection = true;
-            this.form.get('parentId')?.clearValidators();      // optional in edit mode
+            this.form.get('parentId')?.clearValidators();
             this.form.get('parentId')?.updateValueAndValidity();
 
-            // Handle type custom logic
-            const predefined = this.workItemTypes.some(opt => opt.value === task.type);
-            this.showCustomTypeInput = !predefined;
-            if (this.showCustomTypeInput) {
-                this.form.get('typeId')?.setValue(0);
-                this.form.get('customType')?.setValue(task.type);
-            } else {
-                const selected = this.workItemTypes.find(opt => opt.value === task.type);
-                this.form.get('typeId')?.setValue(selected ? selected.key : null);
-                this.form.get('customType')?.setValue('');
-            }
+            const selected = this.workItemTypes.find(opt => opt.value === task.type);
+            this.form.get('typeId')?.setValue(selected ? selected.key : null);
+            this.form.get('customType')?.setValue('');
         }
         this._modal?.show();
     }
@@ -123,16 +113,6 @@ export class UpsertTaskDialogComponent implements AfterViewInit {
         else this._add();
     }
 
-    protected onTypeChange(): void {
-        const typeId = this.form.get('typeId')?.value;
-        this.showCustomTypeInput = typeId === 0;
-        if (!this.showCustomTypeInput) {
-            this.form.get('customType')?.setValue('');
-        } else {
-            this.form.get('customType')?.setValidators([Validators.required]);
-            this.form.get('customType')?.updateValueAndValidity();
-        }
-    }
 
     // -----------------------------------------------------------------
     // Private methods
@@ -201,26 +181,24 @@ export class UpsertTaskDialogComponent implements AfterViewInit {
     private _update(): void {
         const payload = this._createPayloadToUpdate();
         this.isLoading = true;
-        // Uncomment when update endpoint is ready
-        // this._workItemService.updateTask(payload).pipe(take(1)).subscribe({
-        //     next: () => {
-        //         this._toastr.success('Task updated successfully.');
-        //         this.isLoading = false;
-        //         this._close();
-        //         this._workItemStatesService.notifyWorkItemChanged();
-        //     },
-        //     error: (err: any) => {
-        //         this._toastr.error(err.error?.message || 'Failed to update task');
-        //         this.isLoading = false;
-        //     },
-        // });
+        this._workItemService.updateTask(payload).pipe(take(1)).subscribe({
+            next: () => {
+                this._toastr.success('Task updated successfully.');
+                this.isLoading = false;
+                this._close();
+                this._workItemStatesService.notifyWorkItemChanged();
+            },
+            error: (err: any) => {
+                this._toastr.error(err.error?.message || 'Failed to update task');
+                this.isLoading = false;
+            },
+        });
     }
 
     private _close(): void {
         this._modal?.hide();
         this._resetForm();
         this.id = 0;
-        this.showCustomTypeInput = false;
         this.showParentSection = false;
     }
 
@@ -250,14 +228,13 @@ export class UpsertTaskDialogComponent implements AfterViewInit {
 
     private _createPayloadToAdd(): IAddWorkItemDto {
         const f = this.form.value;
-        const finalType = this._getFinalType(f.typeId, f.customType);
+
         return {
             projectId: f.projectId,
             parentId: f.parentId || null,
             title: f.title,
             description: f.description || null,
-            typeId: finalType.typeId,
-            type: finalType.type,
+            typeId: f.typeId,
             assignedToId: f.assignedToId || null,
             dueDate: f.dueDate,
         };
@@ -294,7 +271,6 @@ export class UpsertTaskDialogComponent implements AfterViewInit {
             title: '',
             description: '',
             typeId: null,
-            customType: '',
             assignedToId: null,
             dueDate: '',
         });
