@@ -6,3 +6,4 @@ export * from './project.service';
 export * from './work-item-type.service';
 export * from './work-item.service';
 export * from './user.service';
+export * from './work-item-states.service';

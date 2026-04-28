@@ -1,3 +1,3 @@
 export * from './manage/task-manage.component';
-export * from './dialogs/upsert/upsert-task-dialog.component';
-export * from './detail/work-item-detail.component';
+export * from './detail/task-detail.component';
+export * from './detail/sub-task/sub-task-detail.component';

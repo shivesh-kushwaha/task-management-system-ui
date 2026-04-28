@@ -8,7 +8,7 @@ export class AppUtil {
     public static DefaultSortOrder = 'asc';
     public static AscendingOrder = 'asc';
     public static DescendingOrder = 'desc';
-    public static DefaultValue = 'N/A';
+    public static DefaultValue = '-';
     public static DefaultPageSizeOptions = [5, 10, 25, 50];
 
     // Dialog

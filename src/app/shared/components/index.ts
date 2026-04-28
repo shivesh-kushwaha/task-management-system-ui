@@ -7,3 +7,6 @@ export * from './pagination/pagination.component';
 
 export * from './dialog/header/dialog-header.component';
 export * from './dialog/confirm/dialog-confirm.component';
+export * from './dialog/work-item/upsert/upsert-work-item-dialog.component';
+
+export * from './work-item/manage/work-item-manage.component';

@@ -1,12 +1,12 @@
 <div class="modal fade" #taskDialog>
     <div class="modal-dialog modal-dialog-centered modal-lg">
         <div class="modal-content">
-            <app-dialog-header [heading]="id ? 'Update Task' : 'Add Task'" (closeEvent)="onClose()">
+            <app-dialog-header [heading]="heading" (closeEvent)="onClose()">
             </app-dialog-header>
 
             <div class="modal-body">
                 <form [formGroup]="form">
-                    <!-- PROJECT SECTION – always visible, optional -->
+                    @if(!parentIdFromRoute) {
                     <div class="mb-3">
                         <label class="form-label fw-semibold">Project (optional)</label>
                         <select class="form-select" formControlName="projectId"
@@ -17,8 +17,8 @@
                             }
                         </select>
                     </div>
+                    }
 
-                    <!-- PARENT TASK SECTION – shown only in add mode with route id, or in edit mode -->
                     @if (showParentSection) {
                     <div class="mb-3">
                         <label class="form-label fw-semibold">
@@ -29,7 +29,6 @@
                         </label>
                         <select class="form-select" formControlName="parentId"
                             [ngClass]="{'is-invalid': f['parentId']?.invalid && f['parentId']?.touched}">
-                            <option [ngValue]="null">None</option>
                             @for (task of parentTasks; track task.key) {
                             <option [ngValue]="task.key">{{ task.value }}</option>
                             }
