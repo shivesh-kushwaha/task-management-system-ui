@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
-import { UserService } from '../../services/user.service';
-import { AddUserDto } from '../../dtos/add-user.dto';
+import { UserService } from '../../../user/services/user.service';
 import { AppConstants } from '../../../../core/constants';
+import { AddUserDto } from '../../dtos';
 
 function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
     const password = control.get('password')?.value;

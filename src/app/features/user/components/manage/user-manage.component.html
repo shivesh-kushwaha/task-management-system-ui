@@ -1,0 +1,104 @@
+<section>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="page-title">Users</div>
+        <div>
+            <button type="button" class="btn btn-outline-primary" (click)="onAddUser()">Add User</button>
+        </div>
+    </div>
+
+    <div class="search-bar mb-3">
+        <app-search (searchEvent)="onSearchEvent($event)"></app-search>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th class="sortable-col" (click)="sort(userColumnName.Name)">
+                        Name
+                        <app-table-sort-header [currentSort]="request.sort" [currentOrder]="request.order"
+                            [columnName]="userColumnName.Name">
+                        </app-table-sort-header>
+                    </th>
+                    <th class="sortable-col" (click)="sort(userColumnName.Email)">
+                        Email
+                        <app-table-sort-header [currentSort]="request.sort" [currentOrder]="request.order"
+                            [columnName]="userColumnName.Email">
+                        </app-table-sort-header>
+                    </th>
+                    <th class="sortable-col" (click)="sort(userColumnName.CreatedAt)">
+                        Created At
+                        <app-table-sort-header [currentSort]="request.sort" [currentOrder]="request.order"
+                            [columnName]="userColumnName.CreatedAt">
+                        </app-table-sort-header>
+                    </th>
+                    <th>Roles</th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @if (isLoading) {
+                <tr>
+                    <td colspan="6" class="text-center py-4 text-muted">
+                        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                        Loading...
+                    </td>
+                </tr>
+                } @else if (users.length === 0) {
+                <tr>
+                    <td colspan="6" class="text-center py-4 text-muted">No users found.</td>
+                </tr>
+                } @else {
+                @for (user of users; track user.id) {
+                <tr>
+                    <td>{{ !AppUtil.isNullOrEmpty(user.name) ? user.name : AppUtil.DefaultValue }}</td>
+                    <td>{{ user.email || AppUtil.DefaultValue }}</td>
+                    <td>{{ user.createdAt | date: 'MM/dd/yyyy hh:mm:ss a' }}</td>
+                    <td>
+                        @if (user.roles.length === 0) {
+                        {{AppUtil.DefaultValue}}
+                        }
+                        @else {
+
+                        @for (role of user.roles; track $index) {
+                        <span>{{ role.value }}
+                            @if (user.roles.length - 1 !== $index) {
+                            ,
+                            }
+                        </span>
+                        }
+                        }
+                    </td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-outline-primary me-1" (click)="onEditUser(user)"
+                            data-bs-toggle="tooltip" data-bs-title="Edit user">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary me-1" (click)="onViewUser(user)">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" (click)="onDeleteUser(user)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    @if (totalCount > 0) {
+    <app-pagination [totalCount]="totalCount" [pageIndex]="request.pageIndex" [pageSize]="request.pageSize"
+        (pageChangeEvent)="goToPage($event)" (pageSizeChangeEvent)="onPageSizeChange($event)">
+    </app-pagination>
+    }
+</section>
+
+<section>
+    <!-- <app-upsert-user-dialog></app-upsert-user-dialog> -->
+    <app-dialog-confirm></app-dialog-confirm>
+</section>

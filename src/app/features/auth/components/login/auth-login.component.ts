@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { AppConstants } from '../../../../core/constants';
 import { AuthLoginDto } from '../../dtos';
+import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'app-auth-login',
@@ -14,14 +15,14 @@ import { AuthLoginDto } from '../../dtos';
 export class AuthLoginComponent {
   loginForm: FormGroup;
   isLoading = false;
-  errorMessage = '';
   showPassword = false;
   appConstants = AppConstants;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private readonly _toastr: ToastrService
   ) {
     this.loginForm = this.fb.group({
       email: ['', [
@@ -45,7 +46,6 @@ export class AuthLoginComponent {
     if (this.loginForm.invalid) return;
 
     this.isLoading = true;
-    this.errorMessage = '';
 
     const dto: AuthLoginDto = this.loginForm.value;
 
@@ -56,8 +56,7 @@ export class AuthLoginComponent {
         this.router.navigate(['/dashboard']);
       },
       error: (err: any) => {
-        console.log(err)
-        this.errorMessage = err.error?.message ?? 'Login failed. Please try again.';
+        this._toastr.error(err.error?.message);
         this.isLoading = false;
       }
     });
