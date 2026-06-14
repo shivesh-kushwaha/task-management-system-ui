@@ -1,4 +1,4 @@
-import { RecordStatusEnum, WorkItemPriorityEnum } from "../../../core/enums";
+import { RecordStatusEnum, WorkItemPriorityEnum } from "../../core/enums";
 
 export interface IGetWorkItemPagedListDto {
   id: number;
@@ -12,6 +12,7 @@ export interface IGetWorkItemPagedListDto {
   createdByFullName: string;
   totalSubTasks: number;
   projectId?: number | null;
+  projectName?: string | null;
   parentId?: number | null;
   assignedToId?: number | null;
 }

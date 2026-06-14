@@ -1,11 +1,11 @@
-import { Component, OnInit } from "@angular/core";
-import { ActivatedRoute, Router } from "@angular/router";
+import { Component, Input, OnInit } from "@angular/core";
+import { Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
-import { IGetWorkItemByIdDto } from "../../dtos/get-work-item-by-id.dto";
-import { RecordStatusEnum } from "../../../../core/enums";
-import { AppUtil } from "../../../../core/utils/app.util";
-import { WorkItemService } from "../../services";
 import { take } from "rxjs";
+import { RecordStatusEnum, WorkItemTypeEnum } from "../../../../core/enums";
+import { AppUtil } from "../../../../core/utils/app.util";
+import { WorkItemService } from "../../../services";
+import { IGetWorkItemByIdDto } from "../../../dtos";
 
 @Component({
     selector: 'app-work-item-detail',
@@ -13,19 +13,20 @@ import { take } from "rxjs";
     standalone: false
 })
 export class WorkItemDetailComponent implements OnInit {
+    @Input() id: number = 0;
+    @Input() parentId: number = 0;
+    @Input() workItemType: WorkItemTypeEnum = WorkItemTypeEnum.task;
+
     protected workItem: IGetWorkItemByIdDto | null = null;
     protected isLoading: boolean = true;
 
-    private _id: number = 0;
-
     protected readonly RecordStatusEnum = RecordStatusEnum;
+    protected readonly WorkItemTypeEnum = WorkItemTypeEnum;
     protected readonly AppUtil = AppUtil;
 
     constructor(private readonly _workItemService: WorkItemService,
-        private readonly _route: ActivatedRoute,
         private readonly _router: Router,
         private readonly _toastr: ToastrService) {
-        this._id = this._route.snapshot.params['id'];
     }
 
     public ngOnInit(): void {
@@ -33,12 +34,15 @@ export class WorkItemDetailComponent implements OnInit {
     }
 
     protected onGoBack(): void {
-        this._router.navigate(['/task/manage']);
+        if (this.workItemType === this.WorkItemTypeEnum.task) {
+            this._router.navigate(['/task/manage']);
+        } else {
+            this._router.navigate(['/task', this.parentId]);
+        }
     }
 
     private _loadWorkItem(): void {
-        this.isLoading = true;
-        this._workItemService.getById(this._id).pipe(take(1)).subscribe({
+        this._workItemService.getById(this.id).pipe(take(1)).subscribe({
             next: (response: IGetWorkItemByIdDto) => {
                 this.workItem = response;
                 this.isLoading = false;

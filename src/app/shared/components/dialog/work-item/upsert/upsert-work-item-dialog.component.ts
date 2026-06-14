@@ -4,19 +4,17 @@ import { Modal } from 'bootstrap';
 import { take } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { ActivatedRoute } from '@angular/router';
-import { WorkItemStatesService } from '../../../services/work-item-states.service';
-import { WorkItemService } from '../../../services';
-import { IAddWorkItemDto, IGetWorkItemPagedListDto } from '../../../dtos';
-import { IUpdateWorkItemDto } from '../../../dtos/update-work-item.dto';
-import { ISelectListItemDto } from '../../../../../shared/dtos';
+import { WorkItemService, WorkItemStatesService } from '../../../../services';
+import { IAddWorkItemDto, IGetWorkItemPagedListDto, ISelectListItemDto, IUpdateWorkItemDto } from '../../../../../shared/dtos';
 import { ProjectService, UserService, WorkItemTypeService } from '../../../../../shared/services';
+import { AppUtil } from '../../../../../core/utils/app.util';
 
 @Component({
-    selector: 'app-upsert-task-dialog',
-    templateUrl: './upsert-task-dialog.component.html',
+    selector: 'app-upsert-work-item-dialog',
+    templateUrl: './upsert-work-item-dialog.component.html',
     standalone: false,
 })
-export class UpsertTaskDialogComponent implements AfterViewInit {
+export class UpsertWorkItemDialogComponent implements AfterViewInit {
     @ViewChild('taskDialog') elementRef!: ElementRef;
 
     protected form: FormGroup;
@@ -27,6 +25,8 @@ export class UpsertTaskDialogComponent implements AfterViewInit {
     protected parentTasks: ISelectListItemDto[];
     protected users: ISelectListItemDto[];
     protected workItemTypes: ISelectListItemDto[];
+    protected parentIdFromRoute: number = 0;
+    protected heading: string = AppUtil.EmptyString;
 
     private _modal?: Modal | null;
 
@@ -63,16 +63,18 @@ export class UpsertTaskDialogComponent implements AfterViewInit {
         this._loadLoadWorkItemTypes();
 
         this.showParentSection = false;
+        this.parentIdFromRoute = this._route.snapshot.params['id'];
 
         if (task === null) {
             this.id = 0;
             this._resetForm();
             this.form.get('projectId')?.clearValidators();
             this.form.get('projectId')?.updateValueAndValidity();
+            this.heading = 'Add Sub Task';
 
-            const parentIdFromRoute = this._route.snapshot.params['id'];
-            if (parentIdFromRoute) {
-                const parentIdNum = Number(parentIdFromRoute);
+            if (this.parentIdFromRoute) {
+                this.heading = 'Add Sub Task';
+                const parentIdNum = Number(this.parentIdFromRoute);
                 if (!isNaN(parentIdNum) && parentIdNum > 0) {
                     this.showParentSection = true;
                     this.form.patchValue({ parentId: parentIdNum });
@@ -83,22 +85,17 @@ export class UpsertTaskDialogComponent implements AfterViewInit {
                     this.form.get('parentId')?.clearValidators();
                     this.form.get('parentId')?.setValue(null);
                 }
-            } else {
-                this.showParentSection = false;
-                this.form.get('parentId')?.clearValidators();
-                this.form.get('parentId')?.setValue(null);
             }
         } else {
-            console.log(task);
+            this.heading = this.parentIdFromRoute ? 'Update Sub Task' : 'Update Task';
             this.id = task.id;
             this._assignForm(task);
-            this.showParentSection = true;
+            this.showParentSection = !!this.parentIdFromRoute;
             this.form.get('parentId')?.clearValidators();
             this.form.get('parentId')?.updateValueAndValidity();
 
             const selected = this.workItemTypes.find(opt => opt.value === task.type);
             this.form.get('typeId')?.setValue(selected ? selected.key : null);
-            this.form.get('customType')?.setValue('');
         }
         this._modal?.show();
     }
@@ -164,15 +161,16 @@ export class UpsertTaskDialogComponent implements AfterViewInit {
     private _add(): void {
         const payload = this._createPayloadToAdd();
         this.isLoading = true;
-        this._workItemService.addTask(payload).pipe(take(1)).subscribe({
+        this._workItemService.addWorkItem(payload).pipe(take(1)).subscribe({
             next: () => {
-                this._toastr.success('Task added successfully.');
+                const message = this.parentIdFromRoute ? 'Sub task' : 'Task';
+                this._toastr.success(message + 'added successfully.');
                 this.isLoading = false;
                 this._close();
                 this._workItemStatesService.notifyWorkItemChanged();
             },
             error: (err: any) => {
-                this._toastr.error(err.error?.message || 'Failed to add task');
+                this._toastr.error(err.error?.message);
                 this.isLoading = false;
             },
         });
@@ -181,15 +179,16 @@ export class UpsertTaskDialogComponent implements AfterViewInit {
     private _update(): void {
         const payload = this._createPayloadToUpdate();
         this.isLoading = true;
-        this._workItemService.updateTask(payload).pipe(take(1)).subscribe({
+        this._workItemService.updateWorkItem(payload).pipe(take(1)).subscribe({
             next: () => {
-                this._toastr.success('Task updated successfully.');
+                const message = this.parentIdFromRoute ? 'Sub task' : 'Task';
+                this._toastr.success(message + 'updated successfully.');
                 this.isLoading = false;
                 this._close();
                 this._workItemStatesService.notifyWorkItemChanged();
             },
             error: (err: any) => {
-                this._toastr.error(err.error?.message || 'Failed to update task');
+                this._toastr.error(err.error?.message);
                 this.isLoading = false;
             },
         });
@@ -209,7 +208,6 @@ export class UpsertTaskDialogComponent implements AfterViewInit {
             title: ['', [Validators.required, Validators.maxLength(200)]],
             description: ['', Validators.maxLength(1000)],
             typeId: [null, Validators.required],
-            customType: [''],
             assignedToId: [null],
             dueDate: ['', Validators.required],
         });
@@ -243,14 +241,6 @@ export class UpsertTaskDialogComponent implements AfterViewInit {
     private _createPayloadToUpdate(): IUpdateWorkItemDto {
         const base = this._createPayloadToAdd();
         return { ...base, id: this.id };
-    }
-
-    private _getFinalType(typeId: number, customType: string): { typeId: number | null; type: string | null } {
-        if (typeId === 0) {
-            return { typeId: null, type: customType };
-        }
-        const selected = this.workItemTypes.find(opt => opt.key === typeId);
-        return { typeId: typeId, type: selected ? selected.value : null };
     }
 
     private _isFormValid(): boolean {

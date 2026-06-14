@@ -9,7 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 
-import { DialogStatesService, ProjectService, TokenService, UserService, WorkItemService, WorkItemTypeService } from './services';
+import { DialogStatesService, ProjectService, TokenService, UserService, WorkItemService, WorkItemStatesService, WorkItemTypeService } from './services';
 import {
     LayoutComponent,
     NavbarComponent,
@@ -18,9 +18,12 @@ import {
     DialogHeaderComponent,
     NotFoundComponent,
     DialogConfirmComponent,
-    PaginationComponent
+    PaginationComponent,
+    WorkItemManageComponent,
+    UpsertWorkItemDialogComponent
 } from './components';
 import { TableSortHeaderComponent } from './components/table-sort-header/table-sort-header.component';
+import { WorkItemDetailComponent } from './components/work-item/detail/work-item-detail.component';
 
 @NgModule({
     declarations: [
@@ -31,6 +34,9 @@ import { TableSortHeaderComponent } from './components/table-sort-header/table-s
         SearchComponent,
         TableSortHeaderComponent,
         PaginationComponent,
+        WorkItemManageComponent,
+        WorkItemDetailComponent,
+        UpsertWorkItemDialogComponent,
 
         DialogHeaderComponent,
         DialogConfirmComponent
@@ -61,6 +67,9 @@ import { TableSortHeaderComponent } from './components/table-sort-header/table-s
         SearchComponent,
         TableSortHeaderComponent,
         PaginationComponent,
+        WorkItemManageComponent,
+        WorkItemDetailComponent,
+        UpsertWorkItemDialogComponent,
 
         DialogHeaderComponent,
         DialogConfirmComponent
@@ -72,6 +81,7 @@ import { TableSortHeaderComponent } from './components/table-sort-header/table-s
         ProjectService,
         WorkItemTypeService,
         WorkItemService,
+        WorkItemStatesService,
         UserService
     ]
 })

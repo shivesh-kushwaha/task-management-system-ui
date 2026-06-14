@@ -1,0 +1,123 @@
+<section>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="page-title">
+            {{!id? 'Tasks': 'Sub Tasks'}}
+        </div>
+        <div>
+            <button type="button" class="btn btn-outline-primary" (click)="onAddWorkItem()">
+                {{!id? 'Add Task': 'Add Sub Task'}}
+            </button>
+        </div>
+    </div>
+
+    <div class="search-bar mb-3">
+        <app-search (searchEvent)="onSearchEvent($event)"></app-search>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th class="sortable-col" (click)="sort(columnNames.Title)">Title
+                        <app-table-sort-header [currentSort]="request.sort" [currentOrder]="request.order"
+                            [columnName]="columnNames.Title"></app-table-sort-header>
+                    </th>
+                    @if (!id) {
+                    <th class="sortable-col" (click)="sort(columnNames.ProjectName)">Project Name
+                        <app-table-sort-header [currentSort]="request.sort" [currentOrder]="request.order"
+                            [columnName]="columnNames.ProjectName"></app-table-sort-header>
+                    </th>
+                    }
+                    <th class="sortable-col" (click)="sort(columnNames.Type)">Type
+                        <app-table-sort-header [currentSort]="request.sort" [currentOrder]="request.order"
+                            [columnName]="columnNames.Type"></app-table-sort-header>
+                    </th>
+                    <th class="sortable-col" (click)="sort(columnNames.DueDate)">Due Date
+                        <app-table-sort-header [currentSort]="request.sort" [currentOrder]="request.order"
+                            [columnName]="columnNames.DueDate"></app-table-sort-header>
+                    </th>
+                    <th class="sortable-col" (click)="sort(columnNames.CreatedAt)">Created At
+                        <app-table-sort-header [currentSort]="request.sort" [currentOrder]="request.order"
+                            [columnName]="columnNames.CreatedAt"></app-table-sort-header>
+                    </th>
+                    <th class="sortable-col" (click)="sort(columnNames.Priority)">Priority
+                        <app-table-sort-header [currentSort]="request.sort" [currentOrder]="request.order"
+                            [columnName]="columnNames.Priority"></app-table-sort-header>
+                    </th>
+                    <th class="sortable-col" (click)="sort(columnNames.CreatedBy)">Created By
+                        <app-table-sort-header [currentSort]="request.sort" [currentOrder]="request.order"
+                            [columnName]="columnNames.CreatedBy"></app-table-sort-header>
+                    </th>
+
+                    @if (!id) {
+                    <th class="sortable-col text-end" (click)="sort(columnNames.SubTasks)">Sub‑tasks
+                        <app-table-sort-header [currentSort]="request.sort" [currentOrder]="request.order"
+                            [columnName]="columnNames.SubTasks"></app-table-sort-header>
+                    </th>
+                    }
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                @if (isLoading) {
+                <tr>
+                    <td colspan="8" class="text-center py-4 text-muted">
+                        <div class="spinner-border spinner-border-sm me-2"></div> Loading...
+                    </td>
+                </tr>
+                } @else if (items.length === 0) {
+                <tr>
+                    <td colspan="8" class="text-center py-4 text-muted">No {{!id ? 'task': 'sub task'}} found</td>
+                </tr>
+                } @else {
+                @for (item of items; track item.id) {
+                <tr>
+                    <td>{{ item.title }}</td>
+                    @if (!id) {
+                    <td>{{ AppUtil.isNullOrEmpty(item.projectName) ? AppUtil.DefaultValue: item?.projectName }}</td>
+                    }
+                    <td>{{ item.type }}</td>
+                    <td>{{ item.dueDate | date: 'MM/dd/yyyy hh:mm:ss a' }}</td>
+                    <td>{{ item.createdAt | date:'MM/dd/yyyy hh:mm:ss a' }}</td>
+                    <td>{{item.priority}}</td>
+                    <td>{{ item.createdByFullName }}</td>
+                    @if (!id) {
+                    <td class="text-end">
+                        @if (item.totalSubTasks === 0) {
+                        <span>0</span>
+                        } @else {
+                        <a class="text-decoration-none" [routerLink]="['/task', item.id]">{{ item.totalSubTasks }}</a>
+                        }
+                    </td>
+                    }
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-outline-primary me-1" (click)="onEditWorkItem(item)"
+                            data-bs-toggle="tooltip" data-bs-title="Edit Task">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-secondary me-1" (click)="onViewWorkItem(item)">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                        <button class="btn btn-sm btn-outline-danger" (click)="onDeleteWorkItem(item)">
+                            <i class="bi bi-trash"></i>
+                        </button>
+                    </td>
+                </tr>
+                }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    @if (totalCount > 0) {
+    <app-pagination [totalCount]="totalCount" [pageIndex]="request.pageIndex" [pageSize]="request.pageSize"
+        (pageChangeEvent)="goToPage($event)" (pageSizeChangeEvent)="onPageSizeChange($event)">
+    </app-pagination>
+    }
+</section>
+
+<section>
+    <app-upsert-work-item-dialog></app-upsert-work-item-dialog>
+    <app-dialog-confirm></app-dialog-confirm>
+</section>
