@@ -1,0 +1,135 @@
+<div class="modal fade" #addUserDialog>
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+
+            <app-dialog-header [heading]="id ? 'Update User' : 'Add User'" (closeEvent)="onClose()"></app-dialog-header>
+
+            <div class="modal-body">
+                <form [formGroup]="form">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">
+                                    First Name <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control" formControlName="firstName"
+                                    placeholder="Enter first name"
+                                    [ngClass]="{'is-invalid': f['firstName']?.invalid && f['firstName']?.touched}">
+                                @if (f['firstName']?.invalid && f['firstName']?.touched) {
+                                <div class="invalid-feedback">
+                                    @if (f['firstName']?.errors?.['required']) {
+                                    <span>First name is required.</span>
+                                    }
+                                    @if (f['firstName']?.errors?.['maxlength']) {
+                                    <span>Maximum 50 characters.</span>
+                                    }
+                                </div>
+                                }
+                            </div>
+                        </div>
+
+                        <div class="col-md-6">
+                            <div class="mb-3">
+                                <label class="form-label fw-semibold">
+                                    Last Name <span class="text-danger">*</span>
+                                </label>
+                                <input type="text" class="form-control" formControlName="lastName"
+                                    placeholder="Enter last name"
+                                    [ngClass]="{'is-invalid': f['lastName']?.invalid && f['lastName']?.touched}">
+                                @if (f['lastName']?.invalid && f['lastName']?.touched) {
+                                <div class="invalid-feedback">
+                                    @if (f['lastName']?.errors?.['required']) {
+                                    <span>Last name is required.</span>
+                                    }
+                                    @if (f['lastName']?.errors?.['maxlength']) {
+                                    <span>Maximum 50 characters.</span>
+                                    }
+                                </div>
+                                }
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            Email <span class="text-danger">*</span>
+                        </label>
+                        <input type="email" class="form-control" formControlName="email"
+                            placeholder="Enter email address"
+                            [ngClass]="{'is-invalid': f['email']?.invalid && f['email']?.touched}"
+                            [attr.readonly]="id ? true : null">
+                        @if (f['email']?.invalid && f['email']?.touched) {
+                        <div class="invalid-feedback">
+                            @if (f['email']?.errors?.['required']) {
+                            <span>Email is required.</span>
+                            }
+                            @if (f['email']?.errors?.['email']) {
+                            <span>Please enter a valid email address.</span>
+                            }
+                        </div>
+                        }
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            Phone Number <span class="text-danger">*</span>
+                        </label>
+                        <input type="tel" class="form-control" formControlName="phoneNumber"
+                            placeholder="Enter phone number"
+                            [ngClass]="{'is-invalid': f['phoneNumber']?.invalid && f['phoneNumber']?.touched}">
+                        @if (f['phoneNumber']?.invalid && f['phoneNumber']?.touched) {
+                        <div class="invalid-feedback">
+                            @if (f['phoneNumber']?.errors?.['required']) {
+                            <span>Phone number is required.</span>
+                            }
+                            @if (f['phoneNumber']?.errors?.['pattern']) {
+                            <span>Please enter a valid phone number (10 digits).</span>
+                            }
+                        </div>
+                        }
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            Roles <span class="text-danger">*</span>
+                        </label>
+                        <div class="border rounded p-3" style="max-height: 200px; overflow-y: auto;">
+                            @if (roles.length === 0) {
+                            <div class="text-muted small">
+                                No roles available
+                            </div>
+                            }
+                            @for (role of roles; track role.key) {
+                            <div class="form-check">
+                                <input class="form-check-input font-control" type="checkbox" [id]="'role_' + role.key"
+                                    [checked]="isRoleSelected(role.key)" (change)="onRoleChange(role.key, $event)">
+                                <label class="form-check-label" [for]="'role_' + role.key">
+                                    {{ role.value }}
+                                </label>
+                            </div>
+                            }
+                        </div>
+                        @if (f['roles']?.invalid && f['roles']?.touched) {
+                        <div class="text-danger small mt-2">
+                            Please select at least one role.
+                        </div>
+                        }
+                    </div>
+                </form>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" (click)="onClose()">
+                    Cancel
+                </button>
+                <button type="button" class="btn btn-primary" (click)="onSubmit()"
+                    [disabled]="form.invalid || isLoading">
+                    @if (isLoading) {
+                    <span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>
+                    }
+                    {{ id ? 'Update' : 'Add' }} User
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

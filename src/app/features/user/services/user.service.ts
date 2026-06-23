@@ -4,30 +4,34 @@ import { Observable } from 'rxjs';
 import { AddUserDto } from '../../auth/dtos/add-user.dto';
 import { environment } from '../../../../environments/environment';
 import { IPagedListRequestDto, IPagedListResponseDto, toQueryString } from '../../../shared/dtos';
-import { IGetUserPagedListDto, IGetWorkItemListByIdDto } from '../dtos';
+import { IGetUserPagedListDto, IGetWorkItemListByIdDto, IUpdateUserDto } from '../dtos';
 
 @Injectable({
     providedIn: 'root'
 })
 export class UserService {
-    private api = `${environment.apiUrl}/user`;
+    private readonly _api = `${environment.apiUrl}/user`;
 
-    constructor(private readonly http: HttpClient) { }
+    constructor(private readonly _http: HttpClient) { }
 
     public register(dto: AddUserDto): Observable<void> {
-        return this.http.post<void>(`${this.api}/register`, dto);
+        return this._http.post<void>(`${this._api}/register`, dto);
     }
 
     public getPagedList(request: IPagedListRequestDto): Observable<IPagedListResponseDto<IGetUserPagedListDto>> {
         const params = toQueryString(request);
-        return this.http.get<IPagedListResponseDto<IGetUserPagedListDto>>(`${this.api}/paged-list?${params}`);
+        return this._http.get<IPagedListResponseDto<IGetUserPagedListDto>>(`${this._api}/paged-list?${params}`);
     }
 
     public getWorkItemListById(id: number): Observable<IGetWorkItemListByIdDto[]> {
-        return this.http.get<IGetWorkItemListByIdDto[]>(`${this.api}/work-item-list/${id}`);
+        return this._http.get<IGetWorkItemListByIdDto[]>(`${this._api}/work-item-list/${id}`);
+    }
+ 
+    public updateUser(payload: IUpdateUserDto): Observable<void> {
+        return this._http.put<void>(`${this._api}`, payload);
     }
 
     public delete(id: number): Observable<void> {
-        return this.http.delete<void>(`${this.api}/${id}`);
+        return this._http.delete<void>(`${this._api}/${id}`);
     }
 }

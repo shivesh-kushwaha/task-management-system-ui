@@ -9,7 +9,9 @@ import { Router } from "@angular/router";
 import { ToastrService } from "ngx-toastr";
 import { firstValueFrom, Subject, take, takeUntil } from "rxjs";
 import { HttpErrorResponse } from "@angular/common/http";
-import { UserService } from "../../services";
+import { UserService, UserStatesService } from "../../services";
+import { DialogAssociatedItemsComponent } from "../dialogs/associated-items/dialog-associated-items.coponent";
+import { UpsertUserDialogComponent } from "../dialogs/upsert/upsert-user-dialog.component";
 
 @Component({
     selector: 'app-user-manage',
@@ -18,6 +20,8 @@ import { UserService } from "../../services";
 })
 export class UserManageComponent implements OnInit {
     @ViewChild(DialogConfirmComponent) dialogConfirmComponent!: DialogConfirmComponent;
+    @ViewChild(DialogAssociatedItemsComponent) dialogAssociatedItemsComponent!: DialogAssociatedItemsComponent;
+    @ViewChild(UpsertUserDialogComponent) upsertUserDialogComponent!: UpsertUserDialogComponent;
 
     public associatedWorkItems: IGetWorkItemListByIdDto[];
 
@@ -44,6 +48,7 @@ export class UserManageComponent implements OnInit {
 
     constructor(
         private readonly _userService: UserService,
+        private readonly _userStatesService: UserStatesService,
         private readonly _dialogStatesService: DialogStatesService,
         private readonly _router: Router,
         private readonly _toastr: ToastrService,
@@ -56,11 +61,11 @@ export class UserManageComponent implements OnInit {
     public ngOnInit(): void {
         this._loadUsers();
 
-        // this._userService.refreshUsers$
-        //     .pipe(takeUntil(this._destroy$))
-        //     .subscribe(() => {
-        //         this._loadUsers();
-        //     });
+        this._userStatesService.refreshUsers$
+            .pipe(takeUntil(this._destroy$))
+            .subscribe(() => {
+                this._loadUsers();
+            });
 
         this._dialogStatesService.dialogConfirmOpened$
             .pipe(takeUntil(this._destroy$))
@@ -99,11 +104,11 @@ export class UserManageComponent implements OnInit {
     }
 
     protected onAddUser(): void {
-        // this.upsertUserDialogComponent.open(null);
+        this.upsertUserDialogComponent.open(null);
     }
 
     protected onEditUser(user: IGetUserPagedListDto): void {
-        // this.upsertUserDialogComponent.open(user);
+        this.upsertUserDialogComponent.open(user);
     }
 
     protected onViewUser(user: IGetUserPagedListDto): void {
@@ -192,9 +197,10 @@ export class UserManageComponent implements OnInit {
         }
     }
 
-    _openWorkItemsDialog(): void {
+    private _openWorkItemsDialog(): void {
         // open dialog list of project and work items.
         // Project | Task/SubTask in list format
+        this.dialogAssociatedItemsComponent.open(this.associatedWorkItems);
     }
 
     private _deleteUser(id: number): void {

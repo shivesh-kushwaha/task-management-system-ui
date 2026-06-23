@@ -1,6 +1,6 @@
 export interface IGetWorkItemListByIdDto {
     workItemId: number;
-    workitemName: string;
+    workItemName: string;
     workItemParentId?: number | null;
     projectId?: number | null;
     projectName?: string | null;

@@ -37,7 +37,6 @@ import { WorkItemDetailComponent } from './components/work-item/detail/work-item
         WorkItemManageComponent,
         WorkItemDetailComponent,
         UpsertWorkItemDialogComponent,
-
         DialogHeaderComponent,
         DialogConfirmComponent
     ],

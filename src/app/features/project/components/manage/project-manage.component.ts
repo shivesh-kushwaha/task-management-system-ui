@@ -20,7 +20,7 @@ import { UpsertProjectDialogComponent } from '../dialogs/upsert/upsert-project-d
     standalone: false,
 })
 export class ProjectManageComponent implements OnInit, OnDestroy {
-    @ViewChild(UpsertProjectDialogComponent) upsertProjectDialogComponent!: UpsertProjectDialogComponent
+    @ViewChild(UpsertProjectDialogComponent) upsertProjectDialogComponent!: UpsertProjectDialogComponent;
     @ViewChild(DialogConfirmComponent) dialogConfirmComponent!: DialogConfirmComponent;
 
     protected projects: IGetProjectPagedListDto[] = [];

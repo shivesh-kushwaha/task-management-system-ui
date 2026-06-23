@@ -1,0 +1,51 @@
+<div class="modal fade" #dialogAssociatedItems>
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+
+            <app-dialog-header [heading]="'Associated Items'" (closeEvent)="onClose()"></app-dialog-header>
+
+            <div class="modal-body">
+                <!-- Message -->
+                <div class="text-danger fs-16">
+                    This user having associated items displaying as below, please remove it.
+                    Cannot be deleted.
+                </div>
+
+                <!-- Table -->
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Project</th>
+                                <th>Associated Work Item</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+                            @for (item of associatedWorkItems; track item.workItemId) {
+                            <tr>
+                                <td>
+                                    <a class="text-primary cursor-pointer"
+                                        (click)="navigationToProjectDetail(item.projectId ?? 0)" 
+                                        target="_blank">
+                                        {{ item.projectName || AppUtil.DefaultValue }}
+                                    </a>
+                                </td>
+                                <td>{{ !AppUtil.isNullOrEmpty(item.workItemName) ? item.workItemName :
+                                    AppUtil.DefaultValue }}
+                                    ({{item.workItemParentId == null ? 'Task' : 'Sub Task'}})</td>
+                            </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" (click)="onClose()">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
