@@ -1,0 +1,77 @@
+<div class="modal fade" #addPermissionDialog tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <!-- Header -->
+            <div class="modal-header">
+                <h5 class="modal-title">
+                    <i class="bi bi-plus-circle me-2"></i>Add Permission
+                </h5>
+                <button type="button" class="btn-close" (click)="onClose()"></button>
+            </div>
+
+            <!-- Body -->
+            <div class="modal-body">
+                <form [formGroup]="form">
+                    <!-- Permission Group -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            Permission Group <span class="text-danger">*</span>
+                        </label>
+                        <select class="form-select" formControlName="permissionGroupId"
+                            [ngClass]="{'is-invalid': f['permissionGroupId']?.invalid && f['permissionGroupId']?.touched}">
+                            <option [ngValue]="null" disabled>Select a permission group</option>
+                            @for (group of permissionGroups; track group.key) {
+                            <option [ngValue]="group.key">{{ group.value }}</option>
+                            }
+                        </select>
+                        @if (f['permissionGroupId']?.invalid && f['permissionGroupId']?.touched) {
+                        <div class="invalid-feedback">Please select a permission group.</div>
+                        }
+                    </div>
+
+                    <!-- Name -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                             Name <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control" formControlName="name" placeholder="Name"
+                            [ngClass]="{'is-invalid': f['name']?.invalid && f['name']?.touched}">
+                        @if (f['name']?.invalid && f['name']?.touched) {
+                        <div class="invalid-feedback">
+                            @if (f['name']?.errors?.['required']) { <span>Name is required.</span> }
+                            @if (f['name']?.errors?.['maxlength']) { <span>Maximum 100 characters.</span> }
+                        </div>
+                        }
+                    </div>
+
+                    <!-- Code -->
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">
+                            Code <span class="text-danger">*</span>
+                        </label>
+                        <input type="text" class="form-control" formControlName="code" placeholder="Code"
+                            [ngClass]="{'is-invalid': f['code']?.invalid && f['code']?.touched}">
+                        @if (f['code']?.invalid && f['code']?.touched) {
+                        <div class="invalid-feedback">
+                            @if (f['code']?.errors?.['required']) { <span>Code is required.</span> }
+                            @if (f['code']?.errors?.['maxlength']) { <span>Maximum 50 characters.</span> }
+                        </div>
+                        }
+                    </div>
+                </form>
+            </div>
+
+            <!-- Footer -->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" (click)="onClose()">Cancel</button>
+                <button type="button" class="btn btn-primary" (click)="onSubmit()"
+                    [disabled]="form.invalid || isLoading">
+                    @if (isLoading) {
+                    <span class="spinner-border spinner-border-sm me-1"></span>
+                    }
+                    Add Permission
+                </button>
+            </div>
+        </div>
+    </div>
+</div>

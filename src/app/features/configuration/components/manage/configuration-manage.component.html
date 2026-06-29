@@ -1,0 +1,16 @@
+<div class="py-2 configuration-container">
+    <!-- Horizontal Navigation -->
+    <nav class="nav-tabs-wrapper">
+        <div class="nav-tabs-scroll">
+            <button type="button" class="nav-tab-btn" *ngFor="let item of menuItems"
+                [class.active]="isActive(item.route)" (click)="navigateTo(item.route)" [title]="item.label">
+                {{ item.label }}
+            </button>
+        </div>
+    </nav>
+
+    <!-- Content Area -->
+    <div class="tab-content-wrapper">
+        <router-outlet></router-outlet>
+    </div>
+</div>

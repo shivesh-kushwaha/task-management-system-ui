@@ -1,0 +1,25 @@
+// configuration-permission.component.scss
+.card-header {
+    background-color: #f8f9fa;
+    transition: background-color 0.2s;
+    &:hover {
+        background-color: #e9ecef;
+    }
+    .form-check-input {
+        cursor: pointer;
+    }
+}
+
+.card-body .form-check {
+    margin-bottom: 0.25rem;
+}
+
+// optional: style for the update button area
+.text-end {
+    position: sticky;
+    bottom: 20px;
+    background: white;
+    padding: 10px 0;
+    border-top: 1px solid #dee2e6;
+    box-shadow: 0 -2px 8px rgba(0,0,0,0.05);
+}

@@ -17,6 +17,7 @@ export class SidebarComponent {
         { label: 'Tasks', icon: 'bi bi-list-task', route: '/task/manage' },
         { label: 'Teams', icon: 'bi bi-people-fill', route: '/team/manage' },
         { label: 'Users', icon: 'bi bi-people', route: '/user/manage' },
+        { label: 'Configurations', icon: 'bi bi-gear', route: '/configuration/manage' },
     ];
 
     constructor(public router: Router) { }

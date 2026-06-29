@@ -5,7 +5,6 @@ import { take } from 'rxjs';
 import { ToastrService } from 'ngx-toastr';
 import { ISelectListItemDto } from '../../../../../shared/dtos';
 import { IAddUserDto, IUpdateUserDto, IGetUserPagedListDto } from '../../../dtos';
-import { AppUtil } from '../../../../../core/utils/app.util';
 import { UserService } from '../../../services/user.service';
 import { RoleService, UserStatesService } from '../../../services';
 

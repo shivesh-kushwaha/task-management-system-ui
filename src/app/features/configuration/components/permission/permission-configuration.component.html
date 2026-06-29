@@ -1,0 +1,80 @@
+<section>
+    <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
+        <div class="col-8 search-bar mb-3">
+            <app-search (searchEvent)="onSearchEvent($event)"></app-search>
+        </div>
+
+        <div class="col-4 d-flex justify-content-end gap-2">
+            <button type="button" class="btn btn-outline-primary" (click)="onAddPermission()">
+                Add Permission
+            </button>
+            <button type="button" class="btn btn-outline-primary" (click)="onAddPermissionGroup()">
+                Add Permission Group
+            </button>
+        </div>
+    </div>
+
+    <!-- Loading -->
+    @if (isLoading) {
+    <div class="text-center py-4">
+        <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    } @else {
+    <!-- Groups -->
+    @for (group of filteredGroups; track group.permissionGroupId) {
+    <div class="card mb-3">
+        <div class="card-header d-flex justify-content-between align-items-center"
+            (click)="group.isCollapsed = !group.isCollapsed" style="cursor: pointer;">
+            <h5 class="mb-0">
+                <i class="bi" [class.bi-chevron-down]="!group.isCollapsed"
+                    [class.bi-chevron-right]="group.isCollapsed"></i>
+                {{ group.permissionGroupName }}
+            </h5>
+            <div class="form-check">
+                <input type="checkbox" class="form-check-input" [checked]="group.isAllPermissionChecked"
+                    (change)="toggleGroupAll(group, $event)" (click)="$event.stopPropagation()">
+            </div>
+        </div>
+        <div class="collapse" [class.show]="!group.isCollapsed">
+            <div class="card-body">
+                <div class="row">
+                    @for (permission of group.permissions; track permission.key) {
+                    <div class="col-md-3 col-sm-6 mb-2">
+                        <div class="form-check">
+                            <input type="checkbox" class="form-check-input" [id]="'perm-' + permission.key"
+                                [(ngModel)]="permission.isChecked" (change)="onPermissionChecked(group)">
+                            <label class="form-check-label" [for]="'perm-' + permission.key">
+                                {{ permission.value }}
+                            </label>
+                        </div>
+                    </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+    } @empty {
+    <div class="alert alert-info">No permissions found.</div>
+    }
+    }
+
+    <!-- Update Button (visible when changes are made) -->
+    @if (hasChanges) {
+    <div class="text-end mt-3">
+        <button type="button" class="btn btn-primary" (click)="upsertRolePermission()" [disabled]="isSaving">
+            @if (isSaving) {
+            <span class="spinner-border spinner-border-sm me-1"></span>
+            }
+            Save
+        </button>
+    </div>
+    }
+</section>
+
+<!-- Dialog components -->
+<app-add-permission-configuration-dialog #addPermissionDialog (permissionAdded)="onPermissionAdded()">
+</app-add-permission-configuration-dialog>
+<app-upsert-permission-group-configuration-dialog #upsertGroupDialog (groupSaved)="onPermissionGroupSaved()">
+</app-upsert-permission-group-configuration-dialog>

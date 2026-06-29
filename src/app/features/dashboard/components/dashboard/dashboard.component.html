@@ -17,13 +17,13 @@
                     </div>
                     <div>
                         <p class="text-muted small mb-0">Total Projects</p>
-                        <h5 class="fw-bold mb-0">0</h5>
+                        <h5 class="fw-bold mb-0">{{dashboard?.totalProject}}</h5>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Total Work Items -->
+        <!-- Total Tasks -->
         <div class="col-12 col-sm-6 col-xl-3">
             <div class="card border-0 shadow-sm">
                 <div class="card-body d-flex align-items-center gap-3">
@@ -31,14 +31,14 @@
                         <i class="bi bi-list-task fs-4 text-success"></i>
                     </div>
                     <div>
-                        <p class="text-muted small mb-0">Total Work Items</p>
-                        <h5 class="fw-bold mb-0">0</h5>
+                        <p class="text-muted small mb-0">Total Tasks</p>
+                        <h5 class="fw-bold mb-0">{{dashboard?.totalTask}}</h5>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- Pending Tasks -->
+        <!-- Total Teams -->
         <div class="col-12 col-sm-6 col-xl-3">
             <div class="card border-0 shadow-sm">
                 <div class="card-body d-flex align-items-center gap-3">
@@ -46,8 +46,8 @@
                         <i class="bi bi-clock fs-4 text-warning"></i>
                     </div>
                     <div>
-                        <p class="text-muted small mb-0">Pending Tasks</p>
-                        <h5 class="fw-bold mb-0">0</h5>
+                        <p class="text-muted small mb-0">Total Teams</p>
+                        <h5 class="fw-bold mb-0">{{dashboard?.totalTeam}}</h5>
                     </div>
                 </div>
             </div>
@@ -62,7 +62,7 @@
                     </div>
                     <div>
                         <p class="text-muted small mb-0">Total Users</p>
-                        <h5 class="fw-bold mb-0">0</h5>
+                        <h5 class="fw-bold mb-0">{{dashboard?.totalUser}}</h5>
                     </div>
                 </div>
             </div>
@@ -74,7 +74,13 @@
     <div class="card border-0 shadow-sm mt-4">
         <div class="card-body">
             <h6 class="fw-bold mb-3">Recent Work Items</h6>
+            @if (dashboard?.tasks?.length === 0) {
             <p class="text-muted small">No work items found.</p>
+            } @else {
+            @for (item of dashboard?.tasks; track $index) {
+            <div class="p-2 my-2 dashboard-task">{{item.value}}</div>
+            }
+            }
         </div>
     </div>
 

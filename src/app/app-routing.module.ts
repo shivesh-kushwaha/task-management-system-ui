@@ -79,6 +79,11 @@ const routes: Routes = [
     loadChildren: () => import('./features/task/task.module').then(m => m.TaskModuleModule)
   },
   {
+    path: 'configuration',
+    canActivate: [AuthGuard],
+    loadChildren: () => import('./features/configuration/configuration.module').then(m => m.ConfigurationModule)
+  },
+  {
     path: '**',
     canActivate: [AuthGuard],
     component: NotFoundComponent    // ← show 404 page instead of redirect

@@ -17,6 +17,10 @@
 
 /* ─── Dropdown ──────────────────────────────────────────────────── */
 .navbar__dropdown {
-  min-width: 160px;
+  min-width: 200px;
   z-index: 1000;
+}
+
+.navbar__dropdown>button:hover {
+  background-color: rgb(218, 218, 218);
 }
