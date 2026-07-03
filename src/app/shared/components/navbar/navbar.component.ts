@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { TokenService } from '../../services';
+import { AuthorizationStore } from '../../../core/authorization';
 
 @Component({
     selector: 'app-navbar',
@@ -25,6 +26,7 @@ export class NavbarComponent {
 
     logout(): void {
         this.tokenService.clearTokens();
+        AuthorizationStore.clearPermissions();
         this.router.navigate(['/auth/login']);
     }
 }

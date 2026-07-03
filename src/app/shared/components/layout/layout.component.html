@@ -1,3 +1,4 @@
+@if (isPermissionLoaded) {
 @if (isLoggedIn) {
 <div class="app-layout">
   <app-sidebar (sidebarEvent)="onSidebarChanged($event)"></app-sidebar>
@@ -10,4 +11,5 @@
 </div>
 } @else {
 <router-outlet></router-outlet>
+}
 }

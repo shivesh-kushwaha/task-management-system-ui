@@ -1,14 +1,15 @@
-import { Component, Input, OnInit, ViewChild, AfterViewInit, ChangeDetectorRef, OnDestroy } from '@angular/core';
+import { Component, OnInit, ViewChild, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
-import { PermissionService } from '../../services/permission.service';
-import { ISearchEventDto } from '../../../../shared/dtos';
-import { SearchTypeEnum } from '../../../../core/enums';
 import { Subject, takeUntil, take } from 'rxjs';
+import { PermissionService } from '../../services/permission.service';
+import { ISearchEventDto, ISelectListItemDto } from '../../../../shared/dtos';
+import { SearchTypeEnum } from '../../../../core/enums';
 import { AddPermissionConfigurationDialogComponent } from '../dialogs/add/permission/add-permission-configuration-dialog.component';
 import { IGetPermissionGroupedListByRoleIdDto, IGetPermissionListItemDto } from '../../dtos';
 import { UpsertPermissionGroupDialogComponent } from '../dialogs/upsert/permission-group/upsert-permission-group-configuration-dialog.component';
 import { IUpsertRolePermissionDto } from '../../dtos/permission/upsert-role-permission.dto';
-import { RolePermissionService } from '../../services';
+import { RolePermissionService, RoleService } from '../../services';
+import { AppUtil } from '../../../../core/utils/app.util';
 
 @Component({
     selector: 'app-permission-configuration',
@@ -20,9 +21,12 @@ export class PermissionConfigurationComponent implements OnInit, OnDestroy {
     @ViewChild('addPermissionDialog') addPermissionDialog!: AddPermissionConfigurationDialogComponent;
     @ViewChild('upsertGroupDialog') upsertGroupDialog!: UpsertPermissionGroupDialogComponent;
 
-    @Input() roleId: number = 1; // Role ID passed from parent (or route)
+    // Role selection
+    protected roles: ISelectListItemDto[] = [];
+    protected selectedRoleId: number | null = null;
 
-    protected isLoading = false;
+    // Permission data
+    protected isLoading = true;
     protected isSaving = false;
     protected groups: IGetPermissionGroupedListByRoleIdDto[] = [];
     protected filteredGroups: IGetPermissionGroupedListByRoleIdDto[] = [];
@@ -33,12 +37,13 @@ export class PermissionConfigurationComponent implements OnInit, OnDestroy {
     constructor(
         private readonly _permissionService: PermissionService,
         private readonly _rolePermissionService: RolePermissionService,
+        private readonly _roleService: RoleService,
         private readonly _toastr: ToastrService,
         private readonly _cdr: ChangeDetectorRef
     ) { }
 
     public ngOnInit(): void {
-        this._loadPermissions();
+        this._loadRoles();
     }
 
     public ngOnDestroy(): void {
@@ -46,7 +51,59 @@ export class PermissionConfigurationComponent implements OnInit, OnDestroy {
         this._destroy$.complete();
     }
 
-    // Search
+    // ------------------- Role Dropdown -------------------
+    private _loadRoles(): void {
+        // Load all roles (adjust pageSize as needed)
+        this._roleService.getListItem()
+            .pipe(take(1))
+            .subscribe({
+                next: (res) => {
+                    this.roles = res;
+                    if (this.roles.length > 0) {
+                        // Select the first role by default
+                        this.selectedRoleId = this.roles[0].key;
+                        this._loadPermissions();
+                    } else {
+                        this._toastr.warning('No roles available');
+                    }
+                },
+                error: () => this._toastr.error('Failed to load roles')
+            });
+    }
+
+    protected onRoleChange(): void {
+        if (this.selectedRoleId !== null) {
+            this._loadPermissions();
+        }
+    }
+
+    // ------------------- Permissions -------------------
+    private _loadPermissions(): void {
+        if (this.selectedRoleId === null) {
+            this._toastr.warning('Please select a role');
+            return;
+        }
+        this.isLoading = true;
+        this._permissionService.getGroupedByRoleId(this.selectedRoleId)
+            .pipe(takeUntil(this._destroy$))
+            .subscribe({
+                next: (response: IGetPermissionGroupedListByRoleIdDto[]) => {
+                    // Add collapse state to each group
+                    this.groups = response.map(g => ({ ...g, isCollapsed: false }));
+                    this.filteredGroups = [...this.groups];
+                    this._originalGroups = JSON.parse(JSON.stringify(this.groups));
+                    this.hasChanges = false;
+                    this.isLoading = false;
+                    this._cdr.detectChanges();
+                },
+                error: (err) => {
+                    this._toastr.error(err.error?.message || 'Failed to load permissions');
+                    this.isLoading = false;
+                }
+            });
+    }
+
+    // ------------------- Search -------------------
     protected onSearchEvent(event: ISearchEventDto): void {
         const query = event.query?.trim().toLowerCase() || '';
         if (event.type === SearchTypeEnum.Reset || !query) {
@@ -55,27 +112,40 @@ export class PermissionConfigurationComponent implements OnInit, OnDestroy {
             this.filteredGroups = this.groups
                 .map(group => ({
                     ...group,
-                    permissions: group.permissions.filter(p => p.value.toLowerCase().includes(query))
+                    permissions: group.permissions.filter(p =>
+                        p.value.toLowerCase().includes(query)
+                    )
                 }))
                 .filter(group => group.permissions.length > 0);
         }
     }
 
-    // Toggle all permissions in a group
+    // ------------------- Toggle / Checkbox Handlers -------------------
     protected toggleGroupAll(group: IGetPermissionGroupedListByRoleIdDto, event: any): void {
         const checked = event.target.checked;
         group.permissions.forEach((p: IGetPermissionListItemDto) => p.isChecked = checked);
         this._permissionChecked(group);
-        this._compareHasChanges();
     }
 
-    // Called when any permission checkbox changes
     protected onPermissionChecked(group: IGetPermissionGroupedListByRoleIdDto): void {
         this._permissionChecked(group);
     }
 
-    // Save updates
+    private _permissionChecked(group: IGetPermissionGroupedListByRoleIdDto): void {
+        group.isAllPermissionChecked = group.permissions.every(x => x.isChecked);
+        this._compareHasChanges();
+    }
+
+    private _compareHasChanges(): void {
+        this.hasChanges = JSON.stringify(this.groups) !== JSON.stringify(this._originalGroups);
+    }
+
+    // ------------------- Save -------------------
     protected upsertRolePermission(): void {
+        if (this.selectedRoleId === null) {
+            this._toastr.warning('No role selected');
+            return;
+        }
         this.isSaving = true;
         const payload = this._createPayload();
         this._rolePermissionService.upsert(payload)
@@ -85,7 +155,6 @@ export class PermissionConfigurationComponent implements OnInit, OnDestroy {
                     this._toastr.success('Permissions saved successfully');
                     this.isSaving = false;
                     this.hasChanges = false;
-                    // Refresh original state
                     this._originalGroups = JSON.parse(JSON.stringify(this.groups));
                     this._cdr.detectChanges();
                 },
@@ -96,8 +165,26 @@ export class PermissionConfigurationComponent implements OnInit, OnDestroy {
             });
     }
 
+    private _createPayload(): IUpsertRolePermissionDto {
+        const payload: IUpsertRolePermissionDto = {
+            roleId: this.selectedRoleId!,
+            permissionIds: []
+        };
+        this.groups.forEach(g => {
+            g.permissions.forEach(p => {
+                if (p.isChecked) payload.permissionIds.push(p.key);
+            });
+        });
+        return payload;
+    }
+
+    // ------------------- Dialog Handlers -------------------
     protected onAddPermission(): void {
-        this.addPermissionDialog.open(this.roleId);
+        if (this.selectedRoleId === null) {
+            this._toastr.warning('Please select a role first');
+            return;
+        }
+        this.addPermissionDialog.open(this.selectedRoleId);
     }
 
     protected onPermissionAdded(): void {
@@ -110,55 +197,5 @@ export class PermissionConfigurationComponent implements OnInit, OnDestroy {
 
     protected onPermissionGroupSaved(): void {
         this._loadPermissions();
-    }
-
-    private _loadPermissions(): void {
-        if (!this.roleId) {
-            this._toastr.warning('No role selected');
-            return;
-        }
-        this.isLoading = true;
-        this._permissionService.getGroupedByRoleId(this.roleId)
-            .pipe(takeUntil(this._destroy$))
-            .subscribe({
-                next: (response: IGetPermissionGroupedListByRoleIdDto[]) => {
-                    // Add collapse state to each group
-                    this.groups = response;
-                    this.filteredGroups = [...this.groups];
-                    this._originalGroups = JSON.parse(JSON.stringify(this.groups)); // deep copy for change detection
-                    this.hasChanges = false;
-                    this.isLoading = false;
-                    this._cdr.detectChanges();
-                },
-                error: (err) => {
-                    this._toastr.error(err.error?.message || 'Failed to load permissions');
-                    this.isLoading = false;
-                }
-            });
-    }
-
-    private _permissionChecked(group: IGetPermissionGroupedListByRoleIdDto): void {
-        group.isAllPermissionChecked = group.permissions.every(x => x.isChecked);
-        this._compareHasChanges();
-    }
-
-    // Compare current state with original to determine if changes exist
-    private _compareHasChanges(): void {
-        this.hasChanges = JSON.stringify(this.groups) !== JSON.stringify(this._originalGroups);
-    }
-
-    private _createPayload(): IUpsertRolePermissionDto {
-        const upsertRolePermission: IUpsertRolePermissionDto = {
-            roleId: this.roleId,
-            permissionIds: []
-        }
-
-        this.groups.forEach(g => {
-            g.permissions.forEach(p => {
-                if (p.isChecked) upsertRolePermission.permissionIds.push(p.key);
-            });
-        });
-
-        return upsertRolePermission;
     }
 }

@@ -1,28 +1,32 @@
 <section>
-    <div class="d-flex justify-content-between align-items-center flex-wrap mb-3">
-        <div class="col-8 search-bar mb-3">
+    <!-- Header: Role Dropdown + Search + Buttons -->
+    <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+        <!-- Role Dropdown (auto width, min-width to avoid squeezing) -->
+        <div class="flex-shrink-0" style="min-width: 160px;">
+            <select class="form-select" [(ngModel)]="selectedRoleId" (change)="onRoleChange()">
+                <option [ngValue]="null" disabled>Select Role</option>
+                @for (role of roles; track role.key) {
+                <option [ngValue]="role.key">{{ role.value }}</option>
+                }
+            </select>
+        </div>
+
+        <!-- Search Bar (takes remaining space) -->
+        <div class="flex-grow-1 search-bar">
             <app-search (searchEvent)="onSearchEvent($event)"></app-search>
         </div>
 
-        <div class="col-4 d-flex justify-content-end gap-2">
-            <button type="button" class="btn btn-outline-primary" (click)="onAddPermission()">
+        <!-- Buttons (never wrap, stay together) -->
+        <div class="flex-shrink-0 d-flex gap-2">
+            <button type="button" class="btn btn-outline-primary text-nowrap" (click)="onAddPermission()">
                 Add Permission
             </button>
-            <button type="button" class="btn btn-outline-primary" (click)="onAddPermissionGroup()">
+            <button type="button" class="btn btn-outline-primary text-nowrap" (click)="onAddPermissionGroup()">
                 Add Permission Group
             </button>
         </div>
     </div>
 
-    <!-- Loading -->
-    @if (isLoading) {
-    <div class="text-center py-4">
-        <div class="spinner-border text-primary" role="status">
-            <span class="visually-hidden">Loading...</span>
-        </div>
-    </div>
-    } @else {
-    <!-- Groups -->
     @for (group of filteredGroups; track group.permissionGroupId) {
     <div class="card mb-3">
         <div class="card-header d-flex justify-content-between align-items-center"
@@ -55,9 +59,9 @@
             </div>
         </div>
     </div>
-    } @empty {
-    <div class="alert alert-info">No permissions found.</div>
     }
+    @if(!isLoading && groups.length === 0) {
+    <div class="alert alert-info">No permissions found.</div>
     }
 
     <!-- Update Button (visible when changes are made) -->

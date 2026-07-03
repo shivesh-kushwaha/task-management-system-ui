@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { DashboardService } from '../../services/dashboard.service';
 import { IGetDashboardDto } from '../../dtos';
 import { ToastrService } from 'ngx-toastr';
+import { PermissionCodeConstant } from '../../../../core/constants';
 import { AuthorizationStore } from '../../../../core/authorization';
 
 @Component({
@@ -14,8 +15,19 @@ export class DashboardComponent implements OnInit {
     protected isLoading: boolean = false;
     protected dashboard: IGetDashboardDto | null = null;
 
+    protected canViewProject: boolean = false;
+    protected canViewUser: boolean = false;
+    protected canViewTeam: boolean = false;
+    protected canViewWorkItem: boolean = false;
+
+    get permissionCodeConstant(): typeof PermissionCodeConstant {
+        return PermissionCodeConstant;
+    }
+
     constructor(private readonly _dashboardService: DashboardService,
-        private readonly _toastr: ToastrService) { }
+        private readonly _toastr: ToastrService) {
+        this._initializePermissionCodes();
+    }
 
     ngOnInit(): void {
         this._getDashboard();
@@ -33,5 +45,12 @@ export class DashboardComponent implements OnInit {
                 this.isLoading = false;
             }
         });
+    }
+
+    private _initializePermissionCodes(): void {
+        this.canViewProject = AuthorizationStore.hasAny([this.permissionCodeConstant.Project.ViewProject]);
+        this.canViewTeam = AuthorizationStore.hasAny([this.permissionCodeConstant.Team.ViewTeam]);
+        this.canViewUser = AuthorizationStore.hasAny([this.permissionCodeConstant.User.ViewUser]);
+        this.canViewWorkItem = AuthorizationStore.hasAny([this.permissionCodeConstant.WorkItem.ViewWorkItem]);
     }
 }

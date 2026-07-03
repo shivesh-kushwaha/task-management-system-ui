@@ -1,9 +1,11 @@
 <section>
   <div class="d-flex justify-content-between align-items-center mb-3">
     <div class="page-title">Projects</div>
+    @if(canAdd) {
     <div>
       <button type="button" class="btn btn-outline-primary" (click)="onAddProject()">Add Project</button>
     </div>
+    }
   </div>
 
   <div class="search-bar mb-3">
@@ -78,16 +80,22 @@
           <td>{{ project.createdAt | date: 'MM/dd/yyyy hh:mm:ss a' }}</td>
           <td>{{ project.createdByFullName || AppUtil.DefaultValue }}</td>
           <td class="text-center">
+            @if (canUpdate) {
             <button class="btn btn-sm btn-outline-primary me-1" (click)="onEditProject(project)"
               data-bs-toggle="tooltip" data-bs-title="Edit Project">
               <i class="bi bi-pencil"></i>
             </button>
+            }
+            @if(canView) {
             <button class="btn btn-sm btn-outline-secondary me-1" (click)="onViewProject(project)">
               <i class="bi bi-eye"></i>
             </button>
+            }
+            @if (canDelete) {
             <button class="btn btn-sm btn-outline-danger" (click)="onDeleteProject(project)">
               <i class="bi bi-trash"></i>
             </button>
+            }
           </td>
         </tr>
         }

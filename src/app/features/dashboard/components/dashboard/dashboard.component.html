@@ -9,6 +9,7 @@
     <div class="row g-3">
 
         <!-- Total Projects -->
+        @if(canViewProject) {
         <div class="col-12 col-sm-6 col-xl-3">
             <div class="card border-0 shadow-sm">
                 <div class="card-body d-flex align-items-center gap-3">
@@ -22,8 +23,10 @@
                 </div>
             </div>
         </div>
+        }
 
         <!-- Total Tasks -->
+        @if(canViewWorkItem) {
         <div class="col-12 col-sm-6 col-xl-3">
             <div class="card border-0 shadow-sm">
                 <div class="card-body d-flex align-items-center gap-3">
@@ -37,8 +40,10 @@
                 </div>
             </div>
         </div>
+        }
 
         <!-- Total Teams -->
+        @if(canViewTeam) {
         <div class="col-12 col-sm-6 col-xl-3">
             <div class="card border-0 shadow-sm">
                 <div class="card-body d-flex align-items-center gap-3">
@@ -52,8 +57,10 @@
                 </div>
             </div>
         </div>
+        }
 
         <!-- Total Users -->
+        @if(canViewUser) {
         <div class="col-12 col-sm-6 col-xl-3">
             <div class="card border-0 shadow-sm">
                 <div class="card-body d-flex align-items-center gap-3">
@@ -67,10 +74,12 @@
                 </div>
             </div>
         </div>
+        }
 
     </div>
 
     <!-- Recent Work Items -->
+    @if(canViewWorkItem) {
     <div class="card border-0 shadow-sm mt-4">
         <div class="card-body">
             <h6 class="fw-bold mb-3">Recent Work Items</h6>
@@ -83,5 +92,6 @@
             }
         </div>
     </div>
+    }
 
 </div>

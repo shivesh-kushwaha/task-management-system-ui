@@ -68,7 +68,7 @@
             <div class="mb-3">
                 <label class="form-label fw-semibold">Email</label>
                 <input type="email" class="form-control" formControlName="email" placeholder="Enter your email"
-                    [maxlength]="appConstants.emailMaxLength"
+                    [maxlength]="appConstant.emailMaxLength"
                     [ngClass]="{'is-invalid': registerForm.get('email')?.invalid && registerForm.get('email')?.touched}" />
                 <div class="text-danger small mt-1">
                     @if (registerForm.get('email')?.errors?.['required'] && registerForm.get('email')?.touched) {
@@ -78,7 +78,7 @@
                     <span>Enter a valid email.</span>
                     }
                     @if (registerForm.get('email')?.errors?.['maxlength'] && registerForm.get('email')?.touched) {
-                    <span>Maximum {{ appConstants.emailMaxLength }} characters.</span>
+                    <span>Maximum {{ appConstant.emailMaxLength }} characters.</span>
                     }
                 </div>
             </div>
@@ -88,7 +88,7 @@
                 <label class="form-label fw-semibold">Password <span class="text-danger">*</span></label>
                 <div class="position-relative">
                     <input [type]="showPassword ? 'text' : 'password'" class="form-control" formControlName="password"
-                        placeholder="Enter your password" [maxlength]="appConstants.passwordMaxLength"
+                        placeholder="Enter your password" [maxlength]="appConstant.passwordMaxLength"
                         [ngClass]="{'is-invalid': registerForm.get('password')?.invalid && registerForm.get('password')?.touched}"
                         style="padding-right: 2.5rem !important;" />
                     @if (registerForm.get('password')?.value) {
@@ -103,10 +103,10 @@
                     <span>Password is required.</span>
                     }
                     @if (registerForm.get('password')?.errors?.['minlength'] && registerForm.get('password')?.touched) {
-                    <span>Minimum {{ appConstants.passwordMinLength }} characters.</span>
+                    <span>Minimum {{ appConstant.passwordMinLength }} characters.</span>
                     }
                     @if (registerForm.get('password')?.errors?.['maxlength'] && registerForm.get('password')?.touched) {
-                    <span>Maximum {{ appConstants.passwordMaxLength }} characters.</span>
+                    <span>Maximum {{ appConstant.passwordMaxLength }} characters.</span>
                     }
                 </div>
             </div>
@@ -117,7 +117,7 @@
                 <div class="position-relative">
                     <input [type]="showConfirmPassword ? 'text' : 'password'" class="form-control"
                         formControlName="confirmPassword" placeholder="Re-enter your password"
-                        [maxlength]="appConstants.passwordMaxLength"
+                        [maxlength]="appConstant.passwordMaxLength"
                         [ngClass]="{'is-invalid': registerForm.get('confirmPassword')?.invalid && registerForm.get('confirmPassword')?.touched || registerForm.errors?.['passwordMismatch'] && registerForm.get('confirmPassword')?.touched}"
                         style="padding-right: 2.5rem !important;" />
                     @if (registerForm.get('confirmPassword')?.value) {

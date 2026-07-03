@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { ILoginResponseDto } from '../dtos';
 import { TokenService } from '../../shared/services/token.service';
 import { environment } from '../../../environments/environment';
+import { AuthorizationStore } from '../authorization';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -27,6 +28,7 @@ export class AuthService {
   }
 
   private forceLogout(): void {
+    AuthorizationStore.clearPermissions();
     this.tokenService.clearTokens();
     this.router.navigate(['/auth/login']);
   }

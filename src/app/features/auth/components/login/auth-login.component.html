@@ -14,7 +14,7 @@
             <div class="mb-3">
                 <label class="form-label fw-semibold">Email</label>
                 <input type="email" class="form-control" formControlName="email" placeholder="Enter your email"
-                    [maxlength]="appConstants.emailMaxLength"
+                    [maxlength]="appConstant.emailMaxLength"
                     [ngClass]="{'is-invalid': loginForm.get('email')?.invalid && loginForm.get('email')?.touched}" />
                 <div class="invalid-feedback">
                     @if (loginForm.get('email')?.errors?.['required']) {
@@ -24,7 +24,7 @@
                     <span>Enter a valid email.</span>
                     }
                     @if (loginForm.get('email')?.errors?.['maxlength']) {
-                    <span>Maximum {{ appConstants.emailMaxLength }} characters.</span>
+                    <span>Maximum {{ appConstant.emailMaxLength }} characters.</span>
                     }
                 </div>
             </div>
@@ -34,7 +34,7 @@
                 <label class="form-label fw-semibold">Password</label>
                 <div class="position-relative">
                     <input [type]="showPassword ? 'text' : 'password'" class="form-control" formControlName="password"
-                        placeholder="Enter your password" [maxlength]="appConstants.passwordMaxLength"
+                        placeholder="Enter your password" [maxlength]="appConstant.passwordMaxLength"
                         [ngClass]="{'is-invalid': loginForm.get('password')?.invalid && loginForm.get('password')?.touched}"
                         style="padding-right: 2.5rem !important;" />
                     @if (loginForm.get('password')?.value) {
@@ -49,10 +49,10 @@
                     <span>Password is required.</span>
                     }
                     @if (loginForm.get('password')?.errors?.['minlength'] && loginForm.get('password')?.touched) {
-                    <span>Minimum {{ appConstants.passwordMinLength }} characters.</span>
+                    <span>Minimum {{ appConstant.passwordMinLength }} characters.</span>
                     }
                     @if (loginForm.get('password')?.errors?.['maxlength'] && loginForm.get('password')?.touched) {
-                    <span>Maximum {{ appConstants.passwordMaxLength }} characters.</span>
+                    <span>Maximum {{ appConstant.passwordMaxLength }} characters.</span>
                     }
                 </div>
             </div>

@@ -1,9 +1,10 @@
-<div class="sidebar bg-dark text-white" [class.sidebar--collapsed]="isCollapsed" [class.sidebar--expanded]="!isCollapsed">
+<div class="sidebar bg-dark text-white" [class.sidebar--collapsed]="isCollapsed"
+  [class.sidebar--expanded]="!isCollapsed">
 
   <!-- Toggle Button -->
   <div class="sidebar__header border-bottom border-secondary">
     @if (!isCollapsed) {
-      <span class="sidebar__title fw-bold fs-6">Task Management System</span>
+    <span class="sidebar__title fw-bold fs-6">Task Management System</span>
     }
     <button class="btn btn-sm btn-outline-light ms-auto" (click)="toggleSidebar()">
       <i [class]="isCollapsed ? 'bi bi-chevron-right' : 'bi bi-chevron-left'"></i>
@@ -13,17 +14,17 @@
   <!-- Menu Items -->
   <ul class="nav flex-column sidebar__menu">
     @for (item of menuItems; track item.route) {
-      <li class="nav-item">
-        <a class="nav-link sidebar__link d-flex align-items-center gap-2 rounded text-white"
-           [routerLink]="item.route"
-           routerLinkActive="active bg-primary"
-           [title]="isCollapsed ? item.label : ''">
-          <i [class]="item.icon" class="sidebar__icon"></i>
-          @if (!isCollapsed) {
-            <span>{{ item.label }}</span>
-          }
-        </a>
-      </li>
+    @if (item.canView) {
+    <li class="nav-item">
+      <a class="nav-link sidebar__link d-flex align-items-center gap-2 rounded text-white" [routerLink]="item.route"
+        routerLinkActive="active bg-primary" [title]="isCollapsed ? item.label : ''">
+        <i [class]="item.icon" class="sidebar__icon"></i>
+        @if (!isCollapsed) {
+        <span>{{ item.label }}</span>
+        }
+      </a>
+    </li>
+    }
     }
   </ul>
 

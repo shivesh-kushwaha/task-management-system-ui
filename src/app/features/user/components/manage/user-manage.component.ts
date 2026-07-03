@@ -12,6 +12,8 @@ import { HttpErrorResponse } from "@angular/common/http";
 import { UserService, UserStatesService } from "../../services";
 import { DialogAssociatedItemsComponent } from "../dialogs/associated-items/dialog-associated-items.coponent";
 import { UpsertUserDialogComponent } from "../dialogs/upsert/upsert-user-dialog.component";
+import { PermissionCodeConstant } from "../../../../core/constants";
+import { AuthorizationStore } from "../../../../core/authorization";
 
 @Component({
     selector: 'app-user-manage',
@@ -28,13 +30,17 @@ export class UserManageComponent implements OnInit {
     protected users: IGetUserPagedListDto[] = [];
     protected totalCount = 0;
     protected isLoading = false;
-
     protected request: IPagedListRequestDto;
+
+    protected canAdd: boolean = false;
+    protected canUpdate: boolean = false;
+    protected canDelete: boolean = false;
+    protected canView: boolean = false;
 
     protected readonly AppUtil = AppUtil;
     protected readonly ModuleTitleEnum = ModuleTitleEnum;
 
-    userColumnName = {
+    protected userColumnName = {
         Name: 'name',
         Email: 'email',
         CreatedAt: 'createdAt',
@@ -43,8 +49,11 @@ export class UserManageComponent implements OnInit {
     };
 
     private _userIdToDelete: number = 0;
-
     private _destroy$ = new Subject<void>();
+
+    get permissionCodeConstant(): typeof PermissionCodeConstant {
+        return PermissionCodeConstant;
+    }
 
     constructor(
         private readonly _userService: UserService,
@@ -56,6 +65,7 @@ export class UserManageComponent implements OnInit {
     ) {
         this.request = AppUtil.initializePagedListRequest(this.userColumnName.CreatedAt);
         this.associatedWorkItems = [];
+        this._initializePermissionCodes();
     }
 
     public ngOnInit(): void {
@@ -213,5 +223,12 @@ export class UserManageComponent implements OnInit {
                 this._toastr.error(err.error?.message);
             }
         });
+    }
+
+    private _initializePermissionCodes(): void {
+        this.canView = AuthorizationStore.hasAny([this.permissionCodeConstant.User.ViewUser]);
+        this.canAdd = AuthorizationStore.hasAny([this.permissionCodeConstant.User.AddUser]);
+        this.canDelete = AuthorizationStore.hasAny([this.permissionCodeConstant.User.DeleteUser]);
+        this.canUpdate = AuthorizationStore.hasAny([this.permissionCodeConstant.User.UpdateUser]);
     }
 }

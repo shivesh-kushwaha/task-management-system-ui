@@ -2,7 +2,6 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { PermissionService, TokenService } from '../../services';
-import { IGetPermissionListByUserIdDto } from '../../dtos';
 import { ToastrService } from 'ngx-toastr';
 import { AuthorizationStore } from '../../../core/authorization';
 
@@ -14,8 +13,10 @@ import { AuthorizationStore } from '../../../core/authorization';
 })
 export class LayoutComponent implements OnInit, OnDestroy {
   protected isLoggedIn = false;
-  private readonly sub: Subscription;
   protected isSidebarCollapsed: boolean = false;
+  protected isPermissionLoaded: boolean = false;
+
+  private readonly sub: Subscription;
 
   constructor(
     private readonly _router: Router,
@@ -46,15 +47,16 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   private _loadPermissions(): void {
-    this._permissionService.getListItem().subscribe({
-      next: (response: IGetPermissionListByUserIdDto[]) => {
-        const permissionCodes = response.map(x => x.code);
-        AuthorizationStore.setPermissions(['1', '2']);
+    this.isPermissionLoaded = false;
+    this._permissionService.loadAndStorePermissions().subscribe({
+      next: () => {
+        this.isPermissionLoaded = true;
       },
       error: (err: any) => {
+        this.isPermissionLoaded = true;
         this._toastr.error(err.error?.message);
       }
-    })
+    });
   }
 
   public ngOnDestroy(): void {
