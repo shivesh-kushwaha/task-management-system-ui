@@ -5,11 +5,13 @@ import { ToastrService } from 'ngx-toastr';
 
 import { AppUtil } from '../../../../core/utils/app.util';
 import { ModuleTitleEnum, SearchTypeEnum, WorkItemTypeEnum } from '../../../../core/enums';
-import { IDialogConfirmDto, IGetWorkItemPagedListDto, IPagedListRequestDto, IPagedListResponseDto, ISearchEventDto, IWorkItemPagedListRequestDto } from '../../../dtos';
+import { IDialogConfirmDto, IGetWorkItemPagedListDto, IPagedListResponseDto, ISearchEventDto, IWorkItemPagedListRequestDto } from '../../../dtos';
 import { RecordStatusEnum, WorkItemPriorityEnum } from '../../../../core/enums';
 import { DialogConfirmComponent, UpsertWorkItemDialogComponent } from '../..';
 import { DialogStatesService, WorkItemService, WorkItemStatesService } from '../../../services';
 import { ActivatedRoute, Router } from '@angular/router';
+import { PermissionStore } from '../../../../core/authorization';
+import { PermissionCodeConstant } from '../../../../core/constants';
 
 @Component({
     selector: 'app-work-item-manage',
@@ -26,6 +28,11 @@ export class WorkItemManageComponent implements OnInit, OnDestroy {
     protected totalCount: number = 0;
     protected id: number = 0;
     protected isLoading = false;
+
+    protected canAdd: boolean = false;
+    protected canUpdate: boolean = false;
+    protected canDelete: boolean = false;
+    protected canView: boolean = false;
 
     protected request: IWorkItemPagedListRequestDto;
     protected readonly AppUtil = AppUtil;
@@ -49,6 +56,10 @@ export class WorkItemManageComponent implements OnInit, OnDestroy {
         SubTasks: 'totalSubTasks',
     };
 
+    get permissionCodeConstant(): typeof PermissionCodeConstant {
+        return PermissionCodeConstant;
+    }
+
     constructor(private readonly _workItemService: WorkItemService,
         private readonly _workItemStatesService: WorkItemStatesService,
         private readonly _dialogStatesService: DialogStatesService,
@@ -58,6 +69,7 @@ export class WorkItemManageComponent implements OnInit, OnDestroy {
         private readonly _cdr: ChangeDetectorRef) {
         this.id = this._route.snapshot.params['id'];
         this.request = AppUtil.initializePagedListRequest(this.columnNames.CreatedAt);
+        this._initializePermissionCodes();
     }
 
     ngOnInit(): void {
@@ -197,6 +209,13 @@ export class WorkItemManageComponent implements OnInit, OnDestroy {
             error: (err: any) => {
                 this._toastr.error(err.error?.message);
             }
-        })
+        });
+    }
+
+    private _initializePermissionCodes(): void {
+        this.canView = PermissionStore.hasAny([this.permissionCodeConstant.Project.ViewProject]);
+        this.canAdd = PermissionStore.hasAny([this.permissionCodeConstant.Project.AddProject]);
+        this.canDelete = PermissionStore.hasAny([this.permissionCodeConstant.Project.DeleteProject]);
+        this.canUpdate = PermissionStore.hasAny([this.permissionCodeConstant.Project.UpdateProject]);
     }
 }

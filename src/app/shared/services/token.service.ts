@@ -1,11 +1,11 @@
 import { Injectable } from '@angular/core';
+import { AppUtil } from '../../core/utils/app.util';
 
 @Injectable({
     providedIn: 'root'
 })
 export class TokenService {
-
-    private decodeToken(token: string): any {
+    private _decodeToken(token: string): any {
         try {
             const payload = token.split('.')[1];
             const decoded = atob(payload);
@@ -15,35 +15,49 @@ export class TokenService {
         }
     }
 
-    getUserName(): string {
+    public getUserRoleCodes(): string[] {
         const token = this.getAccessToken();
-        if (!token) return 'User';
-        const decoded = this.decodeToken(token);
-        return decoded?.name;
-    }
-
-    getRoles(): number[] {
-        const token = this.getAccessToken();
-
-        if (!token) return [];
-
-        const decoded = this.decodeToken(token);
-
-        const roles = decoded?.roleIds;
-
-        if (!roles) return [];
-
-        // Case 1: already array
-        if (Array.isArray(roles)) {
-            return roles.map(Number);
+        if (token) {
+            const decoded = this._decodeToken(token);
+            const roleCode = decoded?.roleCodes;
+            return roleCode.split(', ');
         }
-
-        // Case 2: single value
-        return [Number(roles)];
+        else {
+            return [];
+        }
     }
 
-    isAdmin(): boolean {
-        return this.getRoles().some(x => x == 1);
+    public getUserId(): number {
+        const token = this.getAccessToken();
+        if (token) {
+            const decoded = this._decodeToken(token);
+            return decoded?.nameid
+        }
+        else {
+            return 0;
+        }
+    }
+
+    public getUserName(): string {
+        const token = this.getAccessToken();
+        if (token) {
+            const decoded = this._decodeToken(token);
+            return decoded?.name
+        }
+        else {
+            return AppUtil.EmptyString;
+        }
+    }
+
+    public getUserEmail(): string {
+        const token = this.getAccessToken();
+        if (token) {
+            const decoded = this._decodeToken(token);
+            return decoded?.email
+        }
+        else {
+            return AppUtil.EmptyString;
+        }
     }
 
     isLoggedIn(): boolean {
@@ -57,7 +71,7 @@ export class TokenService {
 
     private isTokenExpired(token: string | null): boolean {
         if (!token) return true;
-        const payload = this.decodeToken(token);
+        const payload = this._decodeToken(token);
         if (!payload?.exp) return true;
         return payload.exp * 1000 < Date.now();
     }

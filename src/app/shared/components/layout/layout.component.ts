@@ -3,7 +3,7 @@ import { NavigationEnd, Router } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
 import { PermissionService, TokenService } from '../../services';
 import { ToastrService } from 'ngx-toastr';
-import { AuthorizationStore } from '../../../core/authorization';
+import { PermissionStore } from '../../../core/authorization';
 
 @Component({
   selector: 'app-layout',

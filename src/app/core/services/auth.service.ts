@@ -1,12 +1,11 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject, throwError } from 'rxjs';
-import { tap, catchError, filter, take, switchMap, finalize } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { ILoginResponseDto } from '../dtos';
 import { TokenService } from '../../shared/services/token.service';
 import { environment } from '../../../environments/environment';
-import { AuthorizationStore } from '../authorization';
+import { PermissionStore } from '../authorization';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -28,7 +27,7 @@ export class AuthService {
   }
 
   private forceLogout(): void {
-    AuthorizationStore.clearPermissions();
+    PermissionStore.clearPermissions();
     this.tokenService.clearTokens();
     this.router.navigate(['/auth/login']);
   }

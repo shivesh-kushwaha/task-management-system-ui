@@ -13,7 +13,7 @@ import { UserService, UserStatesService } from "../../services";
 import { DialogAssociatedItemsComponent } from "../dialogs/associated-items/dialog-associated-items.coponent";
 import { UpsertUserDialogComponent } from "../dialogs/upsert/upsert-user-dialog.component";
 import { PermissionCodeConstant } from "../../../../core/constants";
-import { AuthorizationStore } from "../../../../core/authorization";
+import { PermissionStore } from "../../../../core/authorization";
 
 @Component({
     selector: 'app-user-manage',
@@ -226,9 +226,9 @@ export class UserManageComponent implements OnInit {
     }
 
     private _initializePermissionCodes(): void {
-        this.canView = AuthorizationStore.hasAny([this.permissionCodeConstant.User.ViewUser]);
-        this.canAdd = AuthorizationStore.hasAny([this.permissionCodeConstant.User.AddUser]);
-        this.canDelete = AuthorizationStore.hasAny([this.permissionCodeConstant.User.DeleteUser]);
-        this.canUpdate = AuthorizationStore.hasAny([this.permissionCodeConstant.User.UpdateUser]);
+        this.canView = PermissionStore.hasAny([this.permissionCodeConstant.User.ViewUser]);
+        this.canAdd = PermissionStore.hasAny([this.permissionCodeConstant.User.AddUser]);
+        this.canDelete = PermissionStore.hasAny([this.permissionCodeConstant.User.DeleteUser]);
+        this.canUpdate = PermissionStore.hasAny([this.permissionCodeConstant.User.UpdateUser]);
     }
 }

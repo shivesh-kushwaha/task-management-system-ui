@@ -47,7 +47,7 @@ export class AuthLoginComponent {
   onSubmit(): void {
     if (this.loginForm.invalid) return;
 
-    this.isLoading = true;
+    this.isLoading = true; 
 
     const dto: AuthLoginDto = this.loginForm.value;
 
@@ -67,7 +67,6 @@ export class AuthLoginComponent {
   private _loadPermissions(): void {
     this._permissionService.loadAndStorePermissions().subscribe({
       next: () => {
-        console.log('✅ Permissions loaded after login');
         this.router.navigate(['/dashboard']);
       },
       error: () => {

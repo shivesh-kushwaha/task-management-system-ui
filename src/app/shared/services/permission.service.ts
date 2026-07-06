@@ -3,7 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { IGetPermissionListByUserIdDto } from '../dtos';
 import { environment } from '../../../environments/environment';
-import { AuthorizationStore } from '../../core/authorization';
+import { PermissionStore } from '../../core/authorization';
 
 @Injectable({
     providedIn: 'root'
@@ -21,7 +21,7 @@ export class PermissionService {
         return this._getListItem().pipe(
             tap((response) => {
                 const permissionCodes = response.map(x => x.code);
-                AuthorizationStore.setPermissions(permissionCodes);
+                PermissionStore.setPermissions(permissionCodes);
             })
         );
     }

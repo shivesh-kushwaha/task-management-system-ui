@@ -65,10 +65,7 @@
                         @else {
 
                         @for (role of user.roles; track $index) {
-                        <span>{{ role.value }}
-                            @if (user.roles.length - 1 !== $index) {
-                            ,
-                            }
+                        <span>{{ role.value }}{{user.roles.length - 1 !== $index ? ',' : ''}}
                         </span>
                         }
                         }

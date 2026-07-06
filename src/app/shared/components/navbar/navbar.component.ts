@@ -1,7 +1,8 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 import { TokenService } from '../../services';
-import { AuthorizationStore } from '../../../core/authorization';
+import { PermissionStore } from '../../../core/authorization';
+import { AppUtil } from '../../../core/utils/app.util';
 
 @Component({
     selector: 'app-navbar',
@@ -10,14 +11,14 @@ import { AuthorizationStore } from '../../../core/authorization';
     standalone: false
 })
 export class NavbarComponent {
-    isDropdownOpen = false;
-    userName = '';
+    public isDropdownOpen = false;
+    public userName = AppUtil.EmptyString;
 
     constructor(
-        private readonly router: Router,
-        private readonly tokenService: TokenService
+        private readonly _router: Router,
+        private readonly _tokenService: TokenService
     ) {
-        this.userName = this.tokenService.getUserName();
+        this.userName = _tokenService.getUserName();
     }
 
     toggleDropdown(): void {
@@ -25,8 +26,8 @@ export class NavbarComponent {
     }
 
     logout(): void {
-        this.tokenService.clearTokens();
-        AuthorizationStore.clearPermissions();
-        this.router.navigate(['/auth/login']);
+        this._tokenService.clearTokens();
+        PermissionStore.clearPermissions();
+        this._router.navigate(['/auth/login']);
     }
 }

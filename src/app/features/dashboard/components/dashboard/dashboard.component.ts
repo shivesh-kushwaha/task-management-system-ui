@@ -3,7 +3,7 @@ import { DashboardService } from '../../services/dashboard.service';
 import { IGetDashboardDto } from '../../dtos';
 import { ToastrService } from 'ngx-toastr';
 import { PermissionCodeConstant } from '../../../../core/constants';
-import { AuthorizationStore } from '../../../../core/authorization';
+import { PermissionStore } from '../../../../core/authorization';
 
 @Component({
     selector: 'app-dashboard',
@@ -48,9 +48,9 @@ export class DashboardComponent implements OnInit {
     }
 
     private _initializePermissionCodes(): void {
-        this.canViewProject = AuthorizationStore.hasAny([this.permissionCodeConstant.Project.ViewProject]);
-        this.canViewTeam = AuthorizationStore.hasAny([this.permissionCodeConstant.Team.ViewTeam]);
-        this.canViewUser = AuthorizationStore.hasAny([this.permissionCodeConstant.User.ViewUser]);
-        this.canViewWorkItem = AuthorizationStore.hasAny([this.permissionCodeConstant.WorkItem.ViewWorkItem]);
+        this.canViewProject = PermissionStore.hasAny([this.permissionCodeConstant.Project.ViewProject]);
+        this.canViewTeam = PermissionStore.hasAny([this.permissionCodeConstant.Team.ViewTeam]);
+        this.canViewUser = PermissionStore.hasAny([this.permissionCodeConstant.User.ViewUser]);
+        this.canViewWorkItem = PermissionStore.hasAny([this.permissionCodeConstant.WorkItem.ViewWorkItem]);
     }
 }

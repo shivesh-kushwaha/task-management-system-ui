@@ -13,7 +13,7 @@ import { DialogStatesService } from '../../../../shared/services';
 import { Router } from '@angular/router';
 import { UpsertProjectDialogComponent } from '../dialogs/upsert/upsert-project-dialog.component';
 import { PermissionCodeConstant } from '../../../../core/constants';
-import { AuthorizationStore } from '../../../../core/authorization';
+import { PermissionStore } from '../../../../core/authorization';
 
 @Component({
     selector: 'app-projects',
@@ -52,8 +52,8 @@ export class ProjectManageComponent implements OnInit, OnDestroy {
     private _destroy$ = new Subject<void>();
 
     get permissionCodeConstant(): typeof PermissionCodeConstant {
-            return PermissionCodeConstant;
-        }
+        return PermissionCodeConstant;
+    }
 
     constructor(
         private readonly _projectService: ProjectService,
@@ -197,9 +197,9 @@ export class ProjectManageComponent implements OnInit, OnDestroy {
     }
 
     private _initializePermissionCodes(): void {
-        this.canView = AuthorizationStore.hasAny([this.permissionCodeConstant.Project.ViewProject]);
-        this.canAdd = AuthorizationStore.hasAny([this.permissionCodeConstant.Project.AddProject]);
-        this.canDelete = AuthorizationStore.hasAny([this.permissionCodeConstant.Project.DeleteProject]);
-        this.canUpdate = AuthorizationStore.hasAny([this.permissionCodeConstant.Project.UpdateProject]);
+        this.canView = PermissionStore.hasAny([this.permissionCodeConstant.Project.ViewProject]);
+        this.canAdd = PermissionStore.hasAny([this.permissionCodeConstant.Project.AddProject]);
+        this.canDelete = PermissionStore.hasAny([this.permissionCodeConstant.Project.DeleteProject]);
+        this.canUpdate = PermissionStore.hasAny([this.permissionCodeConstant.Project.UpdateProject]);
     }
 }

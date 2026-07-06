@@ -1,4 +1,4 @@
-export class AuthorizationStore {
+export class PermissionStore {
     public static permissions: string[] = [];
 
     public static setPermissions(permissions: string[]): void {
