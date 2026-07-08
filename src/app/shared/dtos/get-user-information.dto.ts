@@ -1,7 +1,7 @@
-export interface IGetProjectInformationDto {
+export interface IGetUserInformationDto {
     createdAt: string;
     createdById?: number | null;
-    createdByFirstName: string;
+    createdByFirstName?: string | null;
     createdByLastName?: string | null;
     
     updatedAt?: string | null;

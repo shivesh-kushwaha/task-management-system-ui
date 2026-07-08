@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import { AddUserDto } from '../../auth/dtos/add-user.dto';
 import { environment } from '../../../../environments/environment';
 import { IPagedListRequestDto, IPagedListResponseDto, toQueryString } from '../../../shared/dtos';
-import { IGetUserPagedListDto, IGetWorkItemListByIdDto, IUpdateUserDto } from '../dtos';
+import { IGetUserByIdDto, IGetUserPagedListDto, IGetWorkItemListByIdDto, IUpdateUserDto } from '../dtos';
 
 @Injectable({
     providedIn: 'root'
@@ -26,7 +26,11 @@ export class UserService {
     public getWorkItemListById(id: number): Observable<IGetWorkItemListByIdDto[]> {
         return this._http.get<IGetWorkItemListByIdDto[]>(`${this._api}/work-item-list/${id}`);
     }
- 
+
+    public getById(id: number): Observable<IGetUserByIdDto> {
+        return this._http.get<IGetUserByIdDto>(`${this._api}/${id}`);
+    }
+
     public updateUser(payload: IUpdateUserDto): Observable<void> {
         return this._http.put<void>(`${this._api}`, payload);
     }
