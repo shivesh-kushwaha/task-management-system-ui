@@ -2,9 +2,10 @@ import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
-import { AppConstants } from '../../../../core/constants';
+import { AppConstant } from '../../../../core/constants';
 import { AuthLoginDto } from '../../dtos';
 import { ToastrService } from 'ngx-toastr';
+import { PermissionService } from '../../../../shared/services';
 
 @Component({
   selector: 'app-auth-login',
@@ -16,11 +17,12 @@ export class AuthLoginComponent {
   loginForm: FormGroup;
   isLoading = false;
   showPassword = false;
-  appConstants = AppConstants;
+  appConstant = AppConstant;
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
+    private readonly _permissionService: PermissionService,
     private router: Router,
     private readonly _toastr: ToastrService
   ) {
@@ -28,12 +30,12 @@ export class AuthLoginComponent {
       email: ['', [
         Validators.required,
         Validators.email,
-        Validators.maxLength(AppConstants.emailMaxLength)
+        Validators.maxLength(AppConstant.emailMaxLength)
       ]],
       password: ['', [
         Validators.required,
-        Validators.minLength(AppConstants.passwordMinLength),
-        Validators.maxLength(AppConstants.passwordMaxLength)
+        Validators.minLength(AppConstant.passwordMinLength),
+        Validators.maxLength(AppConstant.passwordMaxLength)
       ]]
     });
   }
@@ -45,7 +47,7 @@ export class AuthLoginComponent {
   onSubmit(): void {
     if (this.loginForm.invalid) return;
 
-    this.isLoading = true;
+    this.isLoading = true; 
 
     const dto: AuthLoginDto = this.loginForm.value;
 
@@ -53,11 +55,22 @@ export class AuthLoginComponent {
       next: (response) => {
         localStorage.setItem('accessToken', response.accessToken);
         localStorage.setItem('refreshToken', response.refreshToken);
-        this.router.navigate(['/dashboard']);
+        this._loadPermissions();
       },
       error: (err: any) => {
         this._toastr.error(err.error?.message);
         this.isLoading = false;
+      }
+    });
+  }
+
+  private _loadPermissions(): void {
+    this._permissionService.loadAndStorePermissions().subscribe({
+      next: () => {
+        this.router.navigate(['/dashboard']);
+      },
+      error: () => {
+        this.router.navigate(['/dashboard']);
       }
     });
   }

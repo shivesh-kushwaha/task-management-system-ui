@@ -1,0 +1,96 @@
+<section>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="page-title">User</div>
+        <div>
+            <button type="button" class="btn btn-link" (click)="onGoBack()">Back</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Full Name -->
+        <div class="col-6">
+            <div class="col-12 fw-bold">Full Name</div>
+            <div class="col-12">{{ user?.name ?? AppUtil.DefaultValue }}</div>
+        </div>
+
+        <!-- Email -->
+        <div class="col-6">
+            <div class="col-12 fw-bold">Email</div>
+            <div class="col-12">{{ user?.email ?? AppUtil.DefaultValue }}</div>
+        </div>
+
+        <!-- Status -->
+        <div class="col-6 mt-3">
+            <div class="col-12 fw-bold">Status</div>
+            <div class="col-12">
+                @if (user?.status === RecordStatusEnum.Active) {
+                <span>Active</span>
+                } @else if (user?.status === RecordStatusEnum.Inactive) {
+                <span>Inactive</span>
+                } @else if (user?.status === RecordStatusEnum.Suspended) {
+                <span>Suspended</span>
+                } @else {
+                <span>{{ AppUtil.DefaultValue }}</span>
+                }
+            </div>
+        </div>
+
+        <!-- Roles -->
+        <div class="col-6 mt-3">
+            <div class="col-12 fw-bold">Roles</div>
+            <div class="col-12">
+                @if (user?.roles?.length) {
+                @for (role of user?.roles; track role.key) {
+                <span class="badge bg-primary me-1">{{ role.value }}</span>
+                }
+                } @else {
+                <span>{{ AppUtil.DefaultValue }}</span>
+                }
+            </div>
+        </div>
+
+        <!-- Created At -->
+        <div class="col-6 mt-3">
+            <div class="col-12 fw-bold">Created At</div>
+            <div class="col-12">
+                @if (user?.createdAt) {
+                <span>{{ user?.createdAt | date: 'MM/dd/yyyy hh:mm:ss a' }}</span>
+                } @else {
+                <span>{{ AppUtil.DefaultValue }}</span>
+                }
+            </div>
+        </div>
+
+        <!-- Created By -->
+        <div class="col-6 mt-3">
+            <div class="col-12 fw-bold">Created By</div>
+            <div class="col-12">
+                @if (!AppUtil.isNullOrEmpty(user?.createdByFirstName)) {
+                <span>{{ user?.createdByFirstName }} {{ user?.createdByLastName }}</span>
+                } @else {
+                <span>{{ AppUtil.DefaultValue }}</span>
+                }
+            </div>
+        </div>
+
+        <!-- Updated At -->
+        @if (!AppUtil.isNullOrEmpty(user?.updatedAt)) {
+        <div class="col-6 mt-3">
+            <div class="col-12 fw-bold">Updated At</div>
+            <div class="col-12">
+                <span>{{ user?.updatedAt | date: 'MM/dd/yyyy hh:mm:ss a' }}</span>
+            </div>
+        </div>
+        }
+
+        <!-- Updated By -->
+        @if (!AppUtil.isNullOrEmpty(user?.updatedByFirstName)) {
+        <div class="col-6 mt-3">
+            <div class="col-12 fw-bold">Updated By</div>
+            <div class="col-12">
+                <span>{{ user?.updatedByFirstName }} {{ user?.updatedByLastName }}</span>
+            </div>
+        </div>
+        }
+    </div>
+</section>

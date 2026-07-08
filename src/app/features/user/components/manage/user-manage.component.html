@@ -1,9 +1,11 @@
 <section>
     <div class="d-flex justify-content-between align-items-center mb-3">
         <div class="page-title">Users</div>
+        @if (canAdd) {
         <div>
             <button type="button" class="btn btn-outline-primary" (click)="onAddUser()">Add User</button>
         </div>
+        }
     </div>
 
     <div class="search-bar mb-3">
@@ -63,25 +65,28 @@
                         @else {
 
                         @for (role of user.roles; track $index) {
-                        <span>{{ role.value }}
-                            @if (user.roles.length - 1 !== $index) {
-                            ,
-                            }
+                        <span>{{ role.value }}{{user.roles.length - 1 !== $index ? ',' : ''}}
                         </span>
                         }
                         }
                     </td>
                     <td class="text-center">
+                        @if(canUpdate) {
                         <button class="btn btn-sm btn-outline-primary me-1" (click)="onEditUser(user)"
                             data-bs-toggle="tooltip" data-bs-title="Edit user">
                             <i class="bi bi-pencil"></i>
                         </button>
+                        }
+                        @if (canView) {
                         <button class="btn btn-sm btn-outline-secondary me-1" (click)="onViewUser(user)">
                             <i class="bi bi-eye"></i>
                         </button>
+                        }
+                        @if(canDelete) {
                         <button class="btn btn-sm btn-outline-danger" (click)="onDeleteUser(user)">
                             <i class="bi bi-trash"></i>
                         </button>
+                        }
                     </td>
                 </tr>
                 }

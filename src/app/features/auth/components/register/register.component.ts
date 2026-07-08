@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { AbstractControl, FormBuilder, FormGroup, ValidationErrors, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from '../../../user/services/user.service';
-import { AppConstants } from '../../../../core/constants';
+import { AppConstant } from '../../../../core/constants';
 import { AddUserDto } from '../../dtos';
 
 function passwordMatchValidator(control: AbstractControl): ValidationErrors | null {
@@ -22,7 +22,7 @@ export class RegisterComponent {
     errorMessage = '';
     showPassword = false;
     showConfirmPassword = false;
-    appConstants = AppConstants;
+    appConstant = AppConstant;
 
     constructor(
         private fb: FormBuilder,
@@ -32,8 +32,8 @@ export class RegisterComponent {
         this.registerForm = this.fb.group({
             firstName: ['', [Validators.required, Validators.maxLength(50)]],
             lastName: ['', [Validators.required, Validators.maxLength(50)]],
-            email: ['', [Validators.required, Validators.email, Validators.maxLength(AppConstants.emailMaxLength)]],
-            password: ['', [Validators.required, Validators.minLength(AppConstants.passwordMinLength), Validators.maxLength(AppConstants.passwordMaxLength)]],
+            email: ['', [Validators.required, Validators.email, Validators.maxLength(AppConstant.emailMaxLength)]],
+            password: ['', [Validators.required, Validators.minLength(AppConstant.passwordMinLength), Validators.maxLength(AppConstant.passwordMaxLength)]],
             confirmPassword: ['', [Validators.required]],
             phoneNumber: ['', [Validators.required, Validators.pattern('^[0-9]{10}$')]]
         }, { validators: passwordMatchValidator });

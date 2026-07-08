@@ -1,7 +1,7 @@
 import { ProjectTypeEnum, RecordStatusEnum } from "../../../core/enums";
-import { IGetProjectInformationDto } from "../../../shared/dtos";
+import { IGetUserInformationDto } from "../../../shared/dtos";
 
-export interface IGetProjectByIdDto extends IGetProjectInformationDto {
+export interface IGetProjectByIdDto extends IGetUserInformationDto {
     id: number;
     name: string;
     type: ProjectTypeEnum;

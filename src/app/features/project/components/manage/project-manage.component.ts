@@ -12,6 +12,8 @@ import { DialogConfirmComponent } from '../../../../shared/components';
 import { DialogStatesService } from '../../../../shared/services';
 import { Router } from '@angular/router';
 import { UpsertProjectDialogComponent } from '../dialogs/upsert/upsert-project-dialog.component';
+import { PermissionCodeConstant } from '../../../../core/constants';
+import { PermissionStore } from '../../../../core/authorization';
 
 @Component({
     selector: 'app-projects',
@@ -26,8 +28,12 @@ export class ProjectManageComponent implements OnInit, OnDestroy {
     protected projects: IGetProjectPagedListDto[] = [];
     protected totalCount = 0;
     protected isLoading = false;
-
     protected request: IPagedListRequestDto;
+
+    protected canAdd: boolean = false;
+    protected canUpdate: boolean = false;
+    protected canDelete: boolean = false;
+    protected canView: boolean = false;
 
     protected readonly AppUtil = AppUtil;
     protected readonly ProjectTypeEnum = ProjectTypeEnum;
@@ -43,8 +49,11 @@ export class ProjectManageComponent implements OnInit, OnDestroy {
     };
 
     private _projectIdToDelete: number = 0;
-
     private _destroy$ = new Subject<void>();
+
+    get permissionCodeConstant(): typeof PermissionCodeConstant {
+        return PermissionCodeConstant;
+    }
 
     constructor(
         private readonly _projectService: ProjectService,
@@ -55,6 +64,7 @@ export class ProjectManageComponent implements OnInit, OnDestroy {
         private readonly _cdr: ChangeDetectorRef
     ) {
         this.request = AppUtil.initializePagedListRequest(this.projectColumnName.CreatedAt);
+        this._initializePermissionCodes();
     }
 
     public ngOnInit(): void {
@@ -183,6 +193,13 @@ export class ProjectManageComponent implements OnInit, OnDestroy {
             error: (err: any) => {
                 this._toastr.error(err.error?.message);
             }
-        })
+        });
+    }
+
+    private _initializePermissionCodes(): void {
+        this.canView = PermissionStore.hasAny([this.permissionCodeConstant.Project.ViewProject]);
+        this.canAdd = PermissionStore.hasAny([this.permissionCodeConstant.Project.AddProject]);
+        this.canDelete = PermissionStore.hasAny([this.permissionCodeConstant.Project.DeleteProject]);
+        this.canUpdate = PermissionStore.hasAny([this.permissionCodeConstant.Project.UpdateProject]);
     }
 }

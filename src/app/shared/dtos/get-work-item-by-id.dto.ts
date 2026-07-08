@@ -1,7 +1,7 @@
 import { RecordStatusEnum, WorkItemPriorityEnum } from "../../core/enums";
-import { IGetProjectInformationDto } from "./get-project-information.dto";
+import { IGetUserInformationDto } from "./get-user-information.dto";
 
-export interface IGetWorkItemByIdDto extends IGetProjectInformationDto {
+export interface IGetWorkItemByIdDto extends IGetUserInformationDto {
     id: 0;
     parentId?: number | null;
     parentName?: string | null;

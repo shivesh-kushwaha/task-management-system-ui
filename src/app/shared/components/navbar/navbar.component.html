@@ -18,12 +18,17 @@
 
     <!-- Dropdown -->
     @if (isDropdownOpen) {
-      <div class="navbar__dropdown position-absolute end-0 mt-2 bg-white border rounded shadow-sm">
-        <button class="btn btn-link text-danger text-decoration-none w-100 text-start px-3 py-2 small"
-                (click)="logout()">
-          <i class="bi bi-box-arrow-right me-2"></i>Logout
-        </button>
-      </div>
+    <div class="navbar__dropdown position-absolute end-0 mt-2 bg-white border rounded shadow-sm">
+      <button class="btn text-decoration-none w-100 text-start px-3 py-2 small">
+        <i class="bi bi-person-fill me-2"></i>Profile
+      </button>
+      <button class="btn text-decoration-none w-100 text-start px-3 py-2 small">
+        <i class="bi bi-key me-2"></i>Change Password
+      </button>
+      <button class="btn btn-link text-danger text-decoration-none w-100 text-start px-3 py-2 small" (click)="logout()">
+        <i class="bi bi-box-arrow-right me-2"></i>Logout
+      </button>
+    </div>
     }
 
   </div>

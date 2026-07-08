@@ -1,0 +1,80 @@
+<section>
+    <!-- Header: Title + Add Button -->
+    <div class="row align-items-center mb-3">
+        <div class="col-md-10 col-sm-8 search-bar">
+            <app-search (searchEvent)="onSearchEvent($event)"></app-search>
+        </div>
+        <div class="col-md-2 col-sm-4 text-end">
+            <button type="button" class="btn btn-outline-primary" (click)="onAddRole()">
+                Add Role
+            </button>
+        </div>
+    </div>
+    
+    <!-- Table -->
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th class="sortable-col" (click)="sort(columnNames.Name)">
+                        Name
+                        <app-table-sort-header [currentSort]="request.sort" [currentOrder]="request.order"
+                            [columnName]="columnNames.Name">
+                        </app-table-sort-header>
+                    </th>
+                    <th class="sortable-col" (click)="sort(columnNames.Code)">
+                        Code
+                        <app-table-sort-header [currentSort]="request.sort" [currentOrder]="request.order"
+                            [columnName]="columnNames.Code">
+                        </app-table-sort-header>
+                    </th>
+                    <th class="sortable-col" (click)="sort(columnNames.Description)">
+                        Description
+                        <app-table-sort-header [currentSort]="request.sort" [currentOrder]="request.order"
+                            [columnName]="columnNames.Description">
+                        </app-table-sort-header>
+                    </th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @if (isLoading) {
+                <tr>
+                    <td colspan="4" class="text-center py-4 text-muted">
+                        <div class="spinner-border spinner-border-sm me-2" role="status"></div>
+                        Loading...
+                    </td>
+                </tr>
+                } @else if (roles.length === 0) {
+                <tr>
+                    <td colspan="4" class="text-center py-4 text-muted">No roles found.</td>
+                </tr>
+                } @else {
+                @for (role of roles; track role.id) {
+                <tr>
+                    <td>{{ role.name }}</td>
+                    <td><span class="badge bg-secondary">{{ role.code }}</span></td>
+                    <td>{{ role.description || AppUtil.DefaultValue }}</td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-outline-primary" (click)="onEditRole(role)">
+                            <i class="bi bi-pencil"></i>
+                        </button>
+                    </td>
+                </tr>
+                }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    @if (totalCount > 0) {
+    <app-pagination [totalCount]="totalCount" [pageIndex]="request.pageIndex" [pageSize]="request.pageSize"
+        (pageChangeEvent)="goToPage($event)" (pageSizeChangeEvent)="onPageSizeChange($event)">
+    </app-pagination>
+    }
+</section>
+
+<!-- Dialog Components -->
+<app-upsert-role-configuration-dialog (roleSaved)="onRoleSaved()"></app-upsert-role-configuration-dialog>

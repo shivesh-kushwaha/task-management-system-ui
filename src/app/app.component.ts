@@ -15,11 +15,13 @@ export class AppComponent implements OnInit, OnDestroy {
   constructor(
     private loadingService: LoadingService,
     private cdr: ChangeDetectorRef
-  ) { }
+  ) { 
 
+  }
+  
+  
   ngOnInit() {
     this.subscription = this.loadingService.loading$.subscribe(isLoading => {
-      // Use setTimeout to break the change detection cycle
       setTimeout(() => {
         this.isLoading = isLoading;
         this.cdr.detectChanges();
