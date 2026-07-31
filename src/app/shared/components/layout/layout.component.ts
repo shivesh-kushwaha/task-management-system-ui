@@ -22,7 +22,6 @@ export class LayoutComponent implements OnInit, OnDestroy {
     private readonly _router: Router,
     private readonly _tokenService: TokenService,
     private readonly _permissionService: PermissionService,
-    private readonly _toastr: ToastrService
   ) {
     this.isLoggedIn = this._resolveLoginState();
 
@@ -34,7 +33,10 @@ export class LayoutComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
-    this._loadPermissions();
+    if (!this.isLoggedIn)
+      this.isPermissionLoaded = true;
+    else
+      this._loadPermissions();
   }
 
   protected onSidebarChanged(event: boolean): void {
@@ -54,7 +56,7 @@ export class LayoutComponent implements OnInit, OnDestroy {
       },
       error: (err: any) => {
         this.isPermissionLoaded = true;
-        this._toastr.error(err.error?.message);
+        console.error(err);
       }
     });
   }
