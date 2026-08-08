@@ -1,0 +1,9 @@
+@if(logType === LogTypeEnum.Error) {
+<span>Error</span>
+} @else if(logType === LogTypeEnum.Warning) {
+<span>Warning</span>
+} @else if(logType === LogTypeEnum.Information) {
+<span>Information</span>
+} @else {
+<span>{{AppUtil.DefaultValue}}</span>
+}

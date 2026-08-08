@@ -1,0 +1,121 @@
+<section>
+    <!-- Filter Bar: all filters in one row, search on the right -->
+    <div class="row g-2 mb-3 align-items-end">
+        <!-- Entity Type -->
+        <div class="col-md-2">
+            <label class="form-label small text-muted mb-0">Entity Type</label>
+            <select class="form-select form-select-sm" [(ngModel)]="request.entityType">
+                <option [ngValue]="null" disabled selected>Select Entity Type</option>
+                @for (entityType of entityTypes; track $index) {
+                <option [value]="entityType.key">{{ entityType.value }}</option>
+                }
+            </select>
+        </div>
+
+        <!-- Log Type -->
+        <div class="col-md-2">
+            <label class="form-label small text-muted mb-0">Log Type</label>
+            <select class="form-select form-select-sm" [(ngModel)]="request.logType">
+                <option [ngValue]="null" disabled selected>Select Log Type</option>
+                @for (logType of logTypes; track $index) {
+                <option [value]="logType.key">{{ logType.value }}</option>
+                }
+            </select>
+        </div>
+
+        <!-- From Date -->
+        <div class="col-md-2">
+            <label class="form-label small text-muted mb-0">From Date</label>
+            <input type="date" class="form-control form-control-sm" [(ngModel)]="request.fromDate"
+                placeholder="From Date" />
+        </div>
+
+        <!-- To Date -->
+        <div class="col-md-2">
+            <label class="form-label small text-muted mb-0">To Date</label>
+            <input type="date" class="form-control form-control-sm" [(ngModel)]="request.toDate"
+                placeholder="To Date" />
+        </div>
+
+        <!-- Search (right aligned) -->
+        <div class="col-md-4">
+            <app-search (searchEvent)="onSearchEvent($event)"></app-search>
+        </div>
+    </div>
+
+    <!-- Table -->
+    <div class="table-responsive">
+        <table class="table table-hover align-middle">
+            <thead class="table-light">
+                <tr>
+                    <th class="sortable-col" (click)="sort('message')">
+                        Message
+                        <app-table-sort-header [currentSort]="request.sort" [currentOrder]="request.order"
+                            columnName="message"></app-table-sort-header>
+                    </th>
+                    <th class="sortable-col" (click)="sort('logType')">
+                        Log Type
+                        <app-table-sort-header [currentSort]="request.sort" [currentOrder]="request.order"
+                            columnName="logType"></app-table-sort-header>
+                    </th>
+                    <th class="sortable-col" (click)="sort('entityType')">
+                        Entity Type
+                        <app-table-sort-header [currentSort]="request.sort" [currentOrder]="request.order"
+                            columnName="entityType"></app-table-sort-header>
+                    </th>
+                    <th class="sortable-col" (click)="sort('createdAt')">
+                        Created At
+                        <app-table-sort-header [currentSort]="request.sort" [currentOrder]="request.order"
+                            columnName="createdAt"></app-table-sort-header>
+                    </th>
+                    <th class="sortable-col" (click)="sort('createdByFullName')">
+                        Created By
+                        <app-table-sort-header [currentSort]="request.sort" [currentOrder]="request.order"
+                            columnName="createdByFullName"></app-table-sort-header>
+                    </th>
+                    <th class="text-center">Actions</th>
+                </tr>
+            </thead>
+
+            <tbody>
+                @if (logs.length === 0) {
+                <tr>
+                    <td colspan="6" class="text-center py-4 text-muted">
+                        No exception logs found.
+                    </td>
+                </tr>
+                } @else {
+                @for (log of logs; track log.id) {
+                <tr>
+                    <td>
+                        <span title="{{ log.message }}">
+                            {{ log.message | slice:0:80 }}{{ log.message.length > 80 ? '...' : '' }}
+                        </span>
+                    </td>
+                    <td>
+                        <app-log-type [logType]="log.logType"></app-log-type>
+                    </td>
+                    <td>
+                        <app-type [type]="log.entityType"></app-type>
+                    </td>
+                    <td>{{ log.createdAt | date: 'MM/dd/yyyy hh:mm:ss a' }}</td>
+                    <td>{{ log.createdByFullName || AppUtil.DefaultValue }}</td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-outline-primary" (click)="viewLog(log)" title="View details">
+                            <i class="bi bi-eye"></i>
+                        </button>
+                    </td>
+                </tr>
+                }
+                }
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    @if (totalCount > 0) {
+    <app-pagination [totalCount]="totalCount" [pageIndex]="request.pageIndex" [pageSize]="request.pageSize"
+        (pageChangeEvent)="goToPage($event)" (pageSizeChangeEvent)="onPageSizeChange($event)">
+    </app-pagination>
+    }
+</section>

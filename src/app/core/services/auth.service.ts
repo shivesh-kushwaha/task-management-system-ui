@@ -17,7 +17,7 @@ export class AuthService {
     private readonly tokenService: TokenService
   ) { }
 
-  refreshAccessToken(): Observable<any> {
+  refreshAccessToken(): Observable<ILoginResponseDto> {
     const refreshToken = this.tokenService.getRefreshToken();
     return this.http.post<ILoginResponseDto>(`${this.api}?token=${refreshToken}`, {});
   }

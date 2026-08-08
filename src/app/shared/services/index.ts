@@ -1,3 +1,5 @@
+export * from './auth.service';
+
 export * from './token.service';
 export * from './toastr.service';
 export * from './dialog-states.service';
@@ -9,3 +11,5 @@ export * from './user.service';
 export * from './work-item-states.service';
 
 export * from './permission.service';
+
+export * from './attachment.service';

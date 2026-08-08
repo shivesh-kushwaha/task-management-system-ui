@@ -1,0 +1,89 @@
+<section>
+    <!-- Header with Back button -->
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <div class="page-title">Exception Log Details</div>
+        <div>
+            <button type="button" class="btn btn-link" (click)="onGoBack()">Back</button>
+        </div>
+    </div>
+
+    <div class="row">
+        <!-- Message – full width -->
+        <div class="col-12">
+            <div class="col-12 fw-bold">Message</div>
+            <div class="col-12">{{ log?.message ?? AppUtil.DefaultValue }}</div>
+        </div>
+
+        <!-- Log Type & Entity Type side by side -->
+        <div class="col-6 mt-3">
+            <div class="col-12 fw-bold">Log Type</div>
+            <div class="col-12">
+                <app-log-type [logType]="log?.logType"></app-log-type>
+            </div>
+        </div>
+        <div class="col-6 mt-3">
+            <div class="col-12 fw-bold">Entity Type</div>
+            <div class="col-12">
+                <app-type [type]="log?.entityType"></app-type>
+            </div>
+        </div>
+
+        <!-- Status & Created At -->
+        <div class="col-6 mt-3">
+            <div class="col-12 fw-bold">Status</div>
+            <div class="col-12">
+                <app-status [status]="log?.status"></app-status>
+            </div>
+        </div>
+        <div class="col-6 mt-3">
+            <div class="col-12 fw-bold">Created At</div>
+            <div class="col-12">
+                <span *ngIf="log?.createdAt; else defaultDate">
+                    {{ log?.createdAt | date: 'MM/dd/yyyy hh:mm:ss a' }}
+                </span>
+                <ng-template #defaultDate>{{ AppUtil.DefaultValue }}</ng-template>
+            </div>
+        </div>
+
+        <!-- Created By & Updated By -->
+        <div class="col-6 mt-3">
+            <div class="col-12 fw-bold">Created By</div>
+            <div class="col-12">{{ log?.createdByFullName ?? AppUtil.DefaultValue }}</div>
+        </div>
+        <div class="col-6 mt-3" *ngIf="log?.updatedByFullName">
+            <div class="col-12 fw-bold">Updated By</div>
+            <div class="col-12">{{ log?.updatedByFullName }}</div>
+        </div>
+
+        <!-- Request Details (Request URL is forced to wrap to prevent overlap) -->
+        <div class="col-6 mt-3" *ngIf="log?.requestUrl">
+            <div class="col-12 fw-bold">Request URL</div>
+            <!-- Applied custom long-text-wrap class here -->
+            <div class="col-12 long-text-wrap">{{ log?.requestUrl }}</div>
+        </div>
+        <div class="col-6 mt-3" *ngIf="log?.requestMethod">
+            <div class="col-12 fw-bold">Request Method</div>
+            <div class="col-12">{{ log?.requestMethod }}</div>
+        </div>
+        <div class="col-6 mt-3" *ngIf="log?.ipAddress">
+            <div class="col-12 fw-bold">IP Address</div>
+            <div class="col-12">{{ log?.ipAddress }}</div>
+        </div>
+
+        <!-- Additional Data – full width -->
+        <div class="col-12 mt-3" *ngIf="log?.additionalData">
+            <div class="col-12 fw-bold">Additional Data</div>
+            <div class="col-12">
+                <pre class="pre-wrap p-2 bg-light border rounded">{{ log?.additionalData }}</pre>
+            </div>
+        </div>
+
+        <!-- Stack Trace – full width -->
+        <div class="col-12 mt-3">
+            <div class="col-12 fw-bold">Stack Trace</div>
+            <div class="col-12 p-2 bg-light border rounded">
+                {{ log?.stackTrace ?? AppUtil.DefaultValue }}
+            </div>
+        </div>
+    </div>
+</section>

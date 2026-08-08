@@ -4,3 +4,5 @@ export * from './role-permission.service';
 
 export * from './role.service';
 export * from './role-states.service';
+
+export * from './exception-log.service';

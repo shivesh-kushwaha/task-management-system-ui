@@ -1,0 +1,15 @@
+@if(type === TypeEnum.Project) {
+<span>Project</span>
+} @else if(type === TypeEnum.Team) {
+<span>Team</span>
+} @else if(type === TypeEnum.WorkItem) {
+<span>WorkItem</span>
+} @else if (type === TypeEnum.User) {
+<span>User</span>
+} @else if (type === TypeEnum.Comment) {
+<span>Comment</span>
+} @else if (type === TypeEnum.Other){
+    <span>Other</span>
+} @else {
+<span>{{AppUtil.DefaultValue}}</span>
+}
