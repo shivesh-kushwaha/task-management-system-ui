@@ -6,3 +6,7 @@ export * from './permission/upsert-permission-group.dto';
 
 export * from './role/upsert-role.dto';
 export * from './role/get-role-paged-list.dto';
+
+export * from './exception-log/get-exception-log-paged-list-request.dto';
+export * from './exception-log/get-exception-log-paged-list.dto';
+export * from './exception-log/get-exception-log-by-id.dto';

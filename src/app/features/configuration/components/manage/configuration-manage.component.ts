@@ -14,7 +14,7 @@ export class ConfigurationManageComponent implements OnInit {
     protected menuItems = [
         { label: 'Permissions', route: '/configuration/manage/permission' },
         { label: 'Roles', route: '/configuration/manage/role' },
-        { label: 'General', route: '/configuration/manage/general' },
+        { label: 'Exception Logs', route: '/configuration/manage/exception-log' },
         { label: 'Security', route: '/configuration/manage/security' },
         { label: 'Notifications', route: '/configuration/manage/notifications' },
         { label: 'Integrations', route: '/configuration/manage/integrations' },
@@ -38,7 +38,7 @@ export class ConfigurationManageComponent implements OnInit {
      * Check if the given route is currently active
      */
     isActive(route: string): boolean {
-        return this._router.url === route;
+        return this._router.url.includes(route);
     }
 
     /**

@@ -1,3 +1,6 @@
+export * from './auth-login.dto';
+export * from './auth-logout.dto';
+
 export * from './paged-list-request.dto';
 export * from './task-paged-list-request.dto';
 export * from './paged-list-response.dto';

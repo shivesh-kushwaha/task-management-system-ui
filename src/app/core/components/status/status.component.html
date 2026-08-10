@@ -1,0 +1,9 @@
+@if(status === RecordStatusEnum.Active) {
+<span>Active</span>
+} @else if(status === RecordStatusEnum.Inactive) {
+<span>Inactive</span>
+} @else if(status === RecordStatusEnum.Suspended) {
+<span>Suspended</span>
+} @else {
+<span>{{AppUtil.DefaultValue}}</span>
+}

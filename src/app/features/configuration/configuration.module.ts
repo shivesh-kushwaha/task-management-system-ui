@@ -1,9 +1,10 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../../shared/shared.module';
-import { AddPermissionConfigurationDialogComponent, ConfigurationManageComponent, PermissionConfigurationComponent, RoleConfigurationComponent, UpsertPermissionGroupDialogComponent, UpsertRoleConfigurationDialogComponent } from './components';
+import { AddPermissionConfigurationDialogComponent, ConfigurationManageComponent, ExceptionLogComponent, ExceptionLogDetailComponent, PermissionConfigurationComponent, RoleConfigurationComponent, UpsertPermissionGroupDialogComponent, UpsertRoleConfigurationDialogComponent } from './components';
 import { ConfigurationRoutingModule } from './configuration-routing.module';
-import { PermissionGroupService, PermissionService, RolePermissionService, RoleService, RoleStatesService } from './services';
+import { ExceptionLogService, PermissionGroupService, PermissionService, RolePermissionService, RoleService, RoleStatesService } from './services';
+import { CoreModule } from '../../core/core.module';
 
 @NgModule({
     declarations: [
@@ -13,10 +14,14 @@ import { PermissionGroupService, PermissionService, RolePermissionService, RoleS
 
         AddPermissionConfigurationDialogComponent,
         UpsertPermissionGroupDialogComponent,
-        UpsertRoleConfigurationDialogComponent
+        UpsertRoleConfigurationDialogComponent,
+
+        ExceptionLogComponent,
+        ExceptionLogDetailComponent
     ],
     imports: [
         CommonModule,
+        CoreModule,
         SharedModule,
         ConfigurationRoutingModule
     ],
@@ -26,7 +31,8 @@ import { PermissionGroupService, PermissionService, RolePermissionService, RoleS
         RolePermissionService,
 
         RoleService,
-        RoleStatesService
+        RoleStatesService,
+        ExceptionLogService
     ]
 })
 export class ConfigurationModule { }

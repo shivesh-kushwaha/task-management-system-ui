@@ -9,7 +9,7 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 
-import { DialogStatesService, ProjectService, TokenService, UserService, WorkItemService, WorkItemStatesService, WorkItemTypeService } from './services';
+import { AttachmentService, AuthService, DialogStatesService, ProjectService, TokenService, UserService, WorkItemService, WorkItemStatesService, WorkItemTypeService } from './services';
 import {
     LayoutComponent,
     NavbarComponent,
@@ -74,6 +74,7 @@ import { WorkItemDetailComponent } from './components/work-item/detail/work-item
         DialogConfirmComponent
     ],
     providers: [
+        AuthService,
         TokenService,
         DialogStatesService,
 
@@ -81,7 +82,8 @@ import { WorkItemDetailComponent } from './components/work-item/detail/work-item
         WorkItemTypeService,
         WorkItemService,
         WorkItemStatesService,
-        UserService
+        UserService,
+        AttachmentService
     ]
 })
 export class SharedModule { }
