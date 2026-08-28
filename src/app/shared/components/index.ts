@@ -10,3 +10,9 @@ export * from './dialog/confirm/dialog-confirm.component';
 export * from './dialog/work-item/upsert/upsert-work-item-dialog.component';
 
 export * from './work-item/manage/work-item-manage.component';
+
+// Comment
+export * from './comment/manage/comment-manage.component';
+export * from './comment/upsert/comment-upsert.component';
+
+export * from './side-drawer/side-drawer.component';

@@ -208,8 +208,6 @@ export class UserManageComponent implements OnInit {
     }
 
     private _openWorkItemsDialog(): void {
-        // open dialog list of project and work items.
-        // Project | Task/SubTask in list format
         this.dialogAssociatedItemsComponent.open(this.associatedWorkItems);
     }
 

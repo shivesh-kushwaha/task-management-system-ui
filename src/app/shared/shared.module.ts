@@ -20,10 +20,14 @@ import {
     DialogConfirmComponent,
     PaginationComponent,
     WorkItemManageComponent,
-    UpsertWorkItemDialogComponent
+    UpsertWorkItemDialogComponent,
+    CommentManageComponent,
+    SideDrawerComponent,
+    CommentUpsertComponent,
 } from './components';
 import { TableSortHeaderComponent } from './components/table-sort-header/table-sort-header.component';
 import { WorkItemDetailComponent } from './components/work-item/detail/work-item-detail.component';
+import { CommentService } from './services/comment.service';
 
 @NgModule({
     declarations: [
@@ -37,8 +41,11 @@ import { WorkItemDetailComponent } from './components/work-item/detail/work-item
         WorkItemManageComponent,
         WorkItemDetailComponent,
         UpsertWorkItemDialogComponent,
+        CommentManageComponent,
         DialogHeaderComponent,
-        DialogConfirmComponent
+        DialogConfirmComponent,
+        SideDrawerComponent,
+        CommentUpsertComponent,
     ],
     imports: [
         CommonModule,
@@ -58,6 +65,7 @@ import { WorkItemDetailComponent } from './components/work-item/detail/work-item
         MatFormFieldModule,
         MatInputModule,
         MatSelectModule,
+        SideDrawerComponent,
 
         LayoutComponent,
         SidebarComponent,
@@ -69,9 +77,11 @@ import { WorkItemDetailComponent } from './components/work-item/detail/work-item
         WorkItemManageComponent,
         WorkItemDetailComponent,
         UpsertWorkItemDialogComponent,
+        CommentManageComponent,
 
         DialogHeaderComponent,
-        DialogConfirmComponent
+        DialogConfirmComponent,
+        CommentUpsertComponent,
     ],
     providers: [
         AuthService,
@@ -83,7 +93,8 @@ import { WorkItemDetailComponent } from './components/work-item/detail/work-item
         WorkItemService,
         WorkItemStatesService,
         UserService,
-        AttachmentService
+        AttachmentService,
+        CommentService
     ]
 })
 export class SharedModule { }

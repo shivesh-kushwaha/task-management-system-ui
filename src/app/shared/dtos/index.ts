@@ -16,3 +16,9 @@ export * from './add-work-item.dto';
 export * from './update-work-item.dto';
 
 export * from './get-permission-list-by-user-id.dto';
+
+// Comment
+export * from './comment/add-comment.dto';
+export * from './comment/update-comment.dto';
+export * from './comment/get-comment-paged-list-request.dto';
+export * from './comment/get-comment-paged-list.dto';

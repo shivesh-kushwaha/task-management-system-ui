@@ -86,13 +86,18 @@
               <i class="bi bi-pencil"></i>
             </button>
             }
+            @if (canView) {
+            <button class="btn btn-sm btn-outline-info me-1" (click)="openCommentDrawer(project)">
+              <i class="bi bi-chat-dots"></i>
+            </button>
+            }
             @if(canView) {
             <button class="btn btn-sm btn-outline-secondary me-1" (click)="onViewProject(project)">
               <i class="bi bi-eye"></i>
             </button>
             }
             @if (canDelete) {
-            <button class="btn btn-sm btn-outline-danger" (click)="onDeleteProject(project)">
+            <button class="btn btn-sm btn-outline-danger me-1" (click)="onDeleteProject(project)">
               <i class="bi bi-trash"></i>
             </button>
             }
@@ -112,7 +117,19 @@
   }
 </section>
 
+<!-- Dialogs -->
 <section>
   <app-upsert-project-dialog></app-upsert-project-dialog>
   <app-dialog-confirm></app-dialog-confirm>
+</section>
+
+<!-- Side drawers -->
+<section>
+  @if (isDrawerOpen) {
+  <app-side-drawer [(visible)]="isDrawerOpen" [title]="DrawerTitleEnum.Comment" (closed)="isDrawerOpen = false">
+    @if (selectedProjectId > 0) {
+    <app-comment-manage [type]="TypeEnum.Project" [typeId]="selectedProjectId"></app-comment-manage>
+    }
+  </app-side-drawer>
+  }
 </section>

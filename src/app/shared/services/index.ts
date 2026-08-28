@@ -12,4 +12,6 @@ export * from './work-item-states.service';
 
 export * from './permission.service';
 
+export * from './comment.service';
+
 export * from './attachment.service';

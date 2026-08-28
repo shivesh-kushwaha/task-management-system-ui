@@ -31,7 +31,7 @@ export class TokenService {
         const token = this.getAccessToken();
         if (token) {
             const decoded = this._decodeToken(token);
-            return decoded?.nameid
+            return +decoded?.nameid
         }
         else {
             return 0;

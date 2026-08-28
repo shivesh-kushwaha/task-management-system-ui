@@ -1,0 +1,43 @@
+<section>
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        @if (showAddButton) {
+        <button type="button" class="btn btn-outline-primary" (click)="onAddComment()">
+            <i class="bi bi-plus-circle"></i> Add Comment
+        </button>
+        } @else {
+        <app-comment-upsert class="col-12" [id]="selectedId" [type]="type" [typeId]="typeId" [description]="description"
+            (commentAddedOrUpdatedEvent)="onCommentSaved($event)" (cancelled)="onCancelUpsert()"></app-comment-upsert>
+        }
+    </div>
+
+    @if (isLoading) {
+    <div class="text-center py-4 text-muted">
+        <div class="spinner-border spinner-border-sm me-2"></div> Loading...
+    </div>
+    } @else if (comments.length === 0) {
+    <div class="text-center py-4 text-muted">No comments found.</div>
+    } @else {
+    @for (comment of comments; track comment.id) {
+    <div class="card mb-3">
+        <div class="card-body">
+            <div class="d-flex justify-content-between">
+                <span class="fw-semibold">{{ comment.createdByFirstName }} {{ comment.createdByLastName }}</span>
+                <span class="text-muted">{{ comment.createdAt | date: 'MM/dd/yyyy hh:mm:ss a' }}</span>
+            </div>
+            <hr />
+            <p class="mb-2">{{ comment.description }}</p>
+            @if (comment.isLoggedUser) {
+            <div class="d-flex justify-content-end gap-2">
+                <button class="btn btn-sm btn-outline-primary" (click)="onEditComment(comment)">
+                    <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger" (click)="onDeleteComment(comment)">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+            }
+        </div>
+    </div>
+    }
+    }
+</section>

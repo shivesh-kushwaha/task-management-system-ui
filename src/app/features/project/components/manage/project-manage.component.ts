@@ -2,7 +2,7 @@ import { ChangeDetectorRef, Component, OnDestroy, OnInit, ViewChild } from '@ang
 import { IGetProjectPagedListDto } from '../../dtos';
 import { ProjectService } from '../../services/project.service';
 import { IDialogConfirmDto, IPagedListRequestDto, IPagedListResponseDto, ISearchEventDto } from '../../../../shared/dtos';
-import { ModuleTitleEnum, ProjectTypeEnum, SearchTypeEnum } from '../../../../core/enums';
+import { DrawerTitleEnum, ModuleTitleEnum, ProjectTypeEnum, SearchTypeEnum, TypeEnum } from '../../../../core/enums';
 import { ToastrService } from 'ngx-toastr';
 import { HttpErrorResponse } from '@angular/common/http';
 import { AppUtil } from '../../../../core/utils/app.util';
@@ -26,9 +26,11 @@ export class ProjectManageComponent implements OnInit, OnDestroy {
     @ViewChild(DialogConfirmComponent) dialogConfirmComponent!: DialogConfirmComponent;
 
     protected projects: IGetProjectPagedListDto[] = [];
-    protected totalCount = 0;
-    protected isLoading = false;
+    protected totalCount: number = 0;
+    protected isLoading: boolean = false;
     protected request: IPagedListRequestDto;
+    protected selectedProjectId: number = 0;
+    protected isDrawerOpen: boolean = false;
 
     protected canAdd: boolean = false;
     protected canUpdate: boolean = false;
@@ -38,6 +40,8 @@ export class ProjectManageComponent implements OnInit, OnDestroy {
     protected readonly AppUtil = AppUtil;
     protected readonly ProjectTypeEnum = ProjectTypeEnum;
     protected readonly ModuleTitleEnum = ModuleTitleEnum;
+    protected readonly TypeEnum = TypeEnum;
+    protected readonly DrawerTitleEnum = DrawerTitleEnum;
 
     projectColumnName = {
         Name: 'name',
@@ -166,6 +170,11 @@ export class ProjectManageComponent implements OnInit, OnDestroy {
 
     protected get endRecord(): number {
         return Math.min((this.request.pageIndex + 1) * this.request.pageSize, this.totalCount);
+    }
+
+    protected openCommentDrawer(project: IGetProjectPagedListDto): void {
+        this.selectedProjectId = project.id;
+        this.isDrawerOpen = true;
     }
 
     private _loadProjects(): void {
