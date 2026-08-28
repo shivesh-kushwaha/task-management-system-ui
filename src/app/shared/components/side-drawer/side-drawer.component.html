@@ -1,0 +1,12 @@
+<div class="drawer-backdrop" (click)="close()" *ngIf="visible"></div>
+
+<!-- Drawer panel -->
+<div class="drawer-panel" [class.open]="visible">
+    <div class="drawer-header">
+        <h5>{{ title }}</h5>
+        <button class="btn-close" (click)="close()"></button>
+    </div>
+    <div class="drawer-body">
+        <ng-content></ng-content>
+    </div>
+</div>
